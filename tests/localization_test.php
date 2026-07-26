@@ -43,6 +43,20 @@ assertSameValue(
     []
 );
 
+$englishCopy = implode(' ', $translations['en']);
+foreach (['Fibre', 'colour', 'specialisation', 'organisations', 'enquiry'] as $britishSpelling) {
+    assertSameValue(
+        "Inglés estadounidense sin {$britishSpelling}",
+        str_contains($englishCopy, $britishSpelling),
+        false
+    );
+}
+assertSameValue(
+    'Nombre estadounidense del puesto de fibra',
+    $translations['en']['role_fiber'],
+    'Fiber Optic Installer'
+);
+
 $browserCases = [
     ['es-ES,es;q=0.9,en;q=0.8', 'es'],
     ['en-GB,en;q=0.9,es;q=0.5', 'en'],
