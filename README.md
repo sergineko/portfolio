@@ -12,7 +12,7 @@ El sitio presenta el perfil profesional, la experiencia laboral y los proyectos 
 
 - Diseño moderno con temas claro y oscuro.
 - Retrato profesional personalizado y adaptado a pantallas grandes y móviles.
-- Capturas reales y enlaces funcionales para My Working Area y Vyrsea.
+- Capturas reales y enlaces funcionales para MyWorkingArea y Vyrsea.
 - Identidad visual propia, favicon e iconos PWA.
 - Favicon de alta resolución servido también desde las rutas estables `/favicon.ico` y `/favicon-192x192.png`.
 - Imágenes responsive en AVIF y WebP para mejorar el LCP.
@@ -39,7 +39,7 @@ El sitio presenta el perfil profesional, la experiencia laboral y los proyectos 
 
 ### Proyectos
 
-- [My Working Area](https://myworkingarea.com/), disponible en producción.
+- [MyWorkingArea](https://myworkingarea.com/), disponible en producción.
 - [Vyrsea](https://vyrsea.com/), en desarrollo y pruebas.
 - Capturas reales, estados, descripciones y enlaces externos seguros.
 - Carga diferida de las capturas para evitar penalizar la carga inicial.
@@ -55,11 +55,11 @@ El JSON-LD contiene:
 - Una entidad `ProfilePage` para el portfolio.
 - Una entidad `Person` para Sergio Moreno García.
 - Una entidad `WebSite` para el propio portfolio.
-- Entidades `WebSite` para My Working Area y Vyrsea.
+- Entidades `WebSite` para MyWorkingArea y Vyrsea.
 - Relaciones `mentions` desde el portfolio hacia los proyectos.
 - Relaciones `creator` desde cada proyecto hacia Sergio.
 
-Para completar una relación recíproca y natural, es recomendable añadir en My Working Area y Vyrsea un enlace contextual hacia `https://sergiotech.es/`, por ejemplo en el pie de página o en una sección acerca del creador. No se deben crear páginas de enlaces ni intercambios masivos destinados únicamente a manipular posiciones.
+Para completar una relación recíproca y natural, es recomendable añadir en MyWorkingArea y Vyrsea un enlace contextual hacia `https://sergiotech.es/`, por ejemplo en el pie de página o en una sección acerca del creador. No se deben crear páginas de enlaces ni intercambios masivos destinados únicamente a manipular posiciones.
 
 ### Idiomas
 

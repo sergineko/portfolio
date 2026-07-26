@@ -164,7 +164,7 @@ $structuredData = [
             '@type' => 'WebSite',
             '@id' => $myWorkingAreaId,
             'url' => 'https://myworkingarea.com/',
-            'name' => 'My Working Area',
+            'name' => 'MyWorkingArea',
             'description' => $t('mwa_description'),
             'creator' => ['@id' => $personId],
         ],
@@ -480,7 +480,7 @@ $structuredData = [
                                 <span class="project-status"><i aria-hidden="true"></i> <?= $escape($t('status_available')) ?></span>
                             </div>
                             <p class="project-type"><?= $escape($t('mwa_type')) ?></p>
-                            <h3>My Working Area</h3>
+                            <h3>MyWorkingArea</h3>
                             <p class="project-description"><?= $escape($t('mwa_description')) ?></p>
                             <ul class="project-tags" aria-label="<?= $escape($t('features_label')) ?>">
                                 <li><?= $escape($t('tag_digital_product')) ?></li>
