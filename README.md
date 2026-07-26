@@ -2,7 +2,7 @@
 
 Portfolio profesional de [Sergio Moreno García](https://sergiotech.es), construido con HTML5, CSS3, JavaScript y PHP.
 
-Incluye una presentación profesional, trayectoria laboral, proyectos, edad calculada dinámicamente, tema claro/oscuro y un formulario de contacto funcional con validación y medidas antispam.
+Incluye una presentación profesional, trayectoria laboral, proyectos, edad calculada dinámicamente, tema claro/oscuro, contenido automático en español e inglés y un formulario de contacto funcional con validación y medidas antispam.
 
 ## Tecnologías
 
@@ -24,6 +24,7 @@ Incluye una presentación profesional, trayectoria laboral, proyectos, edad calc
 ├── .htaccess
 ├── contact.php
 ├── index.php
+├── localization.php
 ├── mailer.php
 ├── robots.txt
 ├── site.webmanifest
@@ -42,6 +43,24 @@ php -S 127.0.0.1:8080
 Después abre [http://127.0.0.1:8080](http://127.0.0.1:8080).
 
 El servidor integrado de PHP es adecuado para desarrollo, pero no debe utilizarse como servidor de producción.
+
+## Idiomas
+
+La página se entrega desde PHP directamente en español o inglés. La prioridad de selección es:
+
+1. Idioma elegido por el visitante mediante el selector `ES / EN`. Se conserva durante un año.
+2. Idioma preferido enviado por el navegador en `Accept-Language`.
+3. País proporcionado por el proxy en `CF-IPCountry`, `X-Country-Code` o `GEOIP_COUNTRY_CODE` cuando el navegador no informa de ningún idioma.
+4. Inglés cuando no se puede identificar ni idioma ni país.
+
+Un navegador cuyo idioma principal no sea español recibe la versión inglesa. El país solo se utiliza como alternativa y no se realiza ninguna consulta externa ni se añade latencia a la página.
+
+Las variantes se pueden abrir expresamente en:
+
+- Español: `/?lang=es`
+- Inglés: `/?lang=en`
+
+Cloudflare puede proporcionar `CF-IPCountry` mediante su geolocalización IP o la transformación administrada correspondiente. Sin esta cabecera, la web sigue funcionando usando el idioma del navegador y, como último recurso, inglés.
 
 ## Despliegue desde Coolify
 
@@ -194,18 +213,33 @@ El endpoint incluye:
 - Límite de un mensaje por minuto y sesión.
 - Límites de longitud y tamaño de la petición.
 - Protección frente a inyección de cabeceras.
-- Respuestas JSON para JavaScript y redirección como alternativa.
+- Respuestas JSON localizadas para JavaScript y redirección como alternativa.
 
 ## SEO y rendimiento
 
-- Metadatos SEO y Open Graph.
-- Datos estructurados `Person` mediante JSON-LD.
+- Metadatos SEO y Open Graph adaptados al idioma.
+- Enlaces `hreflang` para español, inglés y `x-default`.
+- Datos estructurados `Person` localizados mediante JSON-LD.
 - Edad calculada dinámicamente.
 - Imágenes adaptables en AVIF y WebP.
 - Retrato principal priorizado para mejorar el LCP.
 - CSS integrado en la respuesta inicial.
 - Favicon, iconos PWA, `robots.txt` y `sitemap.xml`.
 - Caché prolongada para recursos versionados cuando se utiliza Apache.
+
+## Pruebas automatizadas
+
+Con PHP instalado:
+
+```bash
+php tests/localization_test.php
+php tests/mailer_test.php
+php -l index.php
+php -l contact.php
+php -l localization.php
+```
+
+La primera prueba comprueba prioridades de idioma, países y que ambos catálogos de traducción tengan las mismas claves. La segunda levanta un servidor SMTP simulado y valida remitente, destinatario, `Reply-To`, asunto y cuerpo sin enviar correos reales.
 
 ## Lista de comprobación de producción
 

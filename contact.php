@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 define('PORTFOLIO_APP', true);
 require_once __DIR__ . '/mailer.php';
+require_once __DIR__ . '/localization.php';
 
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
     || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
@@ -14,9 +15,14 @@ session_start([
     'use_strict_mode' => true,
 ]);
 
+$postedLanguage = portfolioSupportedLanguage($_POST['language'] ?? null);
+$language = $postedLanguage ?? portfolioDetectLanguage();
+$t = static fn(string $key): string => portfolioText($language, $key);
+
 header("Content-Security-Policy: default-src 'none'; frame-ancestors 'none'");
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store, max-age=0');
+header("Content-Language: {$language}");
 
 function respond(bool $success, string $message, int $statusCode = 200, array $extra = []): never
 {
@@ -41,12 +47,12 @@ function respond(bool $success, string $message, int $statusCode = 200, array $e
 }
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
-    respond(false, 'Método no permitido.', 405);
+    respond(false, $t('contact_method_not_allowed'), 405);
 }
 
 $contentLength = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
 if ($contentLength > 20_000) {
-    respond(false, 'La solicitud es demasiado grande.', 413);
+    respond(false, $t('contact_too_large'), 413);
 }
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -56,7 +62,7 @@ if ($origin !== '') {
     $hostWithoutPort = preg_replace('/:\d+$/', '', $host);
 
     if (!is_string($originHost) || !hash_equals(strtolower((string) $hostWithoutPort), strtolower($originHost))) {
-        respond(false, 'La solicitud no es válida.', 403);
+        respond(false, $t('contact_invalid_request'), 403);
     }
 }
 
@@ -64,22 +70,22 @@ $postedToken = is_string($_POST['csrf_token'] ?? null) ? $_POST['csrf_token'] : 
 $sessionToken = is_string($_SESSION['csrf_token'] ?? null) ? $_SESSION['csrf_token'] : '';
 
 if ($postedToken === '' || $sessionToken === '' || !hash_equals($sessionToken, $postedToken)) {
-    respond(false, 'La sesión ha caducado. Recarga la página e inténtalo de nuevo.', 419);
+    respond(false, $t('contact_expired'), 419);
 }
 
 $honeypot = trim((string) ($_POST['website'] ?? ''));
 if ($honeypot !== '') {
-    respond(true, '¡Gracias! Tu mensaje se ha enviado correctamente.');
+    respond(true, $t('form_success'));
 }
 
 $startedAt = (int) ($_SESSION['form_started_at'] ?? 0);
 if ($startedAt === 0 || time() - $startedAt < 2) {
-    respond(false, 'Espera un instante antes de enviar el formulario.', 429);
+    respond(false, $t('contact_too_fast'), 429);
 }
 
 $lastSubmission = (int) ($_SESSION['last_contact_submission'] ?? 0);
 if ($lastSubmission > 0 && time() - $lastSubmission < 60) {
-    respond(false, 'Espera un minuto antes de enviar otro mensaje.', 429);
+    respond(false, $t('contact_rate_limit'), 429);
 }
 
 $name = trim((string) ($_POST['name'] ?? ''));
@@ -106,7 +112,7 @@ if (
     $length($message) > 5000 ||
     $privacy !== 'accepted'
 ) {
-    respond(false, 'Revisa los campos obligatorios e inténtalo de nuevo.', 422);
+    respond(false, $t('contact_invalid_fields'), 422);
 }
 
 $recipient = getenv('PORTFOLIO_TO_EMAIL') ?: 'smorgarc@sergiotech.es';
@@ -118,7 +124,7 @@ if (
     preg_match('/[\r\n]/', $recipient . $fromEmail) === 1
 ) {
     error_log('Portfolio contact form: invalid server email configuration.');
-    respond(false, 'El formulario no está disponible temporalmente. Escríbeme directamente por correo.', 500);
+    respond(false, $t('contact_unavailable'), 500);
 }
 
 $safeSubject = "Portfolio: {$subject}";
@@ -127,17 +133,17 @@ if (function_exists('mb_encode_mimeheader')) {
 }
 
 $body = implode(PHP_EOL, [
-    'Nuevo mensaje desde el portfolio',
+    $t('email_heading'),
     '---------------------------------',
-    "Nombre: {$name}",
-    "Correo: {$email}",
-    "Asunto: {$subject}",
+    $t('email_name') . ": {$name}",
+    $t('email_address') . ": {$email}",
+    $t('email_subject') . ": {$subject}",
     '',
-    'Mensaje:',
+    $t('email_message') . ':',
     $message,
     '',
-    'Consentimiento de privacidad: aceptado',
-    'Fecha (UTC): ' . gmdate('Y-m-d H:i:s'),
+    $t('email_consent'),
+    $t('email_date') . ': ' . gmdate('Y-m-d H:i:s'),
 ]);
 
 $sent = portfolioSendEmail(
@@ -150,7 +156,7 @@ $sent = portfolioSendEmail(
 
 if (!$sent) {
     error_log('Portfolio contact form: all email transports rejected a message.');
-    respond(false, 'No se ha podido enviar el mensaje. Escríbeme directamente a smorgarc@sergiotech.es.', 500);
+    respond(false, $t('contact_send_error'), 500);
 }
 
 $_SESSION['last_contact_submission'] = time();
@@ -158,7 +164,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 respond(
     true,
-    '¡Gracias! Tu mensaje se ha enviado correctamente.',
+    $t('form_success'),
     200,
     ['csrfToken' => $_SESSION['csrf_token']]
 );

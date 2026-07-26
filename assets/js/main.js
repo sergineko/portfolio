@@ -7,6 +7,12 @@
     const menuToggle = document.querySelector('[data-menu-toggle]');
     const themeToggle = document.querySelector('[data-theme-toggle]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const interfaceText = {
+        themeDark: document.body.dataset.themeDark || 'Enable dark theme',
+        themeLight: document.body.dataset.themeLight || 'Enable light theme',
+        menuOpen: document.body.dataset.menuOpen || 'Open menu',
+        menuClose: document.body.dataset.menuClose || 'Close menu',
+    };
 
     const calculateAge = (birthDateValue) => {
         const parts = birthDateValue.split('-').map(Number);
@@ -37,17 +43,25 @@
     const currentTheme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : preferredTheme;
     root.dataset.theme = currentTheme;
 
+    const updateThemeLabel = () => {
+        themeToggle?.setAttribute(
+            'aria-label',
+            root.dataset.theme === 'light' ? interfaceText.themeDark : interfaceText.themeLight
+        );
+    };
+    updateThemeLabel();
+
     themeToggle?.addEventListener('click', () => {
         const nextTheme = root.dataset.theme === 'light' ? 'dark' : 'light';
         root.dataset.theme = nextTheme;
         localStorage.setItem('portfolio-theme', nextTheme);
-        themeToggle.setAttribute('aria-label', nextTheme === 'light' ? 'Activar tema oscuro' : 'Activar tema claro');
+        updateThemeLabel();
     });
 
     const setMenuState = (open) => {
         nav?.classList.toggle('is-open', open);
         menuToggle?.setAttribute('aria-expanded', String(open));
-        menuToggle?.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+        menuToggle?.setAttribute('aria-label', open ? interfaceText.menuClose : interfaceText.menuOpen);
     };
 
     menuToggle?.addEventListener('click', () => {
@@ -118,6 +132,12 @@
     const formStatus = document.querySelector('[data-form-status]');
     const submitButton = form?.querySelector('button[type="submit"]');
     const submitLabel = form?.querySelector('[data-submit-label]');
+    const formText = {
+        sending: form?.dataset.sending || 'Sending…',
+        submit: form?.dataset.submitLabel || 'Send message',
+        genericError: form?.dataset.genericError || 'The message could not be sent.',
+        networkError: form?.dataset.networkError || 'The server could not be reached.',
+    };
 
     const showFormStatus = (message, success) => {
         if (!formStatus) return;
@@ -132,7 +152,7 @@
 
         event.preventDefault();
         submitButton.disabled = true;
-        submitLabel.textContent = 'Enviando…';
+        submitLabel.textContent = formText.sending;
         formStatus?.classList.remove('is-visible', 'is-success', 'is-error');
 
         try {
@@ -146,7 +166,7 @@
             });
             const result = await response.json();
 
-            showFormStatus(result.message || 'No se ha podido completar el envío.', response.ok && result.success);
+            showFormStatus(result.message || formText.genericError, response.ok && result.success);
 
             if (response.ok && result.success) {
                 const csrfField = form.querySelector('input[name="csrf_token"]');
@@ -157,10 +177,10 @@
                 updateCharacterCount();
             }
         } catch {
-            showFormStatus('No hay conexión con el servidor. Puedes escribirme directamente a smorgarc@sergiotech.es.', false);
+            showFormStatus(formText.networkError, false);
         } finally {
             submitButton.disabled = false;
-            submitLabel.textContent = 'Enviar mensaje';
+            submitLabel.textContent = formText.submit;
         }
     });
 })();
