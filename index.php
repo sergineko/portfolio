@@ -108,23 +108,74 @@ $formMessage = match ($status) {
     default => '',
 };
 
+$personId = "{$siteUrl}/#person";
+$portfolioWebsiteId = "{$siteUrl}/#website";
+$profilePageId = "{$localizedUrl}#profile-page";
+$myWorkingAreaId = 'https://myworkingarea.com/#website';
+$vyrseaId = 'https://vyrsea.com/#website';
+
 $structuredData = [
     '@context' => 'https://schema.org',
-    '@type' => 'Person',
-    'name' => 'Sergio Moreno García',
-    'url' => $siteUrl,
-    'email' => 'mailto:smorgarc@sergiotech.es',
-    'telephone' => '+34614839879',
-    'homeLocation' => [
-        '@type' => 'Place',
-        'name' => $t('location'),
-    ],
-    'jobTitle' => $t('schema_job_title'),
-    'knowsAbout' => [
-        $t('schema_backend'),
-        $t('schema_fullstack'),
-        $t('schema_integrations'),
-        $t('schema_web_apps'),
+    '@graph' => [
+        [
+            '@type' => 'ProfilePage',
+            '@id' => $profilePageId,
+            'url' => $localizedUrl,
+            'name' => $t('seo_title'),
+            'description' => $t('seo_description'),
+            'inLanguage' => $language,
+            'mainEntity' => ['@id' => $personId],
+            'isPartOf' => ['@id' => $portfolioWebsiteId],
+            'mentions' => [
+                ['@id' => $myWorkingAreaId],
+                ['@id' => $vyrseaId],
+            ],
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => $portfolioWebsiteId,
+            'url' => "{$siteUrl}/",
+            'name' => 'Sergio Moreno García',
+            'inLanguage' => ['es', 'en'],
+            'publisher' => ['@id' => $personId],
+        ],
+        [
+            '@type' => 'Person',
+            '@id' => $personId,
+            'name' => 'Sergio Moreno García',
+            'url' => "{$siteUrl}/",
+            'image' => "{$siteUrl}/assets/images/sergio-moreno-portrait-800.webp",
+            'email' => 'mailto:smorgarc@sergiotech.es',
+            'telephone' => '+34614839879',
+            'mainEntityOfPage' => ['@id' => $profilePageId],
+            'homeLocation' => [
+                '@type' => 'Place',
+                'name' => $t('location'),
+            ],
+            'jobTitle' => $t('schema_job_title'),
+            'knowsAbout' => [
+                $t('schema_backend'),
+                $t('schema_fullstack'),
+                $t('schema_integrations'),
+                $t('schema_web_apps'),
+            ],
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => $myWorkingAreaId,
+            'url' => 'https://myworkingarea.com/',
+            'name' => 'My Working Area',
+            'description' => $t('mwa_description'),
+            'creator' => ['@id' => $personId],
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => $vyrseaId,
+            'url' => 'https://vyrsea.com/',
+            'name' => 'Vyrsea',
+            'description' => $t('vyrsea_description'),
+            'creator' => ['@id' => $personId],
+        ],
     ],
 ];
 ?>
@@ -143,10 +194,10 @@ $structuredData = [
     <link rel="alternate" hreflang="es" href="<?= $escape($siteUrl) ?>/?lang=es">
     <link rel="alternate" hreflang="en" href="<?= $escape($siteUrl) ?>/?lang=en">
     <link rel="alternate" hreflang="x-default" href="<?= $escape($siteUrl) ?>/">
-    <link rel="icon" href="assets/icons/favicon-v2.ico" sizes="any">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-v2-32x32.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon-v2.png">
-    <link rel="manifest" href="site.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon-v2.png">
+    <link rel="manifest" href="/site.webmanifest">
 
     <meta property="og:type" content="profile">
     <meta property="og:locale" content="<?= $language === 'es' ? 'es_ES' : 'en_US' ?>">
@@ -422,7 +473,7 @@ $structuredData = [
                 </div>
 
                 <div class="project-list">
-                    <a class="project-showcase project-mwa" href="https://myworkingarea.com/" target="_blank" rel="noopener noreferrer" aria-label="<?= $escape($t('mwa_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="myworkingarea" data-reveal>
+                    <a class="project-showcase project-mwa" href="https://myworkingarea.com/" target="_blank" rel="noopener" aria-label="<?= $escape($t('mwa_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="myworkingarea" data-reveal>
                         <div class="project-copy">
                             <div class="project-heading-row">
                                 <span class="project-index">01</span>
@@ -449,7 +500,7 @@ $structuredData = [
                         </div>
                     </a>
 
-                    <a class="project-showcase project-vyrsea" href="https://vyrsea.com/" target="_blank" rel="noopener noreferrer" aria-label="<?= $escape($t('vyrsea_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="vyrsea" data-reveal>
+                    <a class="project-showcase project-vyrsea" href="https://vyrsea.com/" target="_blank" rel="noopener" aria-label="<?= $escape($t('vyrsea_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="vyrsea" data-reveal>
                         <div class="project-copy">
                             <div class="project-heading-row">
                                 <span class="project-index">02</span>

@@ -14,6 +14,7 @@ El sitio presenta el perfil profesional, la experiencia laboral y los proyectos 
 - Retrato profesional personalizado y adaptado a pantallas grandes y móviles.
 - Capturas reales y enlaces funcionales para My Working Area y Vyrsea.
 - Identidad visual propia, favicon e iconos PWA.
+- Favicon de alta resolución servido también desde las rutas estables `/favicon.ico` y `/favicon-192x192.png`.
 - Imágenes responsive en AVIF y WebP para mejorar el LCP.
 - Sitio completamente disponible en español e inglés estadounidense.
 - Selección automática de idioma mediante navegador y país, con selector manual persistente.
@@ -42,6 +43,23 @@ El sitio presenta el perfil profesional, la experiencia laboral y los proyectos 
 - [Vyrsea](https://vyrsea.com/), en desarrollo y pruebas.
 - Capturas reales, estados, descripciones y enlaces externos seguros.
 - Carga diferida de las capturas para evitar penalizar la carga inicial.
+- Enlaces HTML rastreables con nombres descriptivos y sin `nofollow`.
+- Datos estructurados que identifican ambos dominios como sitios creados por Sergio.
+
+### Relación entre dominios
+
+`sergiotech.es` enlaza directamente a los dos proyectos mediante elementos `<a href>` presentes en el HTML generado en el servidor. La política `strict-origin-when-cross-origin` permite que el destino conozca el origen `sergiotech.es` sin enviar la ruta completa.
+
+El JSON-LD contiene:
+
+- Una entidad `ProfilePage` para el portfolio.
+- Una entidad `Person` para Sergio Moreno García.
+- Una entidad `WebSite` para el propio portfolio.
+- Entidades `WebSite` para My Working Area y Vyrsea.
+- Relaciones `mentions` desde el portfolio hacia los proyectos.
+- Relaciones `creator` desde cada proyecto hacia Sergio.
+
+Para completar una relación recíproca y natural, es recomendable añadir en My Working Area y Vyrsea un enlace contextual hacia `https://sergiotech.es/`, por ejemplo en el pie de página o en una sección acerca del creador. No se deben crear páginas de enlaces ni intercambios masivos destinados únicamente a manipular posiciones.
 
 ### Idiomas
 
@@ -112,6 +130,8 @@ No se necesita Node.js, un gestor de paquetes, una base de datos ni un proceso d
 ├── .gitignore
 ├── .htaccess
 ├── contact.php
+├── favicon-192x192.png
+├── favicon.ico
 ├── index.php
 ├── localization.php
 ├── mailer.php
@@ -371,12 +391,14 @@ Nginx no procesa `.htaccess`; consulta la sección de Coolify para trasladar las
 - Títulos y descripciones localizados.
 - Open Graph adaptado al idioma.
 - Datos estructurados `Person` mediante JSON-LD.
+- Grafo JSON-LD con `ProfilePage`, `Person` y los sitios web de los proyectos.
 - URL canónica específica para cada idioma.
 - Enlaces `hreflang` para `es`, `en` y `x-default`.
 - `sitemap.xml` con las dos variantes.
 - `robots.txt`.
 - Edad actual calculada dinámicamente.
-- Enlaces externos con `noopener noreferrer`.
+- Enlaces externos rastreables con `noopener`, texto descriptivo y referencia de origen.
+- Favicon de 192×192 píxeles y `.ico` con tamaños 16, 32 y 48 desde rutas raíz estables.
 
 ### Rendimiento
 
@@ -447,7 +469,7 @@ Nixpacks detecta PHP mediante `index.php`, configura el servidor web y sirve la 
 1. Guarda la configuración.
 2. Pulsa **Deploy**.
 3. Verifica en los logs que la aplicación escucha en el puerto `80`.
-4. Comprueba `/`, `/?lang=es`, `/?lang=en`, `/contact.php` y los recursos de `assets/`.
+4. Comprueba `/`, `/?lang=es`, `/?lang=en`, `/favicon.ico`, `/favicon-192x192.png` y los recursos de `assets/`. Una petición `GET` directa a `/contact.php` debe responder `405`.
 5. Envía un mensaje real desde el formulario.
 6. Comprueba una visita y los eventos en Umami.
 7. Activa **Auto Deploy** si quieres publicar automáticamente cada push a `main`.
@@ -561,6 +583,16 @@ Comprueba:
 4. Comprueba las cabeceras de país del proxy.
 5. Verifica que Cloudflare no esté cacheando el HTML sin respetar `Vary`.
 
+### Google muestra un favicon antiguo
+
+1. Comprueba que `/favicon.ico` y `/favicon-192x192.png` responden `200`.
+2. Purga en Cloudflare la caché de ambas rutas y de la página principal.
+3. Inspecciona `https://sergiotech.es/` en Google Search Console.
+4. Solicita una nueva indexación de la página principal.
+5. Espera al siguiente rastreo; Google puede tardar varios días o semanas en actualizar el icono.
+
+No cambies estas rutas en futuras versiones: Google recomienda que la URL del favicon sea estable.
+
 ## Lista de comprobación de producción
 
 - [ ] Dominio y HTTPS funcionando.
@@ -577,6 +609,9 @@ Comprueba:
 - [ ] Visitas y eventos visibles en Umami.
 - [ ] Español e inglés revisados.
 - [ ] Cabeceras CSP y seguridad verificadas.
+- [ ] `/favicon.ico` y `/favicon-192x192.png` devuelven el icono propio.
+- [ ] Página principal reenviada para indexación después de cambiar el favicon.
+- [ ] Enlaces recíprocos naturales añadidos desde los proyectos si procede.
 - [ ] Reglas de caché compatibles con la selección de idioma.
 - [ ] `sitemap.xml` enviado a buscadores.
 - [ ] Caché de Cloudflare purgada después del despliegue.
