@@ -42,6 +42,10 @@ ServerSignature Off
     Require all denied
 </FilesMatch>
 
+<FilesMatch "^(?:mailer\.php|mailer_test\.php)$">
+    Require all denied
+</FilesMatch>
+
 <FilesMatch "\.(?:env|ini|log|md|json|lock)$">
     Require all denied
 </FilesMatch>

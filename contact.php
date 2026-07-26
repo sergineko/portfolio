@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+define('PORTFOLIO_APP', true);
+require_once __DIR__ . '/mailer.php';
+
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
     || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
 
@@ -137,19 +140,16 @@ $body = implode(PHP_EOL, [
     'Fecha (UTC): ' . gmdate('Y-m-d H:i:s'),
 ]);
 
-$headers = implode("\r\n", [
-    "From: Portfolio Sergio <{$fromEmail}>",
-    "Reply-To: {$email}",
-    'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=UTF-8',
-    'Content-Transfer-Encoding: 8bit',
-    'X-Mailer: PHP/' . PHP_VERSION,
-]);
-
-$sent = mail($recipient, $safeSubject, $body, $headers);
+$sent = portfolioSendEmail(
+    $recipient,
+    $fromEmail,
+    $email,
+    $safeSubject,
+    $body
+);
 
 if (!$sent) {
-    error_log('Portfolio contact form: mail transport rejected a message.');
+    error_log('Portfolio contact form: all email transports rejected a message.');
     respond(false, 'No se ha podido enviar el mensaje. Escríbeme directamente a smorgarc@sergiotech.es.', 500);
 }
 

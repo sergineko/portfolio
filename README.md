@@ -24,9 +24,11 @@ Incluye una presentación profesional, trayectoria laboral, proyectos, edad calc
 ├── .htaccess
 ├── contact.php
 ├── index.php
+├── mailer.php
 ├── robots.txt
 ├── site.webmanifest
-└── sitemap.xml
+├── sitemap.xml
+└── tests/mailer_test.php
 ```
 
 ## Ejecución local
@@ -116,7 +118,7 @@ Coolify explica el funcionamiento de estas opciones en [Environment Variables](h
 
 ### Funcionamiento actual
 
-`contact.php` utiliza la función nativa `mail()` de PHP. El formulario establece:
+El formulario solo necesita configurar estas dos direcciones:
 
 - `From`: el valor de `PORTFOLIO_FROM_EMAIL`.
 - `To`: el valor de `PORTFOLIO_TO_EMAIL`.
@@ -124,35 +126,46 @@ Coolify explica el funcionamiento de estas opciones en [Environment Variables](h
 
 De esta forma se puede responder al visitante sin utilizar su dirección como remitente, lo que reduce rechazos por SPF o DMARC.
 
-### Requisito imprescindible
+El sistema intenta entregar el mensaje en este orden:
 
-Las tres variables `PORTFOLIO_*` configuran las direcciones, pero no configuran un transporte SMTP. El contenedor debe disponer de un agente compatible con `sendmail` o de un relay SMTP configurado para que `mail()` pueda entregar mensajes.
+1. Utiliza `mail()` cuando el contenedor dispone de un transporte local.
+2. Si `mail()` no está disponible o rechaza el mensaje, consulta los registros DNS MX del dominio destinatario y entrega directamente por SMTP.
+3. Si el servidor de destino anuncia `STARTTLS`, la conexión se cifra antes de enviar el contenido.
 
-La configuración SMTP utilizada por las notificaciones internas de Coolify es independiente de las aplicaciones desplegadas. Configurarla en **Notifications** no hace que PHP pueda enviar correo automáticamente.
+No es necesario configurar `SMTP_HOST`, usuario, contraseña ni claves de API.
 
-Antes de considerar terminado el despliegue, abre la terminal del contenedor desde Coolify y comprueba:
+### Requisitos de red
+
+La entrega directa necesita:
+
+- Resolución DNS disponible dentro del contenedor.
+- Conexiones TCP salientes al puerto `25`.
+- Que el proveedor del VPS no bloquee el correo saliente.
+- Un registro SPF que autorice la IP pública del servidor.
+
+No es necesario exponer el puerto `25` en Coolify: la aplicación únicamente inicia conexiones salientes.
+
+Para comprobar la resolución MX desde la terminal del contenedor:
 
 ```bash
-php -r 'var_dump(function_exists("mail"));'
-php -r 'var_dump(ini_get("sendmail_path"));'
+php -r '$email=getenv("PORTFOLIO_TO_EMAIL"); $domain=substr(strrchr($email, "@"), 1); var_dump(getmxrr($domain, $hosts, $weights), $hosts, $weights);'
 ```
 
-El primer comando debe devolver `true`. El segundo debe mostrar el ejecutable de transporte configurado. Si está vacío o el binario no existe, será necesario añadir un relay compatible con `sendmail` a la imagen de ejecución o adaptar `contact.php` para enviar mediante un proveedor SMTP.
-
-> [!WARNING]
-> No añadas variables como `SMTP_PASSWORD` pensando que el código actual las utilizará. Esta versión solo lee `PORTFOLIO_SITE_URL`, `PORTFOLIO_TO_EMAIL` y `PORTFOLIO_FROM_EMAIL`.
+> [!IMPORTANT]
+> Algunos proveedores bloquean el puerto saliente `25` para evitar spam. Si ocurre, la entrega directa no puede funcionar utilizando únicamente dos direcciones de correo; será necesario solicitar el desbloqueo al proveedor o utilizar un relay autenticado.
 
 ### Recomendaciones de entregabilidad
 
 - Utiliza un remitente del propio dominio, por ejemplo `no-reply@sergiotech.es`.
-- Autoriza al proveedor de correo en el registro SPF del dominio.
-- Activa y valida DKIM.
+- Autoriza la IP pública del servidor en el registro SPF del dominio.
+- Configura un PTR o DNS inverso coherente para la IP del servidor.
+- Utiliza DKIM si en el futuro se incorpora un relay o una clave de firma.
 - Publica una política DMARC.
 - No utilices el correo del visitante como cabecera `From`.
-- Revisa inicialmente la carpeta de spam y los logs del relay.
+- Revisa inicialmente la carpeta de spam y los logs de la aplicación.
 - No guardes contraseñas SMTP ni claves privadas en Git.
 
-La función `mail()` puede devolver `true` cuando el transporte ha aceptado el mensaje, pero esto no garantiza que el servidor destinatario lo entregue.
+Una respuesta SMTP correcta significa que el servidor MX ha aceptado el mensaje, pero los filtros posteriores todavía pueden enviarlo a spam.
 
 ### Prueba final
 
@@ -165,7 +178,8 @@ La función `mail()` puede devolver `true` cuando el transporte ha aceptado el m
 7. Si falla, revisa los logs de la aplicación. El endpoint registra:
 
    ```text
-   Portfolio contact form: mail transport rejected a message.
+   Portfolio contact form: MX delivery failed for ...
+   Portfolio contact form: all email transports rejected a message.
    ```
 
 ## Seguridad del formulario
@@ -197,8 +211,8 @@ El endpoint incluye:
 
 - [ ] Dominio y HTTPS funcionando.
 - [ ] Variables `PORTFOLIO_*` configuradas como Runtime Variables.
-- [ ] Transporte de `mail()` disponible dentro del contenedor.
-- [ ] SPF, DKIM y DMARC validados.
+- [ ] Resolución MX y conexiones TCP salientes al puerto `25` disponibles.
+- [ ] SPF, PTR y DMARC validados.
 - [ ] Formulario probado con un buzón real.
 - [ ] Cabeceras de seguridad y caché verificadas.
 - [ ] `sitemap.xml` enviado a los buscadores.
