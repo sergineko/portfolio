@@ -8,7 +8,7 @@
   "theme_color": "#090c0f",
   "icons": [
     {
-      "src": "assets/icons/icon-v2-192.png",
+      "src": "/sergiotech-favicon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },

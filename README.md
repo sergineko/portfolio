@@ -14,7 +14,7 @@ El sitio presenta el perfil profesional, la experiencia laboral y los proyectos 
 - Retrato profesional personalizado y adaptado a pantallas grandes y móviles.
 - Capturas reales y enlaces funcionales para MyWorkingArea y Vyrsea.
 - Identidad visual propia, favicon e iconos PWA.
-- Favicon de alta resolución servido también desde las rutas estables `/favicon.ico` y `/favicon-192x192.png`.
+- Favicon de alta resolución declarado mediante la URL estable y específica `/sergiotech-favicon-192.png`, con `/favicon.ico` como compatibilidad.
 - Imágenes responsive en AVIF y WebP para mejorar el LCP.
 - Sitio completamente disponible en español e inglés estadounidense.
 - Selección automática de idioma mediante navegador y país, con selector manual persistente.
@@ -132,6 +132,7 @@ No se necesita Node.js, un gestor de paquetes, una base de datos ni un proceso d
 ├── contact.php
 ├── favicon-192x192.png
 ├── favicon.ico
+├── sergiotech-favicon-192.png
 ├── index.php
 ├── localization.php
 ├── mailer.php
@@ -469,7 +470,7 @@ Nixpacks detecta PHP mediante `index.php`, configura el servidor web y sirve la 
 1. Guarda la configuración.
 2. Pulsa **Deploy**.
 3. Verifica en los logs que la aplicación escucha en el puerto `80`.
-4. Comprueba `/`, `/?lang=es`, `/?lang=en`, `/favicon.ico`, `/favicon-192x192.png` y los recursos de `assets/`. Una petición `GET` directa a `/contact.php` debe responder `405`.
+4. Comprueba `/`, `/?lang=es`, `/?lang=en`, `/sergiotech-favicon-192.png`, `/favicon.ico` y los recursos de `assets/`. Una petición `GET` directa a `/contact.php` debe responder `405`.
 5. Envía un mensaje real desde el formulario.
 6. Comprueba una visita y los eventos en Umami.
 7. Activa **Auto Deploy** si quieres publicar automáticamente cada push a `main`.
@@ -585,13 +586,13 @@ Comprueba:
 
 ### Google muestra un favicon antiguo
 
-1. Comprueba que `/favicon.ico` y `/favicon-192x192.png` responden `200`.
+1. Comprueba que `/sergiotech-favicon-192.png` y `/favicon.ico` responden `200`.
 2. Purga en Cloudflare la caché de ambas rutas y de la página principal.
 3. Inspecciona `https://sergiotech.es/` en Google Search Console.
 4. Solicita una nueva indexación de la página principal.
 5. Espera al siguiente rastreo; Google puede tardar varios días o semanas en actualizar el icono.
 
-No cambies estas rutas en futuras versiones: Google recomienda que la URL del favicon sea estable.
+No cambies `/sergiotech-favicon-192.png` en futuras versiones: Google recomienda que la URL declarada del favicon sea estable.
 
 ## Lista de comprobación de producción
 
@@ -609,7 +610,7 @@ No cambies estas rutas en futuras versiones: Google recomienda que la URL del fa
 - [ ] Visitas y eventos visibles en Umami.
 - [ ] Español e inglés revisados.
 - [ ] Cabeceras CSP y seguridad verificadas.
-- [ ] `/favicon.ico` y `/favicon-192x192.png` devuelven el icono propio.
+- [ ] `/sergiotech-favicon-192.png` y `/favicon.ico` devuelven el icono propio.
 - [ ] Página principal reenviada para indexación después de cambiar el favicon.
 - [ ] Enlaces recíprocos naturales añadidos desde los proyectos si procede.
 - [ ] Reglas de caché compatibles con la selección de idioma.

@@ -99,7 +99,9 @@ $_SESSION['form_started_at'] = time();
 $birthDate = new DateTimeImmutable('1993-09-15');
 $today = new DateTimeImmutable('today');
 $age = $birthDate->diff($today)->y;
-$localizedUrl = "{$siteUrl}/?lang={$language}";
+$canonicalUrl = $requestedLanguage !== null
+    ? "{$siteUrl}/?lang={$language}"
+    : "{$siteUrl}/";
 
 $status = filter_input(INPUT_GET, 'status', FILTER_UNSAFE_RAW);
 $formMessage = match ($status) {
@@ -110,7 +112,7 @@ $formMessage = match ($status) {
 
 $personId = "{$siteUrl}/#person";
 $portfolioWebsiteId = "{$siteUrl}/#website";
-$profilePageId = "{$localizedUrl}#profile-page";
+$profilePageId = "{$canonicalUrl}#profile-page";
 $myWorkingAreaId = 'https://myworkingarea.com/#website';
 $vyrseaId = 'https://vyrsea.com/#website';
 
@@ -120,7 +122,7 @@ $structuredData = [
         [
             '@type' => 'ProfilePage',
             '@id' => $profilePageId,
-            'url' => $localizedUrl,
+            'url' => $canonicalUrl,
             'name' => $t('seo_title'),
             'description' => $t('seo_description'),
             'inLanguage' => $language,
@@ -190,12 +192,11 @@ $structuredData = [
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="theme-color" content="#0a0d10">
     <meta name="apple-mobile-web-app-title" content="Sergio Moreno">
-    <link rel="canonical" href="<?= $escape($localizedUrl) ?>">
+    <link rel="canonical" href="<?= $escape($canonicalUrl) ?>">
     <link rel="alternate" hreflang="es" href="<?= $escape($siteUrl) ?>/?lang=es">
     <link rel="alternate" hreflang="en" href="<?= $escape($siteUrl) ?>/?lang=en">
     <link rel="alternate" hreflang="x-default" href="<?= $escape($siteUrl) ?>/">
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="/sergiotech-favicon-192.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon-v2.png">
     <link rel="manifest" href="/site.webmanifest">
 
@@ -204,7 +205,7 @@ $structuredData = [
     <meta property="og:locale:alternate" content="<?= $language === 'es' ? 'en_US' : 'es_ES' ?>">
     <meta property="og:title" content="<?= $escape($t('seo_title')) ?>">
     <meta property="og:description" content="<?= $escape($t('og_description')) ?>">
-    <meta property="og:url" content="<?= $escape($localizedUrl) ?>">
+    <meta property="og:url" content="<?= $escape($canonicalUrl) ?>">
     <meta property="profile:first_name" content="Sergio">
     <meta property="profile:last_name" content="Moreno García">
     <meta name="twitter:card" content="summary">
