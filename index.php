@@ -24,17 +24,61 @@ if ($requestedLanguage !== null) {
 
 $t = static fn(string $key): string => portfolioText($language, $key);
 $escape = static fn(string $value): string => htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+$siteUrl = rtrim(getenv('PORTFOLIO_SITE_URL') ?: 'https://sergiotech.es', '/');
+
+$umamiScriptUrl = trim((string) (getenv('UMAMI_SCRIPT_URL') ?: ''));
+$umamiWebsiteId = trim((string) (getenv('UMAMI_WEBSITE_ID') ?: ''));
+$umamiUrlParts = $umamiScriptUrl !== '' ? parse_url($umamiScriptUrl) : false;
+$umamiOrigin = '';
+$umamiEnabled =
+    is_array($umamiUrlParts) &&
+    strtolower((string) ($umamiUrlParts['scheme'] ?? '')) === 'https' &&
+    isset($umamiUrlParts['host']) &&
+    !isset($umamiUrlParts['user']) &&
+    !isset($umamiUrlParts['pass']) &&
+    filter_var($umamiScriptUrl, FILTER_VALIDATE_URL) !== false &&
+    preg_match('/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i', $umamiWebsiteId) === 1;
+
+if ($umamiEnabled) {
+    $umamiOrigin = 'https://' . strtolower((string) $umamiUrlParts['host']);
+    if (isset($umamiUrlParts['port'])) {
+        $umamiOrigin .= ':' . (int) $umamiUrlParts['port'];
+    }
+}
+
+$siteHost = strtolower((string) (parse_url($siteUrl, PHP_URL_HOST) ?: 'sergiotech.es'));
+$umamiDomainCandidates = preg_split(
+    '/\s*,\s*/',
+    trim((string) (getenv('UMAMI_DOMAINS') ?: $siteHost)),
+    -1,
+    PREG_SPLIT_NO_EMPTY
+) ?: [];
+$umamiDomains = [];
+foreach ($umamiDomainCandidates as $domainCandidate) {
+    $domainCandidate = strtolower(trim($domainCandidate));
+    if (filter_var($domainCandidate, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false) {
+        $umamiDomains[] = $domainCandidate;
+    }
+}
+$umamiDomains = implode(',', array_values(array_unique($umamiDomains ?: [$siteHost])));
 
 $nonce = base64_encode(random_bytes(18));
 $stylesheetPath = __DIR__ . '/assets/css/styles.css';
 $inlineStyles = is_readable($stylesheetPath) ? file_get_contents($stylesheetPath) : false;
 $inlineStyles = is_string($inlineStyles) ? $inlineStyles : '';
 
+$scriptSources = "'self' 'nonce-{$nonce}'";
+$connectSources = "'self'";
+if ($umamiEnabled) {
+    $scriptSources .= " {$umamiOrigin}";
+    $connectSources .= " {$umamiOrigin}";
+}
+
 $contentSecurityPolicy =
     "default-src 'self'; " .
-    "base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; " .
+    "base-uri 'self'; connect-src {$connectSources}; font-src 'self'; form-action 'self'; " .
     "frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; " .
-    "script-src 'self' 'nonce-{$nonce}'; style-src 'self' 'nonce-{$nonce}'";
+    "script-src {$scriptSources}; style-src 'self' 'nonce-{$nonce}'";
 
 if ($isHttps) {
     $contentSecurityPolicy .= '; upgrade-insecure-requests';
@@ -55,7 +99,6 @@ $_SESSION['form_started_at'] = time();
 $birthDate = new DateTimeImmutable('1993-09-15');
 $today = new DateTimeImmutable('today');
 $age = $birthDate->diff($today)->y;
-$siteUrl = rtrim(getenv('PORTFOLIO_SITE_URL') ?: 'https://sergiotech.es', '/');
 $localizedUrl = "{$siteUrl}/?lang={$language}";
 
 $status = filter_input(INPUT_GET, 'status', FILTER_UNSAFE_RAW);
@@ -123,7 +166,17 @@ $structuredData = [
     <script type="application/ld+json" nonce="<?= $escape($nonce) ?>">
         <?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>
     </script>
-    <script src="assets/js/main.js?v=2.1.0" defer></script>
+    <?php if ($umamiEnabled): ?>
+        <script
+            defer
+            src="<?= $escape($umamiScriptUrl) ?>"
+            data-website-id="<?= $escape($umamiWebsiteId) ?>"
+            data-domains="<?= $escape($umamiDomains) ?>"
+            data-do-not-track="true"
+            data-exclude-search="true"
+            data-tag="lang-<?= $escape($language) ?>"></script>
+    <?php endif; ?>
+    <script src="assets/js/main.js?v=2.2.0" defer></script>
 </head>
 <body
     data-theme-dark="<?= $escape($t('theme_enable_dark')) ?>"
@@ -148,8 +201,8 @@ $structuredData = [
 
             <div class="header-actions">
                 <nav class="language-switcher" aria-label="<?= $escape($t('language_selector')) ?>">
-                    <a href="?lang=es" lang="es" hreflang="es" aria-label="<?= $escape($t('language_spanish')) ?>"<?= $language === 'es' ? ' aria-current="page"' : '' ?>>ES</a>
-                    <a href="?lang=en" lang="en" hreflang="en" aria-label="<?= $escape($t('language_english')) ?>"<?= $language === 'en' ? ' aria-current="page"' : '' ?>>EN</a>
+                    <a href="?lang=es" lang="es" hreflang="es" aria-label="<?= $escape($t('language_spanish')) ?>" data-umami-event="language-switch" data-umami-event-language="es"<?= $language === 'es' ? ' aria-current="page"' : '' ?>>ES</a>
+                    <a href="?lang=en" lang="en" hreflang="en" aria-label="<?= $escape($t('language_english')) ?>" data-umami-event="language-switch" data-umami-event-language="en"<?= $language === 'en' ? ' aria-current="page"' : '' ?>>EN</a>
                 </nav>
                 <button class="theme-toggle" type="button" aria-label="<?= $escape($t('theme_change')) ?>" title="<?= $escape($t('theme_title')) ?>" data-theme-toggle>
                     <span class="theme-icon" aria-hidden="true"></span>
@@ -175,8 +228,8 @@ $structuredData = [
                     <h1 id="hero-title"><?= $escape($t('hero_title')) ?> <span><?= $escape($t('hero_title_highlight')) ?></span></h1>
                     <p class="hero-lead"><?= $escape($t('hero_lead')) ?></p>
                     <div class="hero-actions">
-                        <a class="button button-primary" href="#proyectos"><?= $escape($t('hero_projects')) ?> <span aria-hidden="true">↘</span></a>
-                        <a class="button button-secondary" href="#contacto"><?= $escape($t('hero_contact')) ?></a>
+                        <a class="button button-primary" href="#proyectos" data-umami-event="projects-cta"><?= $escape($t('hero_projects')) ?> <span aria-hidden="true">↘</span></a>
+                        <a class="button button-secondary" href="#contacto" data-umami-event="contact-cta"><?= $escape($t('hero_contact')) ?></a>
                     </div>
                     <div class="hero-focus" aria-label="<?= $escape($t('focus_label')) ?>">
                         <span>Backend</span>
@@ -369,7 +422,7 @@ $structuredData = [
                 </div>
 
                 <div class="project-list">
-                    <a class="project-showcase project-mwa" href="https://myworkingarea.com/" target="_blank" rel="noopener noreferrer" aria-label="<?= $escape($t('mwa_link_label')) ?>" data-reveal>
+                    <a class="project-showcase project-mwa" href="https://myworkingarea.com/" target="_blank" rel="noopener noreferrer" aria-label="<?= $escape($t('mwa_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="myworkingarea" data-reveal>
                         <div class="project-copy">
                             <div class="project-heading-row">
                                 <span class="project-index">01</span>
@@ -396,7 +449,7 @@ $structuredData = [
                         </div>
                     </a>
 
-                    <a class="project-showcase project-vyrsea" href="https://vyrsea.com/" target="_blank" rel="noopener noreferrer" aria-label="<?= $escape($t('vyrsea_link_label')) ?>" data-reveal>
+                    <a class="project-showcase project-vyrsea" href="https://vyrsea.com/" target="_blank" rel="noopener noreferrer" aria-label="<?= $escape($t('vyrsea_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="vyrsea" data-reveal>
                         <div class="project-copy">
                             <div class="project-heading-row">
                                 <span class="project-index">02</span>
@@ -435,12 +488,12 @@ $structuredData = [
 
                     <div class="direct-contact">
                         <!--email_off-->
-                        <a href="mailto:smorgarc@sergiotech.es">
+                        <a href="mailto:smorgarc@sergiotech.es" data-umami-event="contact-link" data-umami-event-method="email">
                             <span><?= $escape($t('contact_email')) ?></span>
                             <strong>smorgarc@sergiotech.es</strong>
                         </a>
                         <!--/email_off-->
-                        <a href="tel:+34614839879">
+                        <a href="tel:+34614839879" data-umami-event="contact-link" data-umami-event-method="phone">
                             <span><?= $escape($t('contact_phone')) ?></span>
                             <strong>+34 614 839 879</strong>
                         </a>

@@ -113,6 +113,9 @@ En **Environment Variables → Developer View**, añade:
 PORTFOLIO_SITE_URL=https://sergiotech.es
 PORTFOLIO_TO_EMAIL=smorgarc@sergiotech.es
 PORTFOLIO_FROM_EMAIL=no-reply@sergiotech.es
+UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
+UMAMI_WEBSITE_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+UMAMI_DOMAINS=sergiotech.es
 ```
 
 Configúralas como variables de ejecución o **Runtime Variables**. No necesitan estar disponibles durante la compilación.
@@ -122,8 +125,13 @@ Configúralas como variables de ejecución o **Runtime Variables**. No necesitan
 | `PORTFOLIO_SITE_URL` | URL canónica usada por el SEO y los datos estructurados. |
 | `PORTFOLIO_TO_EMAIL` | Buzón que recibe los mensajes del formulario. |
 | `PORTFOLIO_FROM_EMAIL` | Remitente utilizado por el servidor al enviar el mensaje. |
+| `UMAMI_SCRIPT_URL` | URL HTTPS del tracker de Umami Cloud o de la instancia propia. |
+| `UMAMI_WEBSITE_ID` | Identificador UUID asignado al sitio en Umami. |
+| `UMAMI_DOMAINS` | Dominios autorizados para registrar estadísticas, separados por comas. |
 
 Coolify explica el funcionamiento de estas opciones en [Environment Variables](https://coolify.io/docs/knowledge-base/environment-variables).
+
+Las variables de Umami son opcionales. El tracker solo se carga cuando `UMAMI_SCRIPT_URL` y `UMAMI_WEBSITE_ID` son válidas; una configuración incompleta deja las estadísticas desactivadas sin afectar al portfolio.
 
 ### 5. Desplegar
 
@@ -201,6 +209,26 @@ Una respuesta SMTP correcta significa que el servidor MX ha aceptado el mensaje,
    Portfolio contact form: all email transports rejected a message.
    ```
 
+## Estadísticas con Umami
+
+1. Crea el sitio `sergiotech.es` en Umami.
+2. Copia el `Website ID` mostrado en su código de seguimiento.
+3. Configura en Coolify las tres variables `UMAMI_*` indicadas anteriormente.
+4. Vuelve a desplegar la aplicación.
+5. Abre el portfolio sin un bloqueador de rastreadores y comprueba en Umami que aparece la visita.
+
+La integración admite Umami Cloud y servidores propios. La CSP se amplía dinámicamente solo con el origen HTTPS configurado para el tracker y su endpoint de recopilación.
+
+Además de las páginas vistas, se registran estos eventos sin incluir nombres, correos ni contenido del formulario:
+
+- Cambio de idioma.
+- Acceso a la sección de proyectos o contacto.
+- Apertura de My Working Area o Vyrsea.
+- Pulsación en los enlaces de correo o teléfono.
+- Envío correcto del formulario de contacto.
+
+El tracker se limita a los dominios de `UMAMI_DOMAINS`, respeta la preferencia **Do Not Track** y excluye los parámetros de búsqueda de las URL registradas.
+
 ## Seguridad del formulario
 
 El endpoint incluye:
@@ -245,6 +273,7 @@ La primera prueba comprueba prioridades de idioma, países y que ambos catálogo
 
 - [ ] Dominio y HTTPS funcionando.
 - [ ] Variables `PORTFOLIO_*` configuradas como Runtime Variables.
+- [ ] Variables `UMAMI_*` configuradas si se quieren activar estadísticas.
 - [ ] Resolución MX y conexiones TCP salientes al puerto `25` disponibles.
 - [ ] SPF, PTR y DMARC validados.
 - [ ] Formulario probado con un buzón real.

@@ -147,6 +147,16 @@
         formStatus.classList.toggle('is-error', !success);
     };
 
+    const trackUmamiEvent = (eventName, eventData = {}) => {
+        if (typeof window.umami?.track !== 'function') return;
+
+        try {
+            window.umami.track(eventName, eventData);
+        } catch {
+            // Analytics must never interrupt the user flow.
+        }
+    };
+
     form?.addEventListener('submit', async (event) => {
         if (!window.fetch || !form.reportValidity()) return;
 
@@ -173,6 +183,10 @@
                 if (csrfField && typeof result.csrfToken === 'string') {
                     csrfField.value = result.csrfToken;
                 }
+                const languageField = form.querySelector('input[name="language"]');
+                trackUmamiEvent('contact-form-success', {
+                    language: languageField?.value || document.documentElement.lang || 'unknown',
+                });
                 form.reset();
                 updateCharacterCount();
             }
