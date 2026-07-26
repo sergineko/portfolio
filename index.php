@@ -144,7 +144,7 @@ $structuredData = [
             '@id' => $personId,
             'name' => 'Sergio Moreno García',
             'url' => "{$siteUrl}/",
-            'image' => "{$siteUrl}/assets/images/sergio-moreno-portrait-800.webp",
+            'image' => "{$siteUrl}/assets/images/sergio-moreno-portrait-v3-1120.webp",
             'email' => 'mailto:smorgarc@sergiotech.es',
             'telephone' => '+34614839879',
             'mainEntityOfPage' => ['@id' => $profilePageId],
@@ -295,19 +295,19 @@ $structuredData = [
                         <picture>
                             <source
                                 type="image/avif"
-                                srcset="assets/images/sergio-moreno-portrait-480.avif 480w, assets/images/sergio-moreno-portrait-640.avif 640w, assets/images/sergio-moreno-portrait-800.avif 800w"
+                                srcset="assets/images/sergio-moreno-portrait-v3-480.avif 480w, assets/images/sergio-moreno-portrait-v3-800.avif 800w, assets/images/sergio-moreno-portrait-v3-1120.avif 1120w"
                                 sizes="(max-width: 440px) calc(100vw - 4rem), (max-width: 540px) calc(100vw - 6rem), (max-width: 900px) 432px, 464px">
                             <source
                                 type="image/webp"
-                                srcset="assets/images/sergio-moreno-portrait-480.webp 480w, assets/images/sergio-moreno-portrait-640.webp 640w, assets/images/sergio-moreno-portrait-800.webp 800w"
+                                srcset="assets/images/sergio-moreno-portrait-v3-480.webp 480w, assets/images/sergio-moreno-portrait-v3-800.webp 800w, assets/images/sergio-moreno-portrait-v3-1120.webp 1120w"
                                 sizes="(max-width: 440px) calc(100vw - 4rem), (max-width: 540px) calc(100vw - 6rem), (max-width: 900px) 432px, 464px">
                             <img
-                                src="assets/images/sergio-moreno-portrait-640.webp"
-                                srcset="assets/images/sergio-moreno-portrait-480.webp 480w, assets/images/sergio-moreno-portrait-640.webp 640w, assets/images/sergio-moreno-portrait-800.webp 800w"
+                                src="assets/images/sergio-moreno-portrait-v3-800.webp"
+                                srcset="assets/images/sergio-moreno-portrait-v3-480.webp 480w, assets/images/sergio-moreno-portrait-v3-800.webp 800w, assets/images/sergio-moreno-portrait-v3-1120.webp 1120w"
                                 sizes="(max-width: 440px) calc(100vw - 4rem), (max-width: 540px) calc(100vw - 6rem), (max-width: 900px) 432px, 464px"
                                 alt="<?= $escape($t('portrait_alt')) ?>"
-                                width="800"
-                                height="1000"
+                                width="1120"
+                                height="1400"
                                 loading="eager"
                                 decoding="async"
                                 fetchpriority="high">

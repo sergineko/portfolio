@@ -406,7 +406,7 @@ Nginx no procesa `.htaccess`; consulta la sección de Coolify para trasladar las
 - JavaScript diferido.
 - Tracker de Umami diferido y completamente opcional.
 - Sin fuentes externas ni frameworks.
-- Retrato responsive en AVIF y WebP con variantes de 480, 640 y 800 píxeles.
+- Retrato de alta calidad con máster de 1120 × 1400 píxeles y variantes responsive AVIF/WebP de 480, 800 y 1120 píxeles.
 - `srcset` y `sizes` para descargar la imagen adecuada.
 - `fetchpriority="high"` y carga inmediata para la imagen LCP.
 - Capturas de proyectos con `loading="lazy"`.
