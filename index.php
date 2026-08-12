@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 define('PORTFOLIO_APP', true);
 require_once __DIR__ . '/localization.php';
+require_once __DIR__ . '/apps/savetempo/components/bootstrap.php';
 
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
     || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
@@ -115,6 +116,7 @@ $portfolioWebsiteId = "{$siteUrl}/#website";
 $profilePageId = "{$canonicalUrl}#profile-page";
 $myWorkingAreaId = 'https://myworkingarea.com/#website';
 $vyrseaId = 'https://vyrsea.com/#website';
+$saveTempoId = "{$siteUrl}/apps/savetempo/#software";
 
 $structuredData = [
     '@context' => 'https://schema.org',
@@ -129,9 +131,20 @@ $structuredData = [
             'mainEntity' => ['@id' => $personId],
             'isPartOf' => ['@id' => $portfolioWebsiteId],
             'mentions' => [
+                ['@id' => $saveTempoId],
                 ['@id' => $myWorkingAreaId],
                 ['@id' => $vyrseaId],
             ],
+        ],
+        [
+            '@type' => 'SoftwareApplication',
+            '@id' => $saveTempoId,
+            'url' => "{$siteUrl}/apps/savetempo/",
+            'name' => 'SaveTempo',
+            'description' => $t('savetempo_description'),
+            'applicationCategory' => 'FinanceApplication',
+            'operatingSystem' => 'Android, iOS',
+            'creator' => ['@id' => $personId],
         ],
         [
             '@type' => 'WebSite',
@@ -474,10 +487,44 @@ $structuredData = [
                 </div>
 
                 <div class="project-list">
-                    <a class="project-showcase project-mwa" href="https://myworkingarea.com/" target="_blank" rel="noopener" aria-label="<?= $escape($t('mwa_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="myworkingarea" data-reveal>
+                    <article class="project-showcase project-savetempo" data-reveal>
+                        <a class="project-card-overlay" href="<?= $escape(stPath('/')) ?>" aria-label="<?= $escape($t('view_savetempo')) ?>" data-umami-event="project-open" data-umami-event-project="savetempo"></a>
                         <div class="project-copy">
                             <div class="project-heading-row">
                                 <span class="project-index">01</span>
+                                <span class="project-status project-status-building"><i aria-hidden="true"></i> <?= $escape($t('status_coming_soon')) ?></span>
+                            </div>
+                            <p class="project-type"><?= $escape($t('savetempo_type')) ?></p>
+                            <h3><a href="<?= $escape(stPath('/')) ?>" data-umami-event="project-open" data-umami-event-project="savetempo">SaveTempo</a></h3>
+                            <p class="project-description"><?= $escape($t('savetempo_description')) ?></p>
+                            <ul class="project-tags" aria-label="<?= $escape($t('features_label')) ?>">
+                                <li>iOS</li>
+                                <li>Android</li>
+                                <li><?= $escape($t('tag_local_first')) ?></li>
+                            </ul>
+                            <a class="project-link" href="<?= $escape(stPath('/')) ?>" data-umami-event="project-open" data-umami-event-project="savetempo"><?= $escape($t('view_savetempo')) ?> <i aria-hidden="true">↗</i></a>
+                            <?php $saveTempoStoreLinks = stStoreLinks($language); ?>
+                            <?php if ($saveTempoStoreLinks !== []): ?>
+                                <div class="project-store-links">
+                                    <?php foreach ($saveTempoStoreLinks as $storeLink): ?>
+                                        <a href="<?= $escape($storeLink['url']) ?>" target="_blank" rel="noopener noreferrer"><?= $escape($storeLink['label']) ?></a>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="project-app-preview">
+                            <img class="project-app-icon" src="<?= $escape(stAsset('icon')) ?>" alt="" width="88" height="88" loading="lazy" decoding="async">
+                            <div class="project-phone">
+                                <span aria-hidden="true"></span>
+                                <img src="<?= $escape(stAsset('today', $language)) ?>" alt="<?= $escape($t('savetempo_alt')) ?>" width="540" height="960" loading="lazy" decoding="async">
+                            </div>
+                        </div>
+                    </article>
+
+                    <a class="project-showcase project-mwa" href="https://myworkingarea.com/" target="_blank" rel="noopener" aria-label="<?= $escape($t('mwa_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="myworkingarea" data-reveal>
+                        <div class="project-copy">
+                            <div class="project-heading-row">
+                                <span class="project-index">02</span>
                                 <span class="project-status"><i aria-hidden="true"></i> <?= $escape($t('status_available')) ?></span>
                             </div>
                             <p class="project-type"><?= $escape($t('mwa_type')) ?></p>
@@ -504,7 +551,7 @@ $structuredData = [
                     <a class="project-showcase project-vyrsea" href="https://vyrsea.com/" target="_blank" rel="noopener" aria-label="<?= $escape($t('vyrsea_link_label')) ?>" data-umami-event="project-open" data-umami-event-project="vyrsea" data-reveal>
                         <div class="project-copy">
                             <div class="project-heading-row">
-                                <span class="project-index">02</span>
+                                <span class="project-index">03</span>
                                 <span class="project-status project-status-building"><i aria-hidden="true"></i> <?= $escape($t('status_building')) ?></span>
                             </div>
                             <p class="project-type"><?= $escape($t('vyrsea_type')) ?></p>

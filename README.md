@@ -39,6 +39,7 @@ El sitio presenta el perfil profesional, la experiencia laboral y los proyectos 
 
 ### Proyectos
 
+- [SaveTempo](https://sergiotech.es/apps/savetempo/), micrositio oficial de un planificador local de hábitos de ahorro para Android e iOS.
 - [MyWorkingArea](https://myworkingarea.com/), disponible en producción.
 - [Vyrsea](https://vyrsea.com/), en desarrollo y pruebas.
 - Capturas reales, estados, descripciones y enlaces externos seguros.
@@ -58,6 +59,8 @@ El JSON-LD contiene:
 - Entidades `WebSite` para MyWorkingArea y Vyrsea.
 - Relaciones `mentions` desde el portfolio hacia los proyectos.
 - Relaciones `creator` desde cada proyecto hacia Sergio.
+
+La arquitectura, configuración, procedencia de assets y portabilidad del micrositio de SaveTempo se documentan en [`docs/products/savetempo.md`](docs/products/savetempo.md).
 
 Para completar una relación recíproca y natural, es recomendable añadir en MyWorkingArea y Vyrsea un enlace contextual hacia `https://sergiotech.es/`, por ejemplo en el pie de página o en una sección acerca del creador. No se deben crear páginas de enlaces ni intercambios masivos destinados únicamente a manipular posiciones.
 
