@@ -83,11 +83,11 @@ Screenshots were resized from 1080×1920 to 540×960 and encoded as WebP without
 
 The portfolio can load Umami only when valid `UMAMI_SCRIPT_URL` and `UMAMI_WEBSITE_ID` environment variables are present. In that configuration it records page views and named interaction events, respects Do Not Track, excludes search parameters and sends no contact-form fields. The portfolio language selector stores `portfolio_lang` in a first-party `HttpOnly`, `SameSite=Lax` cookie.
 
-The SaveTempo microsite does **not** include the portfolio Umami script and adds no analytics, pixels, session replay, advertising or forms. It creates no cookies. Language and theme choices can be stored only in the browser's local storage (`savetempo-language` and `savetempo-theme`). This website behavior is disclosed separately from the mobile-app behavior in the public Privacy Policy.
+The SaveTempo microsite does **not** include the portfolio Umami script and adds no analytics, pixels, session replay, advertising or forms. Its PHP pages do not start a session and set no cookies. Because it currently shares the `sergiotech.es` origin, a browser that previously visited the portfolio can still attach the portfolio's path-wide first-party session or language cookie to a microsite request; the SaveTempo code does not read or use it. Language and theme choices can be stored only in the browser's local storage (`savetempo-language` and `savetempo-theme`). This website behavior is disclosed separately from the mobile-app behavior in the public Privacy Policy.
 
 The app statements come from SaveTempo's `PROJECT_STATUS.md`, `docs/PERSISTENCE.md`, `docs/NOTIFICATIONS.md`, `docs/SETTINGS.md`, `docs/release/store_compliance.md` and security audit: current production code has no backend, account, cloud sync, analytics, ads or banking integration; Android app backup/transfer is disabled; final iOS backup treatment remains subject to release validation.
 
-No cookie banner was added because the product site sets no cookies and loads no tracker. If analytics or consent-requiring storage is added later, this conclusion and the public policy must be reassessed before deployment.
+No cookie banner was added because the product site sets no cookies of its own, does not use the parent portfolio cookies and loads no tracker. If analytics or consent-requiring storage is added later, this conclusion and the public policy must be reassessed before deployment.
 
 ## SEO and accessibility
 
