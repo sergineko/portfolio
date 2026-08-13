@@ -46,6 +46,8 @@ assertTrue(!str_contains($landingEnglish, 'Download on the App Store'), 'App Sto
 assertTrue(substr_count($landingEnglish, 'class="product-phone-screenshot"') === 11, 'Every product screenshot must use the ratio-safe media class.');
 assertTrue(str_contains($landingEnglish, 'class="showcase-track" tabindex="0"'), 'The horizontal showcase must be keyboard focusable.');
 assertTrue(str_contains($landingEnglish, 'data-showcase-track'), 'The showcase must expose its keyboard navigation hook.');
+assertTrue(str_contains($landingEnglish, 'savetempo.css?v=1.0.1'), 'The stylesheet URL must invalidate the previous public cache.');
+assertTrue(str_contains($landingEnglish, 'savetempo.js?v=1.0.1'), 'The script URL must invalidate the previous public cache.');
 
 $_SERVER['REQUEST_URI'] = '/apps/savetempo/privacy';
 $_GET = ['lang' => 'es'];

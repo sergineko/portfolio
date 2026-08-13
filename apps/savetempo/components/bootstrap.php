@@ -212,9 +212,9 @@ function stRenderPage(string $page, callable $renderBody): void
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="SaveTempo — save at your own tempo">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="<?= stEscape(stPath('/assets/css/savetempo.css?v=1.0.0')) ?>">
+    <link rel="stylesheet" href="<?= stEscape(stPath('/assets/css/savetempo.css?v=1.0.1')) ?>">
     <script type="application/ld+json" nonce="<?= stEscape($nonce) ?>"><?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
-    <script src="<?= stEscape(stPath('/assets/js/savetempo.js?v=1.0.0')) ?>" defer></script>
+    <script src="<?= stEscape(stPath('/assets/js/savetempo.js?v=1.0.1')) ?>" defer></script>
 </head>
 <body data-theme-label="<?= stEscape((string) stCopy('chrome.theme', $language)) ?>">
     <a class="skip-link" href="#main-content"><?= stEscape((string) stCopy('chrome.skip', $language)) ?></a>
