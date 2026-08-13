@@ -904,19 +904,11 @@ h1 span {
     border-radius: inherit;
 }
 
-.project-savetempo .project-copy h3 a::after {
-    position: absolute;
-    content: "";
-    inset: 0;
-}
-
-.project-savetempo .project-copy > * {
-    position: relative;
-    z-index: 2;
+.project-savetempo .project-copy,
+.project-savetempo .project-app-preview {
     pointer-events: none;
 }
 
-.project-savetempo .project-copy a,
 .project-savetempo .project-store-links,
 .project-savetempo .project-store-links a {
     position: relative;
