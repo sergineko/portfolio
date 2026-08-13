@@ -4,6 +4,7 @@
     const root = document.documentElement;
     const themeToggle = document.querySelector('[data-theme-toggle]');
     const header = document.querySelector('[data-header]');
+    const showcaseTrack = document.querySelector('[data-showcase-track]');
     const languageLinks = document.querySelectorAll('[data-language]');
     const query = new URLSearchParams(window.location.search);
 
@@ -47,6 +48,32 @@
         const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
         window.localStorage.setItem('savetempo-theme', nextTheme);
         applyTheme(nextTheme);
+    });
+
+    showcaseTrack?.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+
+        const items = Array.from(showcaseTrack.querySelectorAll('.showcase-item'));
+        if (items.length === 0) return;
+
+        event.preventDefault();
+        const centeredLeft = (item) => item.offsetLeft - ((showcaseTrack.clientWidth - item.offsetWidth) / 2);
+        const currentIndex = items.reduce((nearest, item, index) => (
+            Math.abs(centeredLeft(item) - showcaseTrack.scrollLeft)
+                < Math.abs(centeredLeft(items[nearest]) - showcaseTrack.scrollLeft)
+                ? index
+                : nearest
+        ), 0);
+        const nextIndex = event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+                ? items.length - 1
+                : Math.max(0, Math.min(items.length - 1, currentIndex + (event.key === 'ArrowRight' ? 1 : -1)));
+
+        showcaseTrack.scrollTo({
+            left: centeredLeft(items[nextIndex]),
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        });
     });
 
     const updateHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 12);

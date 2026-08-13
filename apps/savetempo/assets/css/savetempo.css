@@ -390,6 +390,21 @@ h3 {
     background: color-mix(in srgb, #f1e6d6 38%, transparent);
 }
 
+.product-phone-frame {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+}
+
+.product-phone-screenshot {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center;
+}
+
 .phone {
     position: relative;
     overflow: hidden;
@@ -405,9 +420,7 @@ html[data-theme="dark"] .phone {
     box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
 }
 
-.phone img {
-    width: 100%;
-    height: auto;
+.phone .product-phone-screenshot {
     border-radius: 2.2rem;
 }
 
@@ -977,15 +990,43 @@ html[data-theme="dark"] .phone {
 .showcase-track {
     display: grid;
     margin-top: 5rem;
-    grid-template-columns: repeat(5, minmax(13rem, 1fr));
-    gap: 1.2rem;
+    grid-template-columns: minmax(0, 0.82fr) minmax(15rem, 1.15fr) minmax(0, 0.82fr);
+    grid-template-areas:
+        "plans today calendar"
+        "detail today settings";
+    align-items: center;
+    gap: clamp(2.5rem, 5vw, 4.5rem) clamp(1rem, 2.5vw, 2rem);
 }
 
-.showcase-track figure {
+.showcase-item {
+    display: grid;
+    min-width: 0;
     margin: 0;
+    justify-items: center;
+}
+
+.showcase-item--today {
+    grid-area: today;
+}
+
+.showcase-item--plans {
+    grid-area: plans;
+}
+
+.showcase-item--detail {
+    grid-area: detail;
+}
+
+.showcase-item--calendar {
+    grid-area: calendar;
+}
+
+.showcase-item--settings {
+    grid-area: settings;
 }
 
 .showcase-phone {
+    width: clamp(10.5rem, 13vw, 12.75rem);
     overflow: hidden;
     border: 0.35rem solid #14201c;
     border-radius: 2rem;
@@ -993,12 +1034,12 @@ html[data-theme="dark"] .phone {
     box-shadow: 0 1.8rem 3rem rgba(0, 0, 0, 0.18);
 }
 
-.showcase-phone img {
-    border-radius: 1.55rem;
+.showcase-item--today .showcase-phone {
+    width: clamp(14rem, 18vw, 17.5rem);
 }
 
-.showcase-track figure:nth-child(even) {
-    transform: translateY(2.5rem);
+.showcase-phone .product-phone-screenshot {
+    border-radius: 1.55rem;
 }
 
 .showcase-track figcaption {
@@ -1251,15 +1292,31 @@ html[data-theme="dark"] .phone {
         grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 1.1fr);
     }
 
+}
+
+@media (max-width: 900px) {
     .showcase-track {
-        grid-template-columns: repeat(5, minmax(12rem, 15rem));
+        display: flex;
+        margin-top: 3.5rem;
+        gap: 1rem;
         overflow-x: auto;
-        padding: 0.5rem 0 4rem;
+        padding: 0.5rem max(1.5rem, calc((100vw - 18rem) / 2)) 2rem;
+        overscroll-behavior-inline: contain;
+        scroll-padding-inline: max(1.5rem, calc((100vw - 18rem) / 2));
         scroll-snap-type: x mandatory;
+        scrollbar-color: var(--line-strong) transparent;
+        scrollbar-width: thin;
     }
 
-    .showcase-track figure {
-        scroll-snap-align: start;
+    .showcase-item {
+        flex: 0 0 min(76vw, 18rem);
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+    }
+
+    .showcase-phone,
+    .showcase-item--today .showcase-phone {
+        width: 100%;
     }
 }
 
@@ -1499,10 +1556,6 @@ html[data-theme="dark"] .phone {
 
     .showcase-track {
         padding-inline: 1rem;
-    }
-
-    .showcase-track figure:nth-child(even) {
-        transform: none;
     }
 
     .footer-primary {

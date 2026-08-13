@@ -924,7 +924,7 @@ h1 span {
     pointer-events: auto;
 }
 
-.project-app-preview {
+.project-card--savetempo .project-app-preview {
     display: grid;
     position: relative;
     min-height: 29rem;
@@ -936,29 +936,31 @@ h1 span {
     overflow: hidden;
 }
 
-.project-app-icon {
+.project-card--savetempo .project-app-icon {
     position: absolute;
     z-index: 2;
-    top: 1.5rem;
+    bottom: 1.25rem;
     left: 1.5rem;
-    border-radius: 1.35rem;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 1.1rem;
     box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.32);
 }
 
-.project-phone {
+.project-card--savetempo .project-phone {
     position: absolute;
-    width: min(16rem, 64%);
-    top: 3.5rem;
-    right: 13%;
+    top: 1rem;
+    left: 50%;
+    width: min(15.5rem, 46%);
     padding: 0.4rem;
     border-radius: 2.1rem;
     background: #17221d;
     box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.45);
-    transform: rotate(3deg);
+    transform: translateX(-50%) rotate(1.5deg);
     transition: transform 300ms ease;
 }
 
-.project-phone > span {
+.project-card--savetempo .project-phone > span {
     position: absolute;
     z-index: 1;
     top: 0.8rem;
@@ -970,12 +972,18 @@ h1 span {
     transform: translateX(-50%);
 }
 
-.project-phone img {
+.project-card--savetempo .project-phone-screenshot {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center;
     border-radius: 1.75rem;
 }
 
-.project-savetempo:hover .project-phone {
-    transform: rotate(1deg) translateY(-0.35rem);
+.project-card--savetempo:hover .project-phone {
+    transform: translateX(-50%) rotate(0.5deg) translateY(-0.35rem);
 }
 
 .project-store-links {
@@ -1441,8 +1449,12 @@ h1 span {
         transform: rotate(0) translateX(0);
     }
 
-    .project-app-preview {
+    .project-card--savetempo .project-app-preview {
         min-height: 27rem;
+    }
+
+    .project-card--savetempo .project-phone {
+        width: min(14rem, 45%);
     }
 }
 
@@ -1453,6 +1465,22 @@ h1 span {
 
     .container {
         width: min(calc(100% - 2rem), var(--container));
+    }
+
+    .project-card--savetempo .project-app-preview {
+        min-height: 24.5rem;
+    }
+
+    .project-card--savetempo .project-phone {
+        width: min(12rem, 68%);
+    }
+
+    .project-card--savetempo .project-app-icon {
+        bottom: 1rem;
+        left: 1rem;
+        width: 3.75rem;
+        height: 3.75rem;
+        border-radius: 0.95rem;
     }
 
     .brand-name {

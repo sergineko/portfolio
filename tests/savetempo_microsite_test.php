@@ -43,6 +43,9 @@ assertTrue(!str_contains($landingEnglish, 'href="#"'), 'Landing must not contain
 assertTrue(!str_contains($landingEnglish, 'javascript:void'), 'Landing must not contain JavaScript links.');
 assertTrue(!str_contains($landingEnglish, 'Get it on Google Play'), 'Google Play link must stay hidden while null.');
 assertTrue(!str_contains($landingEnglish, 'Download on the App Store'), 'App Store link must stay hidden while null.');
+assertTrue(substr_count($landingEnglish, 'class="product-phone-screenshot"') === 11, 'Every product screenshot must use the ratio-safe media class.');
+assertTrue(str_contains($landingEnglish, 'class="showcase-track" tabindex="0"'), 'The horizontal showcase must be keyboard focusable.');
+assertTrue(str_contains($landingEnglish, 'data-showcase-track'), 'The showcase must expose its keyboard navigation hook.');
 
 $_SERVER['REQUEST_URI'] = '/apps/savetempo/privacy';
 $_GET = ['lang' => 'es'];
@@ -83,5 +86,7 @@ $portfolio = (string) file_get_contents($root . '/index.php');
 assertTrue(str_contains($portfolio, 'data-umami-event-project="savetempo"'), 'Portfolio project analytics hook must identify SaveTempo.');
 assertTrue(str_contains($portfolio, 'class="project-card-overlay"'), 'The complete project card must open SaveTempo.');
 assertTrue(str_contains($portfolio, "stPath('/')"), 'Portfolio SaveTempo card must use the product base path.');
+assertTrue(str_contains($portfolio, 'project-card--savetempo'), 'SaveTempo portfolio styles must remain isolated.');
+assertTrue(str_contains($portfolio, 'class="project-phone-screenshot"'), 'Portfolio screenshot must use the ratio-safe media class.');
 
 echo 'SaveTempo microsite tests: PASS' . PHP_EOL;

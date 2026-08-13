@@ -487,7 +487,7 @@ $structuredData = [
                 </div>
 
                 <div class="project-list">
-                    <article class="project-showcase project-savetempo" data-reveal>
+                    <article class="project-showcase project-savetempo project-card--savetempo" data-reveal>
                         <a class="project-card-overlay" href="<?= $escape(stPath('/')) ?>" aria-label="<?= $escape($t('view_savetempo')) ?>" data-umami-event="project-open" data-umami-event-project="savetempo"></a>
                         <div class="project-copy">
                             <div class="project-heading-row">
@@ -512,11 +512,11 @@ $structuredData = [
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <div class="project-app-preview">
-                            <img class="project-app-icon" src="<?= $escape(stAsset('icon')) ?>" alt="" width="88" height="88" loading="lazy" decoding="async">
-                            <div class="project-phone">
+                        <div class="project-app-preview project-card--savetempo__media">
+                            <img class="project-app-icon project-card--savetempo__icon" src="<?= $escape(stAsset('icon')) ?>" alt="" width="88" height="88" loading="lazy" decoding="async">
+                            <div class="project-phone project-phone-frame">
                                 <span aria-hidden="true"></span>
-                                <img src="<?= $escape(stAsset('today', $language)) ?>" alt="<?= $escape($t('savetempo_alt')) ?>" width="540" height="960" loading="lazy" decoding="async">
+                                <img class="project-phone-screenshot" src="<?= $escape(stAsset('today', $language)) ?>" alt="<?= $escape($t('savetempo_alt')) ?>" width="540" height="960" loading="lazy" decoding="async">
                             </div>
                         </div>
                     </article>

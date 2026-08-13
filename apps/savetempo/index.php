@@ -29,9 +29,9 @@ stRenderPage('landing', static function (string $language): void {
                 <img src="<?= stEscape(stAsset('icon')) ?>" alt="" width="56" height="56" decoding="async">
                 <span><strong>SaveTempo</strong><?= stEscape($copy('moneyTitle')) ?></span>
             </div>
-            <figure class="phone phone-hero">
+            <figure class="phone phone-hero product-phone-frame">
                 <div class="phone-speaker" aria-hidden="true"></div>
-                <img src="<?= stEscape(stAsset('today')) ?>" alt="<?= stEscape($copy('heroAlt')) ?>" width="540" height="960" fetchpriority="high" decoding="async">
+                <img class="product-phone-screenshot" src="<?= stEscape(stAsset('today')) ?>" alt="<?= stEscape($copy('heroAlt')) ?>" width="540" height="960" fetchpriority="high" decoding="async">
             </figure>
             <div class="tempo-card" aria-hidden="true">
                 <span>YOUR TEMPO</span>
@@ -90,9 +90,9 @@ stRenderPage('landing', static function (string $language): void {
                 </ul>
             </div>
             <div class="feature-visual offset-phone-stage">
-                <figure class="phone phone-feature">
+                <figure class="phone phone-feature product-phone-frame">
                     <div class="phone-speaker" aria-hidden="true"></div>
-                    <img src="<?= stEscape(stAsset('today')) ?>" alt="<?= stEscape($copy('todayAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
+                    <img class="product-phone-screenshot" src="<?= stEscape(stAsset('today')) ?>" alt="<?= stEscape($copy('todayAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
                 </figure>
                 <div class="pulse-note" aria-hidden="true"><span>Today</span><strong>Clear. Concrete. Yours.</strong></div>
             </div>
@@ -101,9 +101,9 @@ stRenderPage('landing', static function (string $language): void {
         <section class="feature-plans" aria-labelledby="plans-title">
             <div class="product-shell feature-plans-grid">
                 <div class="plans-visual">
-                    <figure class="phone phone-feature phone-plans">
+                    <figure class="phone phone-feature phone-plans product-phone-frame">
                         <div class="phone-speaker" aria-hidden="true"></div>
-                        <img src="<?= stEscape(stAsset('plans')) ?>" alt="<?= stEscape($copy('plansAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
+                        <img class="product-phone-screenshot" src="<?= stEscape(stAsset('plans')) ?>" alt="<?= stEscape($copy('plansAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
                     </figure>
                     <div class="plan-label plan-label-week"><span>52</span><p><?= stEscape($copy('weekPlan')) ?><small><?= stEscape($copy('weekMeta')) ?></small></p></div>
                     <div class="plan-label plan-label-day"><span>365</span><p><?= stEscape($copy('dayPlan')) ?><small><?= stEscape($copy('dayMeta')) ?></small></p></div>
@@ -126,13 +126,13 @@ stRenderPage('landing', static function (string $language): void {
                 <p><?= stEscape($copy('progressBody')) ?></p>
             </div>
             <div class="dual-phones">
-                <figure class="phone phone-feature phone-detail">
+                <figure class="phone phone-feature phone-detail product-phone-frame">
                     <div class="phone-speaker" aria-hidden="true"></div>
-                    <img src="<?= stEscape(stAsset('planDetail')) ?>" alt="<?= stEscape($copy('detailAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
+                    <img class="product-phone-screenshot" src="<?= stEscape(stAsset('planDetail')) ?>" alt="<?= stEscape($copy('detailAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
                 </figure>
-                <figure class="phone phone-feature phone-calendar">
+                <figure class="phone phone-feature phone-calendar product-phone-frame">
                     <div class="phone-speaker" aria-hidden="true"></div>
-                    <img src="<?= stEscape(stAsset('calendar')) ?>" alt="<?= stEscape($copy('calendarAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
+                    <img class="product-phone-screenshot" src="<?= stEscape(stAsset('calendar')) ?>" alt="<?= stEscape($copy('calendarAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
                 </figure>
                 <div class="calendar-legend" aria-label="Calendar statuses">
                     <span><i class="saved"></i>Saved</span>
@@ -155,9 +155,9 @@ stRenderPage('landing', static function (string $language): void {
                         <small>now</small>
                     </div>
                 </div>
-                <figure class="phone phone-feature phone-reminders">
+                <figure class="phone phone-feature phone-reminders product-phone-frame">
                     <div class="phone-speaker" aria-hidden="true"></div>
-                    <img src="<?= stEscape(stAsset('reminders')) ?>" alt="<?= stEscape($copy('remindersAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
+                    <img class="product-phone-screenshot" src="<?= stEscape(stAsset('reminders')) ?>" alt="<?= stEscape($copy('remindersAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
                 </figure>
             </div>
         </section>
@@ -186,19 +186,19 @@ stRenderPage('landing', static function (string $language): void {
                 <h2 id="showcase-title"><?= stEscape($copy('showcaseTitle')) ?></h2>
                 <p><?= stEscape($copy('showcaseBody')) ?></p>
             </div>
-            <div class="showcase-track">
+            <div class="showcase-track" tabindex="0" aria-label="<?= stEscape($copy('showcaseKicker')) ?>" data-showcase-track>
                 <?php
                 $showcase = [
-                    ['today', $copy('todayAlt'), "Today's Saving"],
-                    ['plans', $copy('plansAlt'), $copy('plansKicker')],
-                    ['planDetail', $copy('detailAlt'), 'Plan Detail'],
-                    ['calendar', $copy('calendarAlt'), $copy('progressKicker')],
-                    ['settings', $language === 'es' ? 'Ajustes de SaveTempo con preferencias locales.' : 'SaveTempo Settings with local preferences.', 'Settings'],
+                    ['today', $copy('todayAlt'), "Today's Saving", 'today'],
+                    ['plans', $copy('plansAlt'), $copy('plansKicker'), 'plans'],
+                    ['planDetail', $copy('detailAlt'), 'Plan Detail', 'detail'],
+                    ['calendar', $copy('calendarAlt'), $copy('progressKicker'), 'calendar'],
+                    ['settings', $language === 'es' ? 'Ajustes de SaveTempo con preferencias locales.' : 'SaveTempo Settings with local preferences.', 'Settings', 'settings'],
                 ];
                 foreach ($showcase as $item):
                 ?>
-                    <figure>
-                        <div class="showcase-phone"><img src="<?= stEscape(stAsset($item[0])) ?>" alt="<?= stEscape($item[1]) ?>" width="540" height="960" loading="lazy" decoding="async"></div>
+                    <figure class="showcase-item showcase-item--<?= stEscape($item[3]) ?>">
+                        <div class="showcase-phone product-phone-frame"><img class="product-phone-screenshot" src="<?= stEscape(stAsset($item[0])) ?>" alt="<?= stEscape($item[1]) ?>" width="540" height="960" loading="lazy" decoding="async"></div>
                         <figcaption><?= stEscape($item[2]) ?></figcaption>
                     </figure>
                 <?php endforeach; ?>
