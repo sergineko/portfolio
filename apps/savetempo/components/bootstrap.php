@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../../../components/umami.php';
+
 /** @var array<string, mixed> $productConfig */
 $productConfig = require __DIR__ . '/../config/product.php';
 /** @var array<string, array<string, mixed>> $productTranslations */
@@ -115,7 +117,32 @@ function stCurrentProductRoute(): string
     return $known[$requestPath] ?? stPath('/');
 }
 
-function stSendHeaders(string $language, string $nonce): void
+/**
+ * @param array{enabled: bool, scriptUrl: string, websiteId: string, origin: string, domains: string} $umamiConfig
+ */
+function stContentSecurityPolicy(string $nonce, array $umamiConfig, bool $isHttps): string
+{
+    $scriptSources = "'self' 'nonce-{$nonce}'";
+    $connectSources = "'self'";
+    if ($umamiConfig['enabled']) {
+        $scriptSources .= " {$umamiConfig['origin']}";
+        $connectSources .= " {$umamiConfig['origin']}";
+    }
+
+    $policy = "default-src 'self'; base-uri 'self'; connect-src {$connectSources}; font-src 'self'; "
+        . "form-action 'none'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; "
+        . "script-src {$scriptSources}; style-src 'self'";
+    if ($isHttps) {
+        $policy .= '; upgrade-insecure-requests';
+    }
+
+    return $policy;
+}
+
+/**
+ * @param array{enabled: bool, scriptUrl: string, websiteId: string, origin: string, domains: string} $umamiConfig
+ */
+function stSendHeaders(string $language, string $nonce, array $umamiConfig): void
 {
     if (headers_sent()) {
         return;
@@ -123,12 +150,7 @@ function stSendHeaders(string $language, string $nonce): void
 
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
-    $csp = "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; "
-        . "form-action 'none'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; "
-        . "script-src 'self' 'nonce-{$nonce}'; style-src 'self'";
-    if ($isHttps) {
-        $csp .= '; upgrade-insecure-requests';
-    }
+    $csp = stContentSecurityPolicy($nonce, $umamiConfig, $isHttps);
 
     header("Content-Security-Policy: {$csp}");
     header('Referrer-Policy: strict-origin-when-cross-origin');
@@ -157,7 +179,8 @@ function stRenderPage(string $page, callable $renderBody): void
 {
     $language = stLanguage();
     $nonce = base64_encode(random_bytes(18));
-    stSendHeaders($language, $nonce);
+    $umamiConfig = umamiConfiguration((string) stConfig('canonicalBaseUrl'));
+    stSendHeaders($language, $nonce, $umamiConfig);
 
     $title = (string) stCopy("meta.{$page}Title", $language);
     $description = (string) stCopy("meta.{$page}Description", $language);
@@ -214,6 +237,7 @@ function stRenderPage(string $page, callable $renderBody): void
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="<?= stEscape(stPath('/assets/css/savetempo.css?v=1.0.1')) ?>">
     <script type="application/ld+json" nonce="<?= stEscape($nonce) ?>"><?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
+    <?php umamiRenderTrackingScript($umamiConfig, "savetempo-{$page}-lang-{$language}"); ?>
     <script src="<?= stEscape(stPath('/assets/js/savetempo.js?v=1.0.1')) ?>" defer></script>
 </head>
 <body data-theme-label="<?= stEscape((string) stCopy('chrome.theme', $language)) ?>">

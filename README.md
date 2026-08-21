@@ -269,7 +269,7 @@ La política CSP se amplía dinámicamente solo con el origen exacto de `UMAMI_S
 
 ### Datos y eventos registrados
 
-Umami registra automáticamente las páginas vistas. El atributo `data-tag` identifica el idioma servido como `lang-es` o `lang-en`.
+Umami registra automáticamente las páginas vistas en el portfolio y en todas las rutas públicas de SaveTempo (`/apps/savetempo/`, `/privacy`, `/support` y `/terms`). El atributo `data-tag` identifica el idioma del portfolio y, en SaveTempo, también la página servida.
 
 También se registran:
 
@@ -485,6 +485,7 @@ Nixpacks detecta PHP mediante `index.php`, configura el servidor web y sirve la 
 ```bash
 php tests/localization_test.php
 php tests/mailer_test.php
+php tests/savetempo_microsite_test.php
 php -l index.php
 php -l contact.php
 php -l localization.php

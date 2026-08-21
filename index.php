@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 define('PORTFOLIO_APP', true);
 require_once __DIR__ . '/localization.php';
+require_once __DIR__ . '/components/umami.php';
 require_once __DIR__ . '/apps/savetempo/components/bootstrap.php';
 require_once __DIR__ . '/components/savetempo-project-card.php';
 
@@ -28,41 +29,7 @@ $t = static fn(string $key): string => portfolioText($language, $key);
 $escape = static fn(string $value): string => htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 $siteUrl = rtrim(getenv('PORTFOLIO_SITE_URL') ?: 'https://sergiotech.es', '/');
 
-$umamiScriptUrl = trim((string) (getenv('UMAMI_SCRIPT_URL') ?: ''));
-$umamiWebsiteId = trim((string) (getenv('UMAMI_WEBSITE_ID') ?: ''));
-$umamiUrlParts = $umamiScriptUrl !== '' ? parse_url($umamiScriptUrl) : false;
-$umamiOrigin = '';
-$umamiEnabled =
-    is_array($umamiUrlParts) &&
-    strtolower((string) ($umamiUrlParts['scheme'] ?? '')) === 'https' &&
-    isset($umamiUrlParts['host']) &&
-    !isset($umamiUrlParts['user']) &&
-    !isset($umamiUrlParts['pass']) &&
-    filter_var($umamiScriptUrl, FILTER_VALIDATE_URL) !== false &&
-    preg_match('/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i', $umamiWebsiteId) === 1;
-
-if ($umamiEnabled) {
-    $umamiOrigin = 'https://' . strtolower((string) $umamiUrlParts['host']);
-    if (isset($umamiUrlParts['port'])) {
-        $umamiOrigin .= ':' . (int) $umamiUrlParts['port'];
-    }
-}
-
-$siteHost = strtolower((string) (parse_url($siteUrl, PHP_URL_HOST) ?: 'sergiotech.es'));
-$umamiDomainCandidates = preg_split(
-    '/\s*,\s*/',
-    trim((string) (getenv('UMAMI_DOMAINS') ?: $siteHost)),
-    -1,
-    PREG_SPLIT_NO_EMPTY
-) ?: [];
-$umamiDomains = [];
-foreach ($umamiDomainCandidates as $domainCandidate) {
-    $domainCandidate = strtolower(trim($domainCandidate));
-    if (filter_var($domainCandidate, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false) {
-        $umamiDomains[] = $domainCandidate;
-    }
-}
-$umamiDomains = implode(',', array_values(array_unique($umamiDomains ?: [$siteHost])));
+$umamiConfig = umamiConfiguration($siteUrl);
 
 $nonce = base64_encode(random_bytes(18));
 $stylesheetPath = __DIR__ . '/assets/css/styles.css';
@@ -71,9 +38,9 @@ $inlineStyles = is_string($inlineStyles) ? $inlineStyles : '';
 
 $scriptSources = "'self' 'nonce-{$nonce}'";
 $connectSources = "'self'";
-if ($umamiEnabled) {
-    $scriptSources .= " {$umamiOrigin}";
-    $connectSources .= " {$umamiOrigin}";
+if ($umamiConfig['enabled']) {
+    $scriptSources .= " {$umamiConfig['origin']}";
+    $connectSources .= " {$umamiConfig['origin']}";
 }
 
 $contentSecurityPolicy =
@@ -232,16 +199,7 @@ $structuredData = [
     <script type="application/ld+json" nonce="<?= $escape($nonce) ?>">
         <?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>
     </script>
-    <?php if ($umamiEnabled): ?>
-        <script
-            defer
-            src="<?= $escape($umamiScriptUrl) ?>"
-            data-website-id="<?= $escape($umamiWebsiteId) ?>"
-            data-domains="<?= $escape($umamiDomains) ?>"
-            data-do-not-track="true"
-            data-exclude-search="true"
-            data-tag="lang-<?= $escape($language) ?>"></script>
-    <?php endif; ?>
+    <?php umamiRenderTrackingScript($umamiConfig, "lang-{$language}"); ?>
     <script src="assets/js/main.js?v=2.2.0" defer></script>
 </head>
 <body

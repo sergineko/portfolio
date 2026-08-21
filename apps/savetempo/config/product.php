@@ -43,7 +43,8 @@ return [
         'settings' => ['en' => '/assets/images/settings-en.webp', 'es' => '/assets/images/settings-es.webp'],
     ],
     'websitePrivacy' => [
-        'analyticsEnabled' => false,
+        'analyticsEnabled' => true,
+        'analyticsProvider' => 'Umami',
         'cookiesUsed' => false,
         'localPreferences' => ['language', 'theme'],
     ],
