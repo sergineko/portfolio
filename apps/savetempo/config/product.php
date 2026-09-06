@@ -22,7 +22,7 @@ return [
     'privacyPath' => '/privacy',
     'supportPath' => '/support',
     'termsPath' => '/terms',
-    'googlePlayUrl' => null,
+    'googlePlayUrl' => 'https://play.google.com/store/apps/details?id=es.sergiotech.savetempo',
     'appStoreUrl' => null,
     'releaseStatus' => 'comingSoon',
     'supportedPlatforms' => ['Android', 'iOS'],

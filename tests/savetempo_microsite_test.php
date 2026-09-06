@@ -59,9 +59,13 @@ function parseSaveTempoCard(string $markup): array
 assertTrue(stConfig('slug') === 'savetempo', 'Product slug must be centralized.');
 assertTrue(stConfig('basePath') === '/apps/savetempo', 'Default base path must match the public route.');
 assertTrue(stConfig('canonicalBaseUrl') === 'https://sergiotech.es/apps/savetempo', 'Canonical base URL must be centralized.');
-assertTrue(stConfig('googlePlayUrl') === null, 'Google Play must remain unconfigured.');
+$officialGooglePlayUrl = 'https://play.google.com/store/apps/details?id=es.sergiotech.savetempo';
+assertTrue(stConfig('googlePlayUrl') === $officialGooglePlayUrl, 'Google Play must use the official SaveTempo listing.');
 assertTrue(stConfig('appStoreUrl') === null, 'App Store must remain unconfigured.');
-assertTrue(stStoreLinks('en') === [], 'No store link may render while URLs are null.');
+$officialStoreLinks = stStoreLinks('en');
+assertTrue(count($officialStoreLinks) === 1, 'Only the configured Google Play link may render.');
+assertTrue($officialStoreLinks[0]['store'] === 'google', 'The official store link must be Google Play.');
+assertTrue($officialStoreLinks[0]['url'] === $officialGooglePlayUrl, 'The official Google Play link must keep its exact destination.');
 assertTrue(stPath('/privacy') === '/apps/savetempo/privacy', 'Portable paths must use basePath.');
 assertTrue(stCanonical('privacy') === 'https://sergiotech.es/apps/savetempo/privacy', 'Canonical legal route must derive from config.');
 
@@ -109,7 +113,8 @@ assertTrue(str_contains($landingEnglish, 'Save at your own tempo.'), 'English la
 assertTrue(str_contains($landingEnglish, 'Your money stays yours.'), 'Money boundary must be explicit.');
 assertTrue(!str_contains($landingEnglish, 'href="#"'), 'Landing must not contain placeholder links.');
 assertTrue(!str_contains($landingEnglish, 'javascript:void'), 'Landing must not contain JavaScript links.');
-assertTrue(!str_contains($landingEnglish, 'Get it on Google Play'), 'Google Play link must stay hidden while null.');
+assertTrue(str_contains($landingEnglish, 'Get it on Google Play'), 'The configured Google Play link must render.');
+assertTrue(str_contains($landingEnglish, 'href="' . $officialGooglePlayUrl . '"'), 'The landing must use the official Google Play destination.');
 assertTrue(!str_contains($landingEnglish, 'Download on the App Store'), 'App Store link must stay hidden while null.');
 assertTrue(substr_count($landingEnglish, 'class="product-phone-screenshot"') === 11, 'Every product screenshot must use the ratio-safe media class.');
 assertTrue(str_contains($landingEnglish, 'class="showcase-track" tabindex="0"'), 'The horizontal showcase must be keyboard focusable.');
