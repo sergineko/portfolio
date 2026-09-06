@@ -4,8 +4,8 @@ declare(strict_types=1);
 return [
     'en' => [
         'meta' => [
-            'landingTitle' => 'SaveTempo — Build your saving habit | Sergiotech',
-            'landingDescription' => 'Turn a saving goal into a clear routine of contributions, reminders and progress—without moving or holding your money.',
+            'landingTitle' => 'SaveTempo: Savings Habit App for Android | Sergiotech',
+            'landingDescription' => 'Plan and track 52-week, 365-day and custom savings challenges with reminders and local data. Download SaveTempo for Android on Google Play.',
             'privacyTitle' => 'SaveTempo Privacy Policy | Sergiotech',
             'privacyDescription' => 'How SaveTempo stores plans locally and uses Google Play Billing for the optional Premium Lifetime purchase.',
             'supportTitle' => 'SaveTempo Support | Sergiotech',
@@ -82,7 +82,7 @@ return [
             'faqKicker' => 'FAQ',
             'faqTitle' => 'Straight answers before you begin.',
             'faq' => [
-                ['What is SaveTempo?', 'SaveTempo is a savings habit planner and tracker for Android and iOS. It creates schedules, shows what is due and records the contributions you mark as saved.'],
+                ['What is SaveTempo?', 'SaveTempo is a savings habit planner and tracker available for Android on Google Play. It creates schedules, shows what is due and records the contributions you mark as saved. An iOS release is not currently available.'],
                 ['Does SaveTempo hold my money?', 'No. SaveTempo never holds, receives, transfers or verifies money.'],
                 ['Does it connect to my bank?', 'No. The current product has no banking connection or Open Banking integration.'],
                 ['Where is my information stored?', 'SaveTempo currently stores plans, progress and preferences locally on your device.'],
@@ -92,8 +92,8 @@ return [
                 ['Is an account required?', 'No account is currently required.'],
                 ['Can I delete my data?', 'Yes. Open Settings and choose Clear all data to remove SaveTempo data accessible to the app.'],
             ],
-            'finalTitle' => 'Your next saving rhythm is taking shape.',
-            'finalBody' => 'SaveTempo is coming soon to Android and iOS.',
+            'finalTitle' => 'Start your next saving rhythm today.',
+            'finalBody' => 'SaveTempo is available for Android on Google Play.',
             'finalCta' => 'Explore the features',
         ],
         'legal' => [
@@ -156,8 +156,8 @@ return [
     ],
     'es' => [
         'meta' => [
-            'landingTitle' => 'SaveTempo — Crea tu hábito de ahorro | Sergiotech',
-            'landingDescription' => 'Convierte una meta de ahorro en una rutina clara de aportaciones, recordatorios y progreso, sin mover ni custodiar tu dinero.',
+            'landingTitle' => 'SaveTempo: app de hábitos de ahorro para Android | Sergiotech',
+            'landingDescription' => 'Planifica y registra retos de ahorro de 52 semanas, 365 días y personalizados, con recordatorios y datos locales. Descarga SaveTempo en Google Play.',
             'privacyTitle' => 'Política de privacidad de SaveTempo | Sergiotech',
             'privacyDescription' => 'Cómo SaveTempo guarda los planes localmente y usa Google Play Billing para la compra opcional Premium Lifetime.',
             'supportTitle' => 'Soporte de SaveTempo | Sergiotech',
@@ -234,7 +234,7 @@ return [
             'faqKicker' => 'Preguntas frecuentes',
             'faqTitle' => 'Respuestas claras antes de empezar.',
             'faq' => [
-                ['¿Qué es SaveTempo?', 'SaveTempo es un planificador y registro de hábitos de ahorro para Android e iOS. Crea programaciones, muestra qué toca y registra las aportaciones que marcas como ahorradas.'],
+                ['¿Qué es SaveTempo?', 'SaveTempo es un planificador y registro de hábitos de ahorro disponible para Android en Google Play. Crea programaciones, muestra qué toca y registra las aportaciones que marcas como ahorradas. Actualmente no está publicado en iOS.'],
                 ['¿SaveTempo custodia mi dinero?', 'No. SaveTempo nunca custodia, recibe, transfiere ni verifica dinero.'],
                 ['¿Se conecta con mi banco?', 'No. El producto actual no tiene conexión bancaria ni integración con Open Banking.'],
                 ['¿Dónde se guarda mi información?', 'SaveTempo guarda actualmente los planes, el progreso y las preferencias de forma local en tu dispositivo.'],
@@ -244,8 +244,8 @@ return [
                 ['¿Hace falta una cuenta?', 'Actualmente no se necesita ninguna cuenta.'],
                 ['¿Puedo borrar mis datos?', 'Sí. Abre Ajustes y elige Borrar todos los datos para eliminar los datos locales de SaveTempo accesibles para la app.'],
             ],
-            'finalTitle' => 'Tu próximo ritmo de ahorro está tomando forma.',
-            'finalBody' => 'SaveTempo llegará próximamente a Android e iOS.',
+            'finalTitle' => 'Empieza hoy tu próximo ritmo de ahorro.',
+            'finalBody' => 'SaveTempo está disponible para Android en Google Play.',
             'finalCta' => 'Explorar las funciones',
         ],
         'legal' => [

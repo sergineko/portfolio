@@ -351,6 +351,19 @@ h3 {
     color: var(--bg);
 }
 
+.store-link-google {
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+.google-play-badge {
+    display: block;
+    width: clamp(10.75rem, 19vw, 12rem);
+    height: auto;
+}
+
 .product-button-secondary {
     background: var(--surface-glass);
 }
@@ -1430,6 +1443,11 @@ html[data-theme="dark"] .phone {
     .hero-actions .store-links,
     .hero-actions .store-link {
         width: 100%;
+    }
+
+    .hero-actions .store-link-google {
+        width: fit-content;
+        align-self: flex-start;
     }
 
     .hero-visual {

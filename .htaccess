@@ -2,6 +2,12 @@ DirectoryIndex index.php
 Options -Indexes
 ServerSignature Off
 
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^apps/savetempo$ https://sergiotech.es/apps/savetempo/ [R=301,L,NE]
+    RewriteRule ^apps/savetempo/(privacy|support|terms)$ https://sergiotech.es/apps/savetempo/$1/ [R=301,L,NE]
+</IfModule>
+
 <IfModule mod_headers.c>
     Header always set X-Frame-Options "DENY"
     Header always set X-Content-Type-Options "nosniff"

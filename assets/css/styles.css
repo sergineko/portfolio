@@ -994,6 +994,25 @@ h1 span {
     font-weight: 700;
 }
 
+.project-store-links .project-store-link--google {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    color: inherit;
+}
+
+.project-store-link--google .google-play-badge {
+    display: block;
+    width: clamp(10.5rem, 15vw, 11.75rem);
+    height: auto;
+    transition: filter 180ms ease, transform 180ms ease;
+}
+
+.project-store-link--google:hover .google-play-badge {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+}
+
 .project-vyrsea {
     --project-accent: var(--cyan);
     grid-template-columns: minmax(0, 1.3fr) minmax(16rem, 0.7fr);

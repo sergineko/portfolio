@@ -21,6 +21,7 @@ function renderSaveTempoCardForStores(?string $googlePlayUrl, ?string $appStoreU
     $copy = [
         'view_savetempo' => 'View SaveTempo',
         'status_coming_soon' => 'Coming soon',
+        'status_available' => 'Live',
         'savetempo_type' => 'Savings habit planner',
         'savetempo_description' => 'SaveTempo description',
         'features_label' => 'Features',
@@ -59,6 +60,9 @@ function parseSaveTempoCard(string $markup): array
 assertTrue(stConfig('slug') === 'savetempo', 'Product slug must be centralized.');
 assertTrue(stConfig('basePath') === '/apps/savetempo', 'Default base path must match the public route.');
 assertTrue(stConfig('canonicalBaseUrl') === 'https://sergiotech.es/apps/savetempo', 'Canonical base URL must be centralized.');
+assertTrue(stConfig('privacyPath') === '/privacy/', 'Privacy route must use its redirect-free trailing-slash URL.');
+assertTrue(stConfig('supportPath') === '/support/', 'Support route must use its redirect-free trailing-slash URL.');
+assertTrue(stConfig('termsPath') === '/terms/', 'Terms route must use its redirect-free trailing-slash URL.');
 $officialGooglePlayUrl = 'https://play.google.com/store/apps/details?id=es.sergiotech.savetempo';
 assertTrue(stConfig('googlePlayUrl') === $officialGooglePlayUrl, 'Google Play must use the official SaveTempo listing.');
 assertTrue(stConfig('appStoreUrl') === null, 'App Store must remain unconfigured.');
@@ -66,8 +70,12 @@ $officialStoreLinks = stStoreLinks('en');
 assertTrue(count($officialStoreLinks) === 1, 'Only the configured Google Play link may render.');
 assertTrue($officialStoreLinks[0]['store'] === 'google', 'The official store link must be Google Play.');
 assertTrue($officialStoreLinks[0]['url'] === $officialGooglePlayUrl, 'The official Google Play link must keep its exact destination.');
-assertTrue(stPath('/privacy') === '/apps/savetempo/privacy', 'Portable paths must use basePath.');
-assertTrue(stCanonical('privacy') === 'https://sergiotech.es/apps/savetempo/privacy', 'Canonical legal route must derive from config.');
+assertTrue(stConfig('releaseStatus') === 'available', 'The released Android app must not remain marked as coming soon.');
+assertTrue(stConfig('supportedPlatforms') === ['Android'], 'Structured data must only advertise the published Android platform.');
+assertTrue(stPath('/privacy/') === '/apps/savetempo/privacy/', 'Portable paths must use the final trailing-slash route.');
+assertTrue(stCanonical('privacy/') === 'https://sergiotech.es/apps/savetempo/privacy/', 'Canonical legal route must match the final HTTPS URL.');
+assertTrue(is_file($root . '/apps/savetempo/assets/images/google-play-badge-en.png'), 'English Google Play badge asset must exist.');
+assertTrue(is_file($root . '/apps/savetempo/assets/images/google-play-badge-es.png'), 'Spanish Google Play badge asset must exist.');
 
 $umamiEnvironment = [
     'UMAMI_SCRIPT_URL' => getenv('UMAMI_SCRIPT_URL'),
@@ -103,7 +111,7 @@ foreach ($routeFiles as $file) {
     assertTrue(is_file($file), "Missing public route file: {$file}");
 }
 
-$_SERVER['REQUEST_URI'] = '/apps/savetempo/';
+$_SERVER['REQUEST_URI'] = '/apps/savetempo/?lang=en';
 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US,en;q=0.9';
 $_GET = ['lang' => 'en'];
 ob_start();
@@ -115,17 +123,24 @@ assertTrue(!str_contains($landingEnglish, 'href="#"'), 'Landing must not contain
 assertTrue(!str_contains($landingEnglish, 'javascript:void'), 'Landing must not contain JavaScript links.');
 assertTrue(str_contains($landingEnglish, 'Get it on Google Play'), 'The configured Google Play link must render.');
 assertTrue(str_contains($landingEnglish, 'href="' . $officialGooglePlayUrl . '"'), 'The landing must use the official Google Play destination.');
+assertTrue(substr_count($landingEnglish, 'class="google-play-badge"') === 3, 'The official Google Play badge must render in every microsite store placement.');
+assertTrue(str_contains($landingEnglish, 'src="/apps/savetempo/assets/images/google-play-badge-en.png"'), 'The English microsite must use the official English Google Play badge.');
 assertTrue(!str_contains($landingEnglish, 'Download on the App Store'), 'App Store link must stay hidden while null.');
+assertTrue(str_contains($landingEnglish, '<link rel="canonical" href="https://sergiotech.es/apps/savetempo/?lang=en">'), 'Explicit English page must be self-canonical.');
+assertTrue(str_contains($landingEnglish, 'hreflang="es" href="https://sergiotech.es/apps/savetempo/?lang=es"'), 'Landing must expose the Spanish alternate URL.');
+assertTrue(str_contains($landingEnglish, 'max-snippet:-1'), 'Landing must allow full search snippets.');
+assertTrue(str_contains($landingEnglish, '"downloadUrl":"' . $officialGooglePlayUrl . '"'), 'Software structured data must reference Google Play.');
+assertTrue(str_contains($landingEnglish, '"operatingSystem":"Android"'), 'Software structured data must reflect the published platform.');
 assertTrue(substr_count($landingEnglish, 'class="product-phone-screenshot"') === 11, 'Every product screenshot must use the ratio-safe media class.');
 assertTrue(str_contains($landingEnglish, 'class="showcase-track" tabindex="0"'), 'The horizontal showcase must be keyboard focusable.');
 assertTrue(str_contains($landingEnglish, 'data-showcase-track'), 'The showcase must expose its keyboard navigation hook.');
-assertTrue(str_contains($landingEnglish, 'savetempo.css?v=1.0.1'), 'The stylesheet URL must invalidate the previous public cache.');
+assertTrue(str_contains($landingEnglish, 'savetempo.css?v=1.0.2'), 'The stylesheet URL must invalidate the previous public cache.');
 assertTrue(str_contains($landingEnglish, 'savetempo.js?v=1.0.1'), 'The script URL must invalidate the previous public cache.');
 assertTrue(str_contains($landingEnglish, 'src="https://cloud.umami.is/script.js"'), 'Landing must load the shared Umami tracker.');
 assertTrue(str_contains($landingEnglish, 'data-website-id="11111111-2222-3333-4444-555555555555"'), 'Landing must use the configured Umami website ID.');
 assertTrue(str_contains($landingEnglish, 'data-tag="savetempo-landing-lang-en"'), 'Landing analytics tag must identify route and language.');
 
-$_SERVER['REQUEST_URI'] = '/apps/savetempo/privacy';
+$_SERVER['REQUEST_URI'] = '/apps/savetempo/privacy/?lang=es';
 $_GET = ['lang' => 'es'];
 ob_start();
 include $root . '/apps/savetempo/privacy/index.php';
@@ -135,8 +150,10 @@ assertTrue(str_contains($privacySpanish, 'smorgarc@sergiotech.es'), 'Privacy con
 assertTrue(str_contains($privacySpanish, '<main id="main-content">'), 'Legal content must be server rendered.');
 assertTrue(str_contains($privacySpanish, 'data-tag="savetempo-privacy-lang-es"'), 'Privacy analytics tag must identify route and language.');
 assertTrue(str_contains($privacySpanish, 'Cuando Umami está configurado'), 'Privacy copy must disclose website analytics.');
+assertTrue(str_contains($privacySpanish, '<link rel="canonical" href="https://sergiotech.es/apps/savetempo/privacy/?lang=es">'), 'Spanish privacy page must be self-canonical.');
+assertTrue(str_contains($privacySpanish, 'hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/?lang=en"'), 'Privacy page must expose its reciprocal English alternate.');
 
-$_SERVER['REQUEST_URI'] = '/apps/savetempo/support';
+$_SERVER['REQUEST_URI'] = '/apps/savetempo/support/?lang=en';
 $_GET = ['lang' => 'en'];
 ob_start();
 include $root . '/apps/savetempo/support/index.php';
@@ -145,7 +162,7 @@ assertTrue(str_contains($supportEnglish, 'mailto:smorgarc@sergiotech.es'), 'Supp
 assertTrue(str_contains($supportEnglish, 'Can lost data be restored?'), 'Lost-data support guidance must exist.');
 assertTrue(str_contains($supportEnglish, 'data-tag="savetempo-support-lang-en"'), 'Support analytics tag must identify route and language.');
 
-$_SERVER['REQUEST_URI'] = '/apps/savetempo/terms';
+$_SERVER['REQUEST_URI'] = '/apps/savetempo/terms/?lang=es';
 $_GET = ['lang' => 'es'];
 ob_start();
 include $root . '/apps/savetempo/terms/index.php';
@@ -208,12 +225,37 @@ foreach ($storeStates as $stateName => [$googleUrl, $appleUrl, $expectedStores])
         $storeElement = $matchingStore->item(0);
         assertTrue($storeElement?->attributes?->getNamedItem('href')?->nodeValue === $expectedUrl, "{$stateName}: {$store} link must keep its exclusive destination.");
         assertTrue($storeElement?->parentNode?->nodeName !== 'a', "{$stateName}: store links must never be nested inside the main link.");
+        if ($store === 'google') {
+            $badge = $xpath->query(".//img[contains(concat(' ', normalize-space(@class), ' '), ' google-play-badge ')]", $storeElement);
+            assertTrue($badge !== false && $badge->length === 1, "{$stateName}: Google Play must use the official badge image.");
+            assertTrue($badge->item(0)?->attributes?->getNamedItem('src')?->nodeValue === '/apps/savetempo/assets/images/google-play-badge-en.png', "{$stateName}: Google Play badge must match the card language.");
+        }
     }
 }
+
+$sitemap = new DOMDocument();
+assertTrue($sitemap->load($root . '/sitemap.xml'), 'Sitemap must be valid XML.');
+$sitemapXpath = new DOMXPath($sitemap);
+$sitemapXpath->registerNamespace('sm', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+$sitemapLocations = [];
+foreach ($sitemapXpath->query('//sm:url/sm:loc') ?: [] as $location) {
+    $sitemapLocations[] = $location->textContent;
+}
+foreach (['', '?lang=en', '?lang=es'] as $languageSuffix) {
+    foreach (['privacy/', 'support/', 'terms/'] as $route) {
+        $expectedLocation = 'https://sergiotech.es/apps/savetempo/' . $route . $languageSuffix;
+        assertTrue(in_array($expectedLocation, $sitemapLocations, true), "Sitemap must contain {$expectedLocation}.");
+    }
+}
+assertTrue(!in_array('https://sergiotech.es/apps/savetempo/privacy', $sitemapLocations, true), 'Sitemap must not publish redirecting legal URLs.');
+
+$htaccess = (string) file_get_contents($root . '/.htaccess');
+assertTrue(str_contains($htaccess, 'RewriteRule ^apps/savetempo/(privacy|support|terms)$'), 'Legacy no-slash legal URLs must redirect directly to HTTPS canonical URLs.');
 
 $portfolioSource = (string) file_get_contents($root . '/index.php');
 assertTrue(str_contains($portfolioSource, 'renderSaveTempoProjectCard($language, $t)'), 'Portfolio must render the tested SaveTempo card component.');
 assertTrue(str_contains($portfolioSource, 'umamiConfiguration($siteUrl)'), 'Portfolio must use the shared Umami configuration.');
+assertTrue(str_contains($portfolioSource, 'styles.css?v=2.3.1'), 'Portfolio stylesheet must invalidate the previous public cache.');
 
 foreach ($umamiEnvironment as $name => $value) {
     putenv($value === false ? $name : "{$name}={$value}");

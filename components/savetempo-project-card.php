@@ -11,27 +11,35 @@ function renderSaveTempoProjectCard(string $language, callable $text): void
 {
     $escape = static fn(string $value): string => htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
     $storeLinks = stStoreLinks($language);
+    $isAvailable = stConfig('releaseStatus') === 'available' && $storeLinks !== [];
     ?>
     <article class="project-showcase project-savetempo project-card--savetempo" data-reveal>
         <a class="project-card-overlay" href="<?= $escape(stPath('/')) ?>" aria-label="<?= $escape($text('view_savetempo')) ?>" data-umami-event="project-open" data-umami-event-project="savetempo"></a>
         <div class="project-copy">
             <div class="project-heading-row">
                 <span class="project-index">01</span>
-                <span class="project-status project-status-building"><i aria-hidden="true"></i> <?= $escape($text('status_coming_soon')) ?></span>
+                <span class="project-status<?= $isAvailable ? '' : ' project-status-building' ?>"><i aria-hidden="true"></i> <?= $escape($text($isAvailable ? 'status_available' : 'status_coming_soon')) ?></span>
             </div>
             <p class="project-type"><?= $escape($text('savetempo_type')) ?></p>
             <h3>SaveTempo</h3>
             <p class="project-description"><?= $escape($text('savetempo_description')) ?></p>
             <ul class="project-tags" aria-label="<?= $escape($text('features_label')) ?>">
-                <li>iOS</li>
-                <li>Android</li>
+                <?php foreach ((array) stConfig('supportedPlatforms') as $platform): ?>
+                    <li><?= $escape((string) $platform) ?></li>
+                <?php endforeach; ?>
                 <li><?= $escape($text('tag_local_first')) ?></li>
             </ul>
             <span class="project-link" aria-hidden="true"><?= $escape($text('view_savetempo')) ?> <i>↗</i></span>
             <?php if ($storeLinks !== []): ?>
                 <div class="project-store-links">
                     <?php foreach ($storeLinks as $storeLink): ?>
-                        <a class="project-store-link project-store-link--<?= $escape($storeLink['store']) ?>" href="<?= $escape($storeLink['url']) ?>" target="_blank" rel="noopener noreferrer"><?= $escape($storeLink['label']) ?></a>
+                        <a class="project-store-link project-store-link--<?= $escape($storeLink['store']) ?>" href="<?= $escape($storeLink['url']) ?>" target="_blank" rel="noopener noreferrer">
+                            <?php if ($storeLink['store'] === 'google'): ?>
+                                <img class="google-play-badge" src="<?= $escape(stAsset('googlePlayBadge', $language)) ?>" alt="<?= $escape($storeLink['label']) ?>" width="646" height="250">
+                            <?php else: ?>
+                                <?= $escape($storeLink['label']) ?>
+                            <?php endif; ?>
+                        </a>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>

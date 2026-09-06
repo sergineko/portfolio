@@ -70,8 +70,18 @@ function stPath(string $suffix = ''): string
 function stCanonical(string $suffix = ''): string
 {
     $base = rtrim((string) stConfig('canonicalBaseUrl'), '/');
-    $suffix = trim($suffix, '/');
-    return $suffix === '' ? $base . '/' : $base . '/' . $suffix;
+    $suffix = '/' . ltrim($suffix, '/');
+    return $suffix === '/' ? $base . '/' : $base . $suffix;
+}
+
+function stLocalizedCanonical(string $canonical, string $language): string
+{
+    $requested = strtolower(trim((string) ($_GET['lang'] ?? '')));
+    $locales = (array) stConfig('locales');
+
+    return in_array($requested, $locales, true)
+        ? $canonical . '?lang=' . rawurlencode($language)
+        : $canonical;
 }
 
 /** @return list<array{store: string, url: string, label: string}> */
@@ -162,6 +172,7 @@ function stSendHeaders(string $language, string $nonce, array $umamiConfig): voi
 
 function stRenderStoreLinks(string $className = 'store-links'): void
 {
+    $language = stLanguage();
     $links = stStoreLinks();
     if ($links === []) {
         return;
@@ -169,8 +180,12 @@ function stRenderStoreLinks(string $className = 'store-links'): void
     echo '<div class="' . stEscape($className) . '">';
     foreach ($links as $link) {
         echo '<a class="store-link store-link-' . stEscape($link['store']) . '" href="' . stEscape($link['url']) . '" target="_blank" rel="noopener noreferrer">';
-        echo '<span aria-hidden="true">' . ($link['store'] === 'apple' ? '●' : '▶') . '</span>';
-        echo stEscape($link['label']) . '</a>';
+        if ($link['store'] === 'google') {
+            echo '<img class="google-play-badge" src="' . stEscape(stAsset('googlePlayBadge', $language)) . '" alt="' . stEscape($link['label']) . '" width="646" height="250">';
+        } else {
+            echo '<span aria-hidden="true">●</span>' . stEscape($link['label']);
+        }
+        echo '</a>';
     }
     echo '</div>';
 }
@@ -185,12 +200,13 @@ function stRenderPage(string $page, callable $renderBody): void
     $title = (string) stCopy("meta.{$page}Title", $language);
     $description = (string) stCopy("meta.{$page}Description", $language);
     $canonicalSuffix = match ($page) {
-        'privacy' => trim((string) stConfig('privacyPath'), '/'),
-        'support' => trim((string) stConfig('supportPath'), '/'),
-        'terms' => trim((string) stConfig('termsPath'), '/'),
+        'privacy' => (string) stConfig('privacyPath'),
+        'support' => (string) stConfig('supportPath'),
+        'terms' => (string) stConfig('termsPath'),
         default => '',
     };
-    $canonical = stCanonical($canonicalSuffix);
+    $baseCanonical = stCanonical($canonicalSuffix);
+    $canonical = stLocalizedCanonical($baseCanonical, $language);
     $route = stCurrentProductRoute();
     $otherLanguage = $language === 'es' ? 'en' : 'es';
     $structuredData = [
@@ -200,13 +216,28 @@ function stRenderPage(string $page, callable $renderBody): void
         'url' => $canonical,
         'description' => $description,
         'inLanguage' => $language,
+        'dateModified' => '2026-09-06',
     ];
     if ($page === 'landing') {
+        $googlePlayUrl = stConfig('googlePlayUrl');
+        $structuredData['@id'] = stCanonical() . '#software';
         $structuredData['applicationCategory'] = 'FinanceApplication';
         $structuredData['operatingSystem'] = implode(', ', (array) stConfig('supportedPlatforms'));
-        $structuredData['publisher'] = ['@type' => 'Organization', 'name' => stConfig('publisherName')];
-        $structuredData['creator'] = ['@type' => 'Person', 'name' => stConfig('creatorName')];
+        $structuredData['isAccessibleForFree'] = true;
+        $structuredData['publisher'] = ['@type' => 'Organization', 'name' => stConfig('publisherName'), 'url' => stConfig('portfolioUrl')];
+        $structuredData['creator'] = ['@type' => 'Person', 'name' => stConfig('creatorName'), 'url' => stConfig('portfolioUrl')];
         $structuredData['image'] = stCanonical('assets/images/savetempo-og.png');
+        if (is_string($googlePlayUrl) && filter_var($googlePlayUrl, FILTER_VALIDATE_URL)) {
+            $structuredData['downloadUrl'] = $googlePlayUrl;
+            $structuredData['sameAs'] = $googlePlayUrl;
+            $structuredData['offers'] = [
+                '@type' => 'Offer',
+                'price' => '0',
+                'priceCurrency' => 'EUR',
+                'availability' => 'https://schema.org/InStock',
+                'url' => $googlePlayUrl,
+            ];
+        }
     }
     ?>
 <!doctype html>
@@ -217,12 +248,12 @@ function stRenderPage(string $page, callable $renderBody): void
     <title><?= stEscape($title) ?></title>
     <meta name="description" content="<?= stEscape($description) ?>">
     <meta name="author" content="Sergio Moreno">
-    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="theme-color" content="#09110e">
     <link rel="canonical" href="<?= stEscape($canonical) ?>">
-    <link rel="alternate" hreflang="en" href="<?= stEscape($canonical) ?>?lang=en">
-    <link rel="alternate" hreflang="es" href="<?= stEscape($canonical) ?>?lang=es">
-    <link rel="alternate" hreflang="x-default" href="<?= stEscape($canonical) ?>">
+    <link rel="alternate" hreflang="en" href="<?= stEscape($baseCanonical) ?>?lang=en">
+    <link rel="alternate" hreflang="es" href="<?= stEscape($baseCanonical) ?>?lang=es">
+    <link rel="alternate" hreflang="x-default" href="<?= stEscape($baseCanonical) ?>">
     <link rel="icon" type="image/png" sizes="64x64" href="<?= stEscape(stAsset('favicon')) ?>">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="<?= $language === 'es' ? 'es_ES' : 'en_US' ?>">
@@ -234,8 +265,9 @@ function stRenderPage(string $page, callable $renderBody): void
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="SaveTempo — save at your own tempo">
+    <meta property="og:site_name" content="SaveTempo">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="<?= stEscape(stPath('/assets/css/savetempo.css?v=1.0.1')) ?>">
+    <link rel="stylesheet" href="<?= stEscape(stPath('/assets/css/savetempo.css?v=1.0.2')) ?>">
     <script type="application/ld+json" nonce="<?= stEscape($nonce) ?>"><?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
     <?php umamiRenderTrackingScript($umamiConfig, "savetempo-{$page}-lang-{$language}"); ?>
     <script src="<?= stEscape(stPath('/assets/js/savetempo.js?v=1.0.1')) ?>" defer></script>

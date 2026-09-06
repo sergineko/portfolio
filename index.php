@@ -111,7 +111,17 @@ $structuredData = [
             'name' => 'SaveTempo',
             'description' => $t('savetempo_description'),
             'applicationCategory' => 'FinanceApplication',
-            'operatingSystem' => 'Android, iOS',
+            'operatingSystem' => implode(', ', (array) stConfig('supportedPlatforms')),
+            'isAccessibleForFree' => true,
+            'downloadUrl' => stConfig('googlePlayUrl'),
+            'sameAs' => stConfig('googlePlayUrl'),
+            'offers' => [
+                '@type' => 'Offer',
+                'price' => '0',
+                'priceCurrency' => 'EUR',
+                'availability' => 'https://schema.org/InStock',
+                'url' => stConfig('googlePlayUrl'),
+            ],
             'creator' => ['@id' => $personId],
         ],
         [
@@ -194,7 +204,7 @@ $structuredData = [
     <?php if ($inlineStyles !== ''): ?>
         <style nonce="<?= $escape($nonce) ?>"><?= $inlineStyles ?></style>
     <?php else: ?>
-        <link rel="stylesheet" href="assets/css/styles.css?v=2.3.0">
+        <link rel="stylesheet" href="assets/css/styles.css?v=2.3.1">
     <?php endif; ?>
     <script type="application/ld+json" nonce="<?= $escape($nonce) ?>">
         <?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>

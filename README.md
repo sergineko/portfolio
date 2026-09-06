@@ -39,7 +39,7 @@ El sitio presenta el perfil profesional, la experiencia laboral y los proyectos 
 
 ### Proyectos
 
-- [SaveTempo](https://sergiotech.es/apps/savetempo/), micrositio oficial de un planificador local de hábitos de ahorro para Android e iOS.
+- [SaveTempo](https://sergiotech.es/apps/savetempo/), micrositio oficial de un planificador local de hábitos de ahorro disponible para Android en Google Play; la versión de iOS aún no está publicada.
 - [MyWorkingArea](https://myworkingarea.com/), disponible en producción.
 - [Vyrsea](https://vyrsea.com/), en desarrollo y pruebas.
 - Capturas reales, estados, descripciones y enlaces externos seguros.
