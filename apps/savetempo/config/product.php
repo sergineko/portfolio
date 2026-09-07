@@ -19,6 +19,23 @@ return [
         getenv('SAVETEMPO_CANONICAL_BASE_URL') ?: 'https://sergiotech.es/apps/savetempo',
         '/'
     ),
+    'localizedBasePaths' => [
+        'en' => '/apps/savetempo',
+        'es' => '/es/apps/savetempo',
+    ],
+    'localizedCanonicalBaseUrls' => [
+        'en' => 'https://sergiotech.es/apps/savetempo',
+        'es' => 'https://sergiotech.es/es/apps/savetempo',
+    ],
+    'pagePaths' => [
+        'landing' => ['en' => '/', 'es' => '/'],
+        'privacy' => ['en' => '/privacy/', 'es' => '/privacy/'],
+        'support' => ['en' => '/support/', 'es' => '/support/'],
+        'terms' => ['en' => '/terms/', 'es' => '/terms/'],
+        'week52' => ['en' => '/52-week-savings-challenge/', 'es' => '/reto-ahorro-52-semanas/'],
+        'day365' => ['en' => '/365-day-savings-challenge/', 'es' => '/reto-ahorro-365-dias/'],
+        'challengeApp' => ['en' => '/savings-challenge-app/', 'es' => '/app-retos-ahorro/'],
+    ],
     'privacyPath' => '/privacy/',
     'supportPath' => '/support/',
     'termsPath' => '/terms/',

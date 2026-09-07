@@ -22,7 +22,7 @@ stRenderPage('landing', static function (string $language): void {
             </div>
             <p class="hero-note"><?= stEscape($copy('heroNote')) ?></p>
         </div>
-        <div class="hero-visual" aria-label="SaveTempo app preview">
+        <div class="hero-visual" aria-label="<?= stEscape($copy('uiAppPreview')) ?>">
             <div class="ambient-orb ambient-orb-one" aria-hidden="true"></div>
             <div class="ambient-orb ambient-orb-two" aria-hidden="true"></div>
             <div class="hero-brand-chip">
@@ -34,7 +34,7 @@ stRenderPage('landing', static function (string $language): void {
                 <img class="product-phone-screenshot" src="<?= stEscape(stAsset('today')) ?>" alt="<?= stEscape($copy('heroAlt')) ?>" width="540" height="960" fetchpriority="high" decoding="async">
             </figure>
             <div class="tempo-card" aria-hidden="true">
-                <span>YOUR TEMPO</span>
+                <span><?= stEscape($copy('uiYourTempo')) ?></span>
                 <strong>8 / 10</strong>
                 <i><b></b></i>
             </div>
@@ -85,8 +85,8 @@ stRenderPage('landing', static function (string $language): void {
                 <p class="section-kicker"><?= stEscape($copy('todayKicker')) ?></p>
                 <h2 id="today-title"><?= stEscape($copy('todayTitle')) ?></h2>
                 <p><?= stEscape($copy('todayBody')) ?></p>
-                <ul class="inline-facts" aria-label="SaveTempo Home">
-                    <li>Today's Saving</li><li>Pending savings</li><li>Your Tempo</li><li>Active Plans</li>
+                <ul class="inline-facts" aria-label="<?= stEscape($copy('uiHome')) ?>">
+                    <li><?= stEscape($copy('uiTodaySaving')) ?></li><li><?= stEscape($copy('uiPendingSavings')) ?></li><li><?= stEscape($copy('uiYourTempo')) ?></li><li><?= stEscape($copy('uiActivePlans')) ?></li>
                 </ul>
             </div>
             <div class="feature-visual offset-phone-stage">
@@ -94,7 +94,7 @@ stRenderPage('landing', static function (string $language): void {
                     <div class="phone-speaker" aria-hidden="true"></div>
                     <img class="product-phone-screenshot" src="<?= stEscape(stAsset('today')) ?>" alt="<?= stEscape($copy('todayAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
                 </figure>
-                <div class="pulse-note" aria-hidden="true"><span>Today</span><strong>Clear. Concrete. Yours.</strong></div>
+                <div class="pulse-note" aria-hidden="true"><span><?= stEscape($copy('uiToday')) ?></span><strong><?= stEscape($copy('uiClearConcreteYours')) ?></strong></div>
             </div>
         </section>
 
@@ -112,7 +112,7 @@ stRenderPage('landing', static function (string $language): void {
                     <p class="section-kicker"><?= stEscape($copy('plansKicker')) ?></p>
                     <h2 id="plans-title"><?= stEscape($copy('plansTitle')) ?></h2>
                     <p><?= stEscape($copy('plansBody')) ?></p>
-                    <div class="pattern-line" aria-label="Saving patterns"><span>Increasing</span><i></i><span>Random</span></div>
+                    <div class="pattern-line" aria-label="<?= stEscape($copy('uiSavingPatterns')) ?>"><span><?= stEscape($copy('uiIncreasing')) ?></span><i></i><span><?= stEscape($copy('uiRandom')) ?></span></div>
                 </div>
             </div>
         </section>
@@ -134,11 +134,11 @@ stRenderPage('landing', static function (string $language): void {
                     <div class="phone-speaker" aria-hidden="true"></div>
                     <img class="product-phone-screenshot" src="<?= stEscape(stAsset('calendar')) ?>" alt="<?= stEscape($copy('calendarAlt')) ?>" width="540" height="960" loading="lazy" decoding="async">
                 </figure>
-                <div class="calendar-legend" aria-label="Calendar statuses">
-                    <span><i class="saved"></i>Saved</span>
-                    <span><i class="partial"></i>Partial</span>
-                    <span><i class="pending"></i>Pending</span>
-                    <span><i class="upcoming"></i>Upcoming</span>
+                <div class="calendar-legend" aria-label="<?= stEscape($copy('uiCalendarStatuses')) ?>">
+                    <span><i class="saved"></i><?= stEscape($copy('uiSaved')) ?></span>
+                    <span><i class="partial"></i><?= stEscape($copy('uiPartial')) ?></span>
+                    <span><i class="pending"></i><?= stEscape($copy('uiPending')) ?></span>
+                    <span><i class="upcoming"></i><?= stEscape($copy('uiUpcoming')) ?></span>
                 </div>
             </div>
         </section>
@@ -151,8 +151,8 @@ stRenderPage('landing', static function (string $language): void {
                     <p><?= stEscape($copy('remindersBody')) ?></p>
                     <div class="notification-sample" aria-hidden="true">
                         <img src="<?= stEscape(stAsset('icon')) ?>" alt="" width="40" height="40" loading="lazy">
-                        <p><strong>SaveTempo</strong><span>Your next contribution is ready.</span></p>
-                        <small>now</small>
+                        <p><strong>SaveTempo</strong><span><?= stEscape($copy('uiNotification')) ?></span></p>
+                        <small><?= stEscape($copy('uiNow')) ?></small>
                     </div>
                 </div>
                 <figure class="phone phone-feature phone-reminders product-phone-frame">
@@ -175,7 +175,7 @@ stRenderPage('landing', static function (string $language): void {
             <ul class="privacy-facts">
                 <?php foreach ((array) ($landing['privacyFacts'] ?? []) as $fact): ?><li><span aria-hidden="true">✓</span><?= stEscape((string) $fact) ?></li><?php endforeach; ?>
             </ul>
-            <a class="text-link" href="<?= stEscape(stPath((string) stConfig('privacyPath'))) ?>"><?= stEscape($copy('privacyCta')) ?> <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="<?= stEscape(stRoutePath('privacy', $language)) ?>"><?= stEscape($copy('privacyCta')) ?> <span aria-hidden="true">↗</span></a>
         </div>
     </section>
 
@@ -189,11 +189,11 @@ stRenderPage('landing', static function (string $language): void {
             <div class="showcase-track" tabindex="0" aria-label="<?= stEscape($copy('showcaseKicker')) ?>" data-showcase-track>
                 <?php
                 $showcase = [
-                    ['today', $copy('todayAlt'), "Today's Saving", 'today'],
+                    ['today', $copy('todayAlt'), $copy('uiTodaySaving'), 'today'],
                     ['plans', $copy('plansAlt'), $copy('plansKicker'), 'plans'],
-                    ['planDetail', $copy('detailAlt'), 'Plan Detail', 'detail'],
+                    ['planDetail', $copy('detailAlt'), $copy('uiPlanDetail'), 'detail'],
                     ['calendar', $copy('calendarAlt'), $copy('progressKicker'), 'calendar'],
-                    ['settings', $language === 'es' ? 'Ajustes de SaveTempo con preferencias locales.' : 'SaveTempo Settings with local preferences.', 'Settings', 'settings'],
+                    ['settings', $language === 'es' ? 'Ajustes de SaveTempo con preferencias locales.' : 'SaveTempo Settings with local preferences.', $copy('uiSettings'), 'settings'],
                 ];
                 foreach ($showcase as $item):
                 ?>
@@ -203,6 +203,33 @@ stRenderPage('landing', static function (string $language): void {
                     </figure>
                 <?php endforeach; ?>
             </div>
+        </div>
+    </section>
+
+    <section class="resources-section product-shell" aria-labelledby="resources-title">
+        <div class="section-heading-wide">
+            <div>
+                <p class="section-kicker"><?= stEscape($copy('resourcesKicker')) ?></p>
+                <h2 id="resources-title"><?= stEscape($copy('resourcesTitle')) ?></h2>
+            </div>
+            <p><?= stEscape($copy('resourcesBody')) ?></p>
+        </div>
+        <div class="resource-cards">
+            <?php
+            $resources = [
+                ['week52', '52', 'week52ResourceTitle', 'week52ResourceBody'],
+                ['day365', '365', 'day365ResourceTitle', 'day365ResourceBody'],
+                ['challengeApp', 'APP', 'appResourceTitle', 'appResourceBody'],
+            ];
+            foreach ($resources as [$page, $number, $titleKey, $bodyKey]):
+            ?>
+                <article>
+                    <span><?= stEscape($number) ?></span>
+                    <h3><?= stEscape($copy($titleKey)) ?></h3>
+                    <p><?= stEscape($copy($bodyKey)) ?></p>
+                    <a href="<?= stEscape(stRoutePath($page, $language)) ?>"><?= stEscape($copy('resourceCta')) ?> <i aria-hidden="true">↗</i></a>
+                </article>
+            <?php endforeach; ?>
         </div>
     </section>
 

@@ -6,13 +6,12 @@
     const header = document.querySelector('[data-header]');
     const showcaseTrack = document.querySelector('[data-showcase-track]');
     const languageLinks = document.querySelectorAll('[data-language]');
-    const query = new URLSearchParams(window.location.search);
-
     const storedLanguage = window.localStorage.getItem('savetempo-language');
-    if (!query.has('lang') && ['en', 'es'].includes(storedLanguage) && storedLanguage !== root.lang) {
-        query.set('lang', storedLanguage);
-        const nextQuery = query.toString();
-        window.location.replace(`${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}${window.location.hash}`);
+    if (['en', 'es'].includes(storedLanguage) && storedLanguage !== root.lang) {
+        const storedLanguageLink = document.querySelector(`[data-language="${storedLanguage}"]`);
+        if (storedLanguageLink instanceof HTMLAnchorElement) {
+            window.location.replace(`${storedLanguageLink.pathname}${window.location.hash}`);
+        }
         return;
     }
 
@@ -23,6 +22,38 @@
                 window.localStorage.setItem('savetempo-language', language);
             }
         });
+    });
+
+    document.querySelectorAll('[data-challenge-calculator]').forEach((calculator) => {
+        const input = calculator.querySelector('[data-challenge-step]');
+        const total = calculator.querySelector('[data-challenge-total]');
+        if (!(input instanceof HTMLInputElement) || !(total instanceof HTMLElement)) return;
+
+        const locale = calculator.dataset.locale === 'es' ? 'es-ES' : 'en-IE';
+        const formatter = new Intl.NumberFormat(locale, {
+            style: 'currency',
+            currency: calculator.dataset.currency || 'EUR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+            useGrouping: 'always',
+        });
+
+        const updateChallenge = () => {
+            const step = Math.max(0.01, Number.parseFloat(input.value) || 0.01);
+            const factor = Number.parseFloat(total.dataset.factor || '0');
+            total.textContent = formatter.format(step * factor);
+
+            calculator.querySelectorAll('[data-challenge-amount]').forEach((cell) => {
+                const index = Number.parseFloat(cell.dataset.index || '0');
+                cell.textContent = formatter.format(step * index);
+            });
+            calculator.querySelectorAll('[data-challenge-running]').forEach((cell) => {
+                const index = Number.parseFloat(cell.dataset.index || '0');
+                cell.textContent = formatter.format(step * index);
+            });
+        };
+
+        input.addEventListener('input', updateChallenge);
     });
 
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');

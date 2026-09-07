@@ -4,7 +4,7 @@
 
 SaveTempo is implemented as an independent product site mounted at `/apps/savetempo`. It does not use the portfolio header, navigation, form, theme code, content model or page state. The only integration point is the SaveTempo card in the portfolio Projects section, which reads the same central product configuration for its route and future Store links.
 
-The product site is server-rendered PHP with standalone CSS and vanilla JavaScript. Its main content, Privacy Policy, Support and Terms remain readable without JavaScript. JavaScript is limited to the theme preference, language preference and sticky-header state.
+The product site is server-rendered PHP with standalone CSS and vanilla JavaScript. Its landing, guides, Privacy Policy, Support and Terms remain readable without JavaScript. JavaScript is limited to theme and language preferences, sticky-header state and progressive enhancement of the savings calculators.
 
 ```text
 apps/savetempo/
@@ -12,12 +12,16 @@ apps/savetempo/
 ├── content/translations.php
 ├── components/
 │   ├── bootstrap.php
+│   ├── guide-page.php
 │   └── legal-page.php
 ├── assets/
 │   ├── css/savetempo.css
 │   ├── js/savetempo.js
 │   └── images/
 ├── index.php
+├── 52-week-savings-challenge/index.php
+├── 365-day-savings-challenge/index.php
+├── savings-challenge-app/index.php
 ├── privacy/index.php
 ├── support/index.php
 └── terms/index.php
@@ -26,9 +30,19 @@ apps/savetempo/
 Public routes:
 
 - `/apps/savetempo/`
-- `/apps/savetempo/privacy`
-- `/apps/savetempo/support`
-- `/apps/savetempo/terms`
+- `/apps/savetempo/privacy/`
+- `/apps/savetempo/support/`
+- `/apps/savetempo/terms/`
+- `/apps/savetempo/52-week-savings-challenge/`
+- `/apps/savetempo/365-day-savings-challenge/`
+- `/apps/savetempo/savings-challenge-app/`
+- `/es/apps/savetempo/`
+- `/es/apps/savetempo/privacy/`
+- `/es/apps/savetempo/support/`
+- `/es/apps/savetempo/terms/`
+- `/es/apps/savetempo/reto-ahorro-52-semanas/`
+- `/es/apps/savetempo/reto-ahorro-365-dias/`
+- `/es/apps/savetempo/app-retos-ahorro/`
 
 The legal routes are real directories with an `index.php`, so direct requests and refreshes do not depend on SPA rewrites.
 
@@ -38,27 +52,26 @@ The legal routes are real directories with an `index.php`, so direct requests an
 
 - slug, product name, publisher and creator;
 - support and privacy email;
-- `basePath` and `canonicalBaseUrl`;
-- Privacy, Support and Terms paths;
+- localized base paths, canonical URLs and page paths;
 - Google Play and App Store URLs;
 - release status and supported platforms;
 - locale list and fixed policy dates;
 - portable asset references;
 - website privacy behavior.
 
-The current Store values are intentionally:
+The current Store values reflect the Android release:
 
 ```php
-'googlePlayUrl' => null,
+'googlePlayUrl' => 'https://play.google.com/store/apps/details?id=es.sergiotech.savetempo',
 'appStoreUrl' => null,
-'releaseStatus' => 'comingSoon',
+'releaseStatus' => 'available',
 ```
 
-`stStoreLinks()` returns only valid configured URLs. The portfolio card, landing hero, final CTA and footer therefore hide Store controls now and will display them automatically after one config update.
+`stStoreLinks()` returns only valid configured URLs. The portfolio card and SaveTempo calls to action display the official Google Play badge; no App Store control is rendered while its URL remains unconfigured.
 
 ## Content and language
 
-All public product copy lives in `apps/savetempo/content/translations.php` with professional English and Spanish versions. Public URLs remain stable; `?lang=en` and `?lang=es` select a language. Without an explicit query, PHP uses `Accept-Language` and defaults to English.
+All public product copy lives in `apps/savetempo/content/translations.php` and `apps/savetempo/content/guides.php`, with professional English and Spanish versions. English uses `/apps/savetempo/.../` and Spanish uses `/es/apps/savetempo/.../`. Legacy `?lang=en` and `?lang=es` requests are permanently redirected to the equivalent clean URL. Requests without an explicit language path default to English.
 
 The optional browser preference is stored in `localStorage` under `savetempo-language`; no language cookie or account is created. Main legal content is server-rendered and never relies on this storage or on JavaScript.
 
@@ -76,6 +89,7 @@ The web copies are derived from the approved SaveTempo release assets. The Flutt
 | `reminders-{en,es}.webp` | `docs/release/store/screenshots/android/{locale}/06-saving-reminders.png` |
 | `settings-{en,es}.webp` | `docs/release/store/screenshots/android/{locale}/07-local-settings.png` |
 | `savetempo-og.png` | Deterministic composition using the approved icon and the real English Home screenshot |
+| `google-play-badge-{en,es}.png` | Official localized Google Play badge artwork |
 
 Screenshots were resized from 1080×1920 to 540×960 and encoded as WebP without changing the original files. The landing uses CSS device frames rather than third-party mockups.
 
@@ -91,7 +105,7 @@ No analytics cookie or consent storage was added. Applicable consent and disclos
 
 ## SEO and accessibility
 
-Each route provides localized title, description, canonical, hreflang, Open Graph, Twitter card and JSON-LD. Canonicals derive from `canonicalBaseUrl`. `sitemap.xml` contains all four stable routes, and `robots.txt` already allows them.
+Each route provides a localized title and description, canonical URL, reciprocal hreflang links, Open Graph metadata, Twitter card and JSON-LD. Guide pages add Article structured data, server-rendered useful content and interactive savings tables. `sitemap.xml` contains the seven English/Spanish route pairs (14 SaveTempo URLs), and `robots.txt` allows them.
 
 The product site uses semantic landmarks and headings, a skip link, visible keyboard focus, descriptive screenshot alternatives, native details/summary controls, sufficient text contrast, touch-sized controls and a `prefers-reduced-motion` fallback. No interaction depends only on hover.
 
@@ -127,8 +141,8 @@ The next product is not required to copy SaveTempo's visual identity, glass trea
 1. Move the complete `apps/savetempo/` folder to the new PHP site's public root, preserving `config`, `content`, `components` and `assets` together.
 2. Change `basePath` in `config/product.php` from `/apps/savetempo` to `/`, or set `SAVETEMPO_BASE_PATH=/`.
 3. Change `canonicalBaseUrl` to the final origin, for example `https://savetempo.app`, or set `SAVETEMPO_CANONICAL_BASE_URL`.
-4. Keep route directories as `/privacy`, `/support` and `/terms`; verify their directory-index handling on the new host.
-5. Configure real `googlePlayUrl` and `appStoreUrl` only after publication. All Store links will update together.
+4. Keep legal and guide route directories, and verify their directory-index handling on the new host.
+5. Update Store URLs only when each platform is published. All Store links update together.
 6. Copy the product-specific sitemap entries into the new domain's sitemap and update their origins. Add a domain-level `robots.txt` that allows landing and legal routes.
 7. Deploy with any PHP 8.1+ host, container or static-compatible PHP platform that serves directory indexes and HTTPS. No database or Node build is required.
 8. Verify asset paths, canonical/OG URLs, both languages, direct legal routes and HTTPS on the final host.

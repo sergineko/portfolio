@@ -26,89 +26,106 @@
 
     <url>
         <loc>https://sergiotech.es/apps/savetempo/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/?lang=es"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
     <url>
-        <loc>https://sergiotech.es/apps/savetempo/?lang=en</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/?lang=es"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/"/>
-        <lastmod>2026-09-06</lastmod>
-    </url>
-    <url>
-        <loc>https://sergiotech.es/apps/savetempo/?lang=es</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/?lang=es"/>
+        <loc>https://sergiotech.es/es/apps/savetempo/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
 
     <url>
         <loc>https://sergiotech.es/apps/savetempo/privacy/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/privacy/?lang=es"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/privacy/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/privacy/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
     <url>
-        <loc>https://sergiotech.es/apps/savetempo/privacy/?lang=en</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/privacy/?lang=es"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/privacy/"/>
-        <lastmod>2026-09-06</lastmod>
-    </url>
-    <url>
-        <loc>https://sergiotech.es/apps/savetempo/privacy/?lang=es</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/privacy/?lang=es"/>
+        <loc>https://sergiotech.es/es/apps/savetempo/privacy/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/privacy/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/privacy/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
 
     <url>
         <loc>https://sergiotech.es/apps/savetempo/support/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/support/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/support/?lang=es"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/support/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/support/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/support/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
     <url>
-        <loc>https://sergiotech.es/apps/savetempo/support/?lang=en</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/support/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/support/?lang=es"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/support/"/>
-        <lastmod>2026-09-06</lastmod>
-    </url>
-    <url>
-        <loc>https://sergiotech.es/apps/savetempo/support/?lang=es</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/support/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/support/?lang=es"/>
+        <loc>https://sergiotech.es/es/apps/savetempo/support/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/support/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/support/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/support/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
 
     <url>
         <loc>https://sergiotech.es/apps/savetempo/terms/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/terms/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/terms/?lang=es"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/terms/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/terms/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/terms/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
     <url>
-        <loc>https://sergiotech.es/apps/savetempo/terms/?lang=en</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/terms/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/terms/?lang=es"/>
+        <loc>https://sergiotech.es/es/apps/savetempo/terms/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/terms/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/terms/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/terms/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
+
     <url>
-        <loc>https://sergiotech.es/apps/savetempo/terms/?lang=es</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/terms/?lang=en"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/apps/savetempo/terms/?lang=es"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/terms/"/>
+        <loc>https://sergiotech.es/apps/savetempo/52-week-savings-challenge/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/52-week-savings-challenge/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/reto-ahorro-52-semanas/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/52-week-savings-challenge/"/>
+        <lastmod>2026-09-06</lastmod>
+    </url>
+    <url>
+        <loc>https://sergiotech.es/es/apps/savetempo/reto-ahorro-52-semanas/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/52-week-savings-challenge/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/reto-ahorro-52-semanas/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/52-week-savings-challenge/"/>
+        <lastmod>2026-09-06</lastmod>
+    </url>
+
+    <url>
+        <loc>https://sergiotech.es/apps/savetempo/365-day-savings-challenge/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/365-day-savings-challenge/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/reto-ahorro-365-dias/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/365-day-savings-challenge/"/>
+        <lastmod>2026-09-06</lastmod>
+    </url>
+    <url>
+        <loc>https://sergiotech.es/es/apps/savetempo/reto-ahorro-365-dias/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/365-day-savings-challenge/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/reto-ahorro-365-dias/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/365-day-savings-challenge/"/>
+        <lastmod>2026-09-06</lastmod>
+    </url>
+
+    <url>
+        <loc>https://sergiotech.es/apps/savetempo/savings-challenge-app/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/savings-challenge-app/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/app-retos-ahorro/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/savings-challenge-app/"/>
+        <lastmod>2026-09-06</lastmod>
+    </url>
+    <url>
+        <loc>https://sergiotech.es/es/apps/savetempo/app-retos-ahorro/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergiotech.es/apps/savetempo/savings-challenge-app/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://sergiotech.es/es/apps/savetempo/app-retos-ahorro/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sergiotech.es/apps/savetempo/savings-challenge-app/"/>
         <lastmod>2026-09-06</lastmod>
     </url>
 </urlset>

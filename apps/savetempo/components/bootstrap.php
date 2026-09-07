@@ -28,14 +28,6 @@ function stLanguage(): string
         return $requested;
     }
 
-    $accepted = strtolower((string) ($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? ''));
-    foreach (explode(',', $accepted) as $candidate) {
-        $locale = substr(trim($candidate), 0, 2);
-        if (is_array($supported) && in_array($locale, $supported, true)) {
-            return $locale;
-        }
-    }
-
     return (string) stConfig('defaultLocale');
 }
 
@@ -74,14 +66,39 @@ function stCanonical(string $suffix = ''): string
     return $suffix === '/' ? $base . '/' : $base . $suffix;
 }
 
-function stLocalizedCanonical(string $canonical, string $language): string
+function stLocalizedBase(string $type, string $language): string
 {
-    $requested = strtolower(trim((string) ($_GET['lang'] ?? '')));
-    $locales = (array) stConfig('locales');
+    $values = (array) stConfig($type);
+    $fallback = $type === 'localizedCanonicalBaseUrls'
+        ? (string) stConfig('canonicalBaseUrl')
+        : (string) stConfig('basePath');
 
-    return in_array($requested, $locales, true)
-        ? $canonical . '?lang=' . rawurlencode($language)
-        : $canonical;
+    return rtrim((string) ($values[$language] ?? $fallback), '/');
+}
+
+function stRouteSuffix(string $page, string $language): string
+{
+    $pagePaths = (array) stConfig('pagePaths');
+    $localizedPaths = (array) ($pagePaths[$page] ?? []);
+    $suffix = (string) ($localizedPaths[$language] ?? $localizedPaths[(string) stConfig('defaultLocale')] ?? '/');
+
+    return '/' . ltrim($suffix, '/');
+}
+
+function stRoutePath(string $page, string $language): string
+{
+    $base = stLocalizedBase('localizedBasePaths', $language);
+    $suffix = stRouteSuffix($page, $language);
+
+    return $base . ($suffix === '/' ? '/' : $suffix);
+}
+
+function stRouteCanonical(string $page, string $language): string
+{
+    $base = stLocalizedBase('localizedCanonicalBaseUrls', $language);
+    $suffix = stRouteSuffix($page, $language);
+
+    return $base . ($suffix === '/' ? '/' : $suffix);
 }
 
 /** @return list<array{store: string, url: string, label: string}> */
@@ -111,20 +128,6 @@ function stAsset(string $key, ?string $language = null): string
         $asset = $asset[$language] ?? $asset[(string) stConfig('defaultLocale')] ?? '';
     }
     return stPath((string) $asset);
-}
-
-function stCurrentProductRoute(): string
-{
-    $requestPath = parse_url((string) ($_SERVER['REQUEST_URI'] ?? stPath('/')), PHP_URL_PATH);
-    $requestPath = is_string($requestPath) ? $requestPath : stPath('/');
-    $known = [
-        stPath('/') => stPath('/'),
-        rtrim(stPath('/'), '/') => stPath('/'),
-        stPath((string) stConfig('privacyPath')) => stPath((string) stConfig('privacyPath')),
-        stPath((string) stConfig('supportPath')) => stPath((string) stConfig('supportPath')),
-        stPath((string) stConfig('termsPath')) => stPath((string) stConfig('termsPath')),
-    ];
-    return $known[$requestPath] ?? stPath('/');
 }
 
 /**
@@ -199,19 +202,15 @@ function stRenderPage(string $page, callable $renderBody): void
 
     $title = (string) stCopy("meta.{$page}Title", $language);
     $description = (string) stCopy("meta.{$page}Description", $language);
-    $canonicalSuffix = match ($page) {
-        'privacy' => (string) stConfig('privacyPath'),
-        'support' => (string) stConfig('supportPath'),
-        'terms' => (string) stConfig('termsPath'),
-        default => '',
-    };
-    $baseCanonical = stCanonical($canonicalSuffix);
-    $canonical = stLocalizedCanonical($baseCanonical, $language);
-    $route = stCurrentProductRoute();
-    $otherLanguage = $language === 'es' ? 'en' : 'es';
+    $canonical = stRouteCanonical($page, $language);
+    $englishCanonical = stRouteCanonical($page, 'en');
+    $spanishCanonical = stRouteCanonical($page, 'es');
+    $englishRoute = stRoutePath($page, 'en');
+    $spanishRoute = stRoutePath($page, 'es');
+    $isGuide = in_array($page, ['week52', 'day365', 'challengeApp'], true);
     $structuredData = [
         '@context' => 'https://schema.org',
-        '@type' => $page === 'landing' ? 'SoftwareApplication' : 'WebPage',
+        '@type' => $page === 'landing' ? 'SoftwareApplication' : ($isGuide ? 'Article' : 'WebPage'),
         'name' => $page === 'landing' ? stConfig('productName') : $title,
         'url' => $canonical,
         'description' => $description,
@@ -238,7 +237,15 @@ function stRenderPage(string $page, callable $renderBody): void
                 'url' => $googlePlayUrl,
             ];
         }
+    } elseif ($isGuide) {
+        $structuredData['datePublished'] = '2026-09-06';
+        $structuredData['headline'] = $title;
+        $structuredData['mainEntityOfPage'] = $canonical;
+        $structuredData['author'] = ['@type' => 'Person', 'name' => stConfig('creatorName'), 'url' => stConfig('portfolioUrl')];
+        $structuredData['publisher'] = ['@type' => 'Organization', 'name' => stConfig('publisherName'), 'url' => stConfig('portfolioUrl')];
+        $structuredData['image'] = stCanonical('assets/images/savetempo-og.png');
     }
+    $storeLinks = stStoreLinks($language);
     ?>
 <!doctype html>
 <html lang="<?= stEscape($language) ?>" data-page="<?= stEscape($page) ?>">
@@ -251,11 +258,11 @@ function stRenderPage(string $page, callable $renderBody): void
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="theme-color" content="#09110e">
     <link rel="canonical" href="<?= stEscape($canonical) ?>">
-    <link rel="alternate" hreflang="en" href="<?= stEscape($baseCanonical) ?>?lang=en">
-    <link rel="alternate" hreflang="es" href="<?= stEscape($baseCanonical) ?>?lang=es">
-    <link rel="alternate" hreflang="x-default" href="<?= stEscape($baseCanonical) ?>">
+    <link rel="alternate" hreflang="en" href="<?= stEscape($englishCanonical) ?>">
+    <link rel="alternate" hreflang="es" href="<?= stEscape($spanishCanonical) ?>">
+    <link rel="alternate" hreflang="x-default" href="<?= stEscape($englishCanonical) ?>">
     <link rel="icon" type="image/png" sizes="64x64" href="<?= stEscape(stAsset('favicon')) ?>">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="<?= $isGuide ? 'article' : 'website' ?>">
     <meta property="og:locale" content="<?= $language === 'es' ? 'es_ES' : 'en_US' ?>">
     <meta property="og:locale:alternate" content="<?= $language === 'es' ? 'en_US' : 'es_ES' ?>">
     <meta property="og:title" content="<?= stEscape($title) ?>">
@@ -267,16 +274,16 @@ function stRenderPage(string $page, callable $renderBody): void
     <meta property="og:image:alt" content="SaveTempo — save at your own tempo">
     <meta property="og:site_name" content="SaveTempo">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="<?= stEscape(stPath('/assets/css/savetempo.css?v=1.0.2')) ?>">
+    <link rel="stylesheet" href="<?= stEscape(stPath('/assets/css/savetempo.css?v=1.0.3')) ?>">
     <script type="application/ld+json" nonce="<?= stEscape($nonce) ?>"><?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
     <?php umamiRenderTrackingScript($umamiConfig, "savetempo-{$page}-lang-{$language}"); ?>
-    <script src="<?= stEscape(stPath('/assets/js/savetempo.js?v=1.0.1')) ?>" defer></script>
+    <script src="<?= stEscape(stPath('/assets/js/savetempo.js?v=1.0.2')) ?>" defer></script>
 </head>
 <body data-theme-label="<?= stEscape((string) stCopy('chrome.theme', $language)) ?>">
     <a class="skip-link" href="#main-content"><?= stEscape((string) stCopy('chrome.skip', $language)) ?></a>
     <header class="product-header" data-header>
         <div class="product-shell product-header-inner">
-            <a class="product-brand" href="<?= stEscape(stPath('/')) ?>" aria-label="SaveTempo">
+            <a class="product-brand" href="<?= stEscape(stRoutePath('landing', $language)) ?>" aria-label="SaveTempo">
                 <img src="<?= stEscape(stAsset('icon')) ?>" alt="" width="44" height="44" decoding="async">
                 <span>SaveTempo</span>
             </a>
@@ -285,20 +292,20 @@ function stRenderPage(string $page, callable $renderBody): void
                     <a href="#how-it-works"><?= stEscape((string) stCopy('chrome.how', $language)) ?></a>
                     <a href="#features"><?= stEscape((string) stCopy('chrome.features', $language)) ?></a>
                 <?php else: ?>
-                    <a href="<?= stEscape(stPath('/')) ?>"><?= stEscape((string) stCopy('chrome.backHome', $language)) ?></a>
+                    <a href="<?= stEscape(stRoutePath('landing', $language)) ?>"><?= stEscape((string) stCopy('chrome.backHome', $language)) ?></a>
                 <?php endif; ?>
-                <a href="<?= stEscape(stPath((string) stConfig('privacyPath'))) ?>"><?= stEscape((string) stCopy('chrome.privacy', $language)) ?></a>
+                <a href="<?= stEscape(stRoutePath('privacy', $language)) ?>"><?= stEscape((string) stCopy('chrome.privacy', $language)) ?></a>
             </nav>
             <div class="product-controls">
                 <div class="language-switch" aria-label="<?= stEscape((string) stCopy('chrome.language', $language)) ?>">
-                    <a href="<?= stEscape($route) ?>?lang=en" lang="en" hreflang="en" data-language="en"<?= $language === 'en' ? ' aria-current="page"' : '' ?>>EN</a>
-                    <a href="<?= stEscape($route) ?>?lang=es" lang="es" hreflang="es" data-language="es"<?= $language === 'es' ? ' aria-current="page"' : '' ?>>ES</a>
+                    <a href="<?= stEscape($englishRoute) ?>" lang="en" hreflang="en" data-language="en"<?= $language === 'en' ? ' aria-current="page"' : '' ?>>EN</a>
+                    <a href="<?= stEscape($spanishRoute) ?>" lang="es" hreflang="es" data-language="es"<?= $language === 'es' ? ' aria-current="page"' : '' ?>>ES</a>
                 </div>
                 <button class="theme-toggle" type="button" aria-label="<?= stEscape((string) stCopy('chrome.theme', $language)) ?>" data-theme-toggle><span aria-hidden="true">◐</span></button>
-                <?php if (stStoreLinks() === []): ?>
+                <?php if ($storeLinks === []): ?>
                     <span class="header-status"><?= stEscape((string) stCopy('chrome.comingSoon', $language)) ?></span>
                 <?php else: ?>
-                    <a class="header-status header-download" href="#download"><?= stEscape((string) stCopy('chrome.features', $language)) ?></a>
+                    <a class="header-status header-download" href="<?= stEscape($storeLinks[0]['url']) ?>" target="_blank" rel="noopener noreferrer"><?= stEscape((string) stCopy('chrome.download', $language)) ?></a>
                 <?php endif; ?>
             </div>
         </div>
@@ -309,16 +316,16 @@ function stRenderPage(string $page, callable $renderBody): void
     <footer class="product-footer">
         <div class="product-shell footer-primary">
             <div>
-                <a class="product-brand footer-brand" href="<?= stEscape(stPath('/')) ?>">
+                <a class="product-brand footer-brand" href="<?= stEscape(stRoutePath('landing', $language)) ?>">
                     <img src="<?= stEscape(stAsset('icon')) ?>" alt="" width="48" height="48" loading="lazy" decoding="async">
                     <span>SaveTempo</span>
                 </a>
                 <p><?= stEscape((string) stCopy('chrome.publishedBy', $language)) ?></p>
             </div>
-            <nav class="footer-nav" aria-label="SaveTempo footer">
-                <a href="<?= stEscape(stPath((string) stConfig('privacyPath'))) ?>"><?= stEscape((string) stCopy('chrome.privacy', $language)) ?></a>
-                <a href="<?= stEscape(stPath((string) stConfig('supportPath'))) ?>"><?= stEscape((string) stCopy('chrome.support', $language)) ?></a>
-                <a href="<?= stEscape(stPath((string) stConfig('termsPath'))) ?>"><?= stEscape((string) stCopy('chrome.terms', $language)) ?></a>
+            <nav class="footer-nav" aria-label="<?= stEscape((string) stCopy('chrome.footerNav', $language)) ?>">
+                <a href="<?= stEscape(stRoutePath('privacy', $language)) ?>"><?= stEscape((string) stCopy('chrome.privacy', $language)) ?></a>
+                <a href="<?= stEscape(stRoutePath('support', $language)) ?>"><?= stEscape((string) stCopy('chrome.support', $language)) ?></a>
+                <a href="<?= stEscape(stRoutePath('terms', $language)) ?>"><?= stEscape((string) stCopy('chrome.terms', $language)) ?></a>
             </nav>
             <?php stRenderStoreLinks('store-links footer-store-links'); ?>
         </div>

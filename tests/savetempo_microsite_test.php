@@ -74,6 +74,10 @@ assertTrue(stConfig('releaseStatus') === 'available', 'The released Android app 
 assertTrue(stConfig('supportedPlatforms') === ['Android'], 'Structured data must only advertise the published Android platform.');
 assertTrue(stPath('/privacy/') === '/apps/savetempo/privacy/', 'Portable paths must use the final trailing-slash route.');
 assertTrue(stCanonical('privacy/') === 'https://sergiotech.es/apps/savetempo/privacy/', 'Canonical legal route must match the final HTTPS URL.');
+assertTrue(stRoutePath('landing', 'en') === '/apps/savetempo/', 'English landing must keep the default product route.');
+assertTrue(stRoutePath('landing', 'es') === '/es/apps/savetempo/', 'Spanish landing must use an independent path.');
+assertTrue(stRouteCanonical('week52', 'en') === 'https://sergiotech.es/apps/savetempo/52-week-savings-challenge/', 'English guide canonical must use its descriptive route.');
+assertTrue(stRouteCanonical('week52', 'es') === 'https://sergiotech.es/es/apps/savetempo/reto-ahorro-52-semanas/', 'Spanish guide canonical must use its localized route.');
 assertTrue(is_file($root . '/apps/savetempo/assets/images/google-play-badge-en.png'), 'English Google Play badge asset must exist.');
 assertTrue(is_file($root . '/apps/savetempo/assets/images/google-play-badge-es.png'), 'Spanish Google Play badge asset must exist.');
 
@@ -106,18 +110,29 @@ $routeFiles = [
     $root . '/apps/savetempo/privacy/index.php',
     $root . '/apps/savetempo/support/index.php',
     $root . '/apps/savetempo/terms/index.php',
+    $root . '/apps/savetempo/52-week-savings-challenge/index.php',
+    $root . '/apps/savetempo/365-day-savings-challenge/index.php',
+    $root . '/apps/savetempo/savings-challenge-app/index.php',
+    $root . '/es/apps/savetempo/index.php',
+    $root . '/es/apps/savetempo/privacy/index.php',
+    $root . '/es/apps/savetempo/support/index.php',
+    $root . '/es/apps/savetempo/terms/index.php',
+    $root . '/es/apps/savetempo/reto-ahorro-52-semanas/index.php',
+    $root . '/es/apps/savetempo/reto-ahorro-365-dias/index.php',
+    $root . '/es/apps/savetempo/app-retos-ahorro/index.php',
 ];
 foreach ($routeFiles as $file) {
     assertTrue(is_file($file), "Missing public route file: {$file}");
 }
 
-$_SERVER['REQUEST_URI'] = '/apps/savetempo/?lang=en';
-$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US,en;q=0.9';
-$_GET = ['lang' => 'en'];
+$_SERVER['REQUEST_URI'] = '/apps/savetempo/';
+$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'es-ES,es;q=0.9';
+$_GET = [];
 ob_start();
 include $root . '/apps/savetempo/index.php';
 $landingEnglish = (string) ob_get_clean();
 assertTrue(str_contains($landingEnglish, 'Save at your own tempo.'), 'English landing copy must render.');
+assertTrue(str_contains($landingEnglish, '<html lang="en"'), 'The clean English path must not change language from Accept-Language.');
 assertTrue(str_contains($landingEnglish, 'Your money stays yours.'), 'Money boundary must be explicit.');
 assertTrue(!str_contains($landingEnglish, 'href="#"'), 'Landing must not contain placeholder links.');
 assertTrue(!str_contains($landingEnglish, 'javascript:void'), 'Landing must not contain JavaScript links.');
@@ -126,35 +141,49 @@ assertTrue(str_contains($landingEnglish, 'href="' . $officialGooglePlayUrl . '"'
 assertTrue(substr_count($landingEnglish, 'class="google-play-badge"') === 3, 'The official Google Play badge must render in every microsite store placement.');
 assertTrue(str_contains($landingEnglish, 'src="/apps/savetempo/assets/images/google-play-badge-en.png"'), 'The English microsite must use the official English Google Play badge.');
 assertTrue(!str_contains($landingEnglish, 'Download on the App Store'), 'App Store link must stay hidden while null.');
-assertTrue(str_contains($landingEnglish, '<link rel="canonical" href="https://sergiotech.es/apps/savetempo/?lang=en">'), 'Explicit English page must be self-canonical.');
-assertTrue(str_contains($landingEnglish, 'hreflang="es" href="https://sergiotech.es/apps/savetempo/?lang=es"'), 'Landing must expose the Spanish alternate URL.');
+assertTrue(str_contains($landingEnglish, '<link rel="canonical" href="https://sergiotech.es/apps/savetempo/">'), 'English landing must be self-canonical.');
+assertTrue(str_contains($landingEnglish, 'hreflang="es" href="https://sergiotech.es/es/apps/savetempo/"'), 'Landing must expose the clean Spanish alternate URL.');
+assertTrue(!str_contains($landingEnglish, '?lang='), 'SaveTempo landing must not publish query-string language links.');
 assertTrue(str_contains($landingEnglish, 'max-snippet:-1'), 'Landing must allow full search snippets.');
 assertTrue(str_contains($landingEnglish, '"downloadUrl":"' . $officialGooglePlayUrl . '"'), 'Software structured data must reference Google Play.');
 assertTrue(str_contains($landingEnglish, '"operatingSystem":"Android"'), 'Software structured data must reflect the published platform.');
 assertTrue(substr_count($landingEnglish, 'class="product-phone-screenshot"') === 11, 'Every product screenshot must use the ratio-safe media class.');
 assertTrue(str_contains($landingEnglish, 'class="showcase-track" tabindex="0"'), 'The horizontal showcase must be keyboard focusable.');
 assertTrue(str_contains($landingEnglish, 'data-showcase-track'), 'The showcase must expose its keyboard navigation hook.');
-assertTrue(str_contains($landingEnglish, 'savetempo.css?v=1.0.2'), 'The stylesheet URL must invalidate the previous public cache.');
-assertTrue(str_contains($landingEnglish, 'savetempo.js?v=1.0.1'), 'The script URL must invalidate the previous public cache.');
+assertTrue(str_contains($landingEnglish, 'savetempo.css?v=1.0.3'), 'The stylesheet URL must invalidate the previous public cache.');
+assertTrue(str_contains($landingEnglish, 'savetempo.js?v=1.0.2'), 'The script URL must invalidate the previous public cache.');
 assertTrue(str_contains($landingEnglish, 'src="https://cloud.umami.is/script.js"'), 'Landing must load the shared Umami tracker.');
 assertTrue(str_contains($landingEnglish, 'data-website-id="11111111-2222-3333-4444-555555555555"'), 'Landing must use the configured Umami website ID.');
 assertTrue(str_contains($landingEnglish, 'data-tag="savetempo-landing-lang-en"'), 'Landing analytics tag must identify route and language.');
 
-$_SERVER['REQUEST_URI'] = '/apps/savetempo/privacy/?lang=es';
-$_GET = ['lang' => 'es'];
+$_SERVER['REQUEST_URI'] = '/es/apps/savetempo/';
+$_GET = [];
 ob_start();
-include $root . '/apps/savetempo/privacy/index.php';
+include $root . '/es/apps/savetempo/index.php';
+$landingSpanish = (string) ob_get_clean();
+assertTrue(str_contains($landingSpanish, '<link rel="canonical" href="https://sergiotech.es/es/apps/savetempo/">'), 'Spanish landing must be self-canonical on its clean path.');
+assertTrue(str_contains($landingSpanish, '<title>SaveTempo – App para ahorrar y reto de las 52 semanas</title>'), 'Spanish landing title must target the primary search intent.');
+assertTrue(str_contains($landingSpanish, 'Ahorro de hoy'), 'Spanish landing must localize interface labels.');
+assertTrue(str_contains($landingSpanish, 'Ahorros pendientes'), 'Spanish landing must localize pending-savings copy.');
+assertTrue(!str_contains($landingSpanish, "Today's saving"), 'Spanish landing must not leak English interface labels.');
+assertTrue(str_contains($landingSpanish, '/es/apps/savetempo/reto-ahorro-52-semanas/'), 'Spanish landing must link to the localized 52-week guide.');
+
+$_SERVER['REQUEST_URI'] = '/es/apps/savetempo/privacy/';
+$_GET = [];
+ob_start();
+include $root . '/es/apps/savetempo/privacy/index.php';
 $privacySpanish = (string) ob_get_clean();
 assertTrue(str_contains($privacySpanish, 'Política de privacidad de SaveTempo'), 'Spanish Privacy must render.');
 assertTrue(str_contains($privacySpanish, 'smorgarc@sergiotech.es'), 'Privacy contact must be correct.');
 assertTrue(str_contains($privacySpanish, '<main id="main-content">'), 'Legal content must be server rendered.');
 assertTrue(str_contains($privacySpanish, 'data-tag="savetempo-privacy-lang-es"'), 'Privacy analytics tag must identify route and language.');
 assertTrue(str_contains($privacySpanish, 'Cuando Umami está configurado'), 'Privacy copy must disclose website analytics.');
-assertTrue(str_contains($privacySpanish, '<link rel="canonical" href="https://sergiotech.es/apps/savetempo/privacy/?lang=es">'), 'Spanish privacy page must be self-canonical.');
-assertTrue(str_contains($privacySpanish, 'hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/?lang=en"'), 'Privacy page must expose its reciprocal English alternate.');
+assertTrue(str_contains($privacySpanish, '<link rel="canonical" href="https://sergiotech.es/es/apps/savetempo/privacy/">'), 'Spanish privacy page must be self-canonical.');
+assertTrue(str_contains($privacySpanish, 'hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/"'), 'Privacy page must expose its reciprocal English alternate.');
+assertTrue(!str_contains($privacySpanish, '?lang='), 'Spanish privacy page must not publish query-string language links.');
 
-$_SERVER['REQUEST_URI'] = '/apps/savetempo/support/?lang=en';
-$_GET = ['lang' => 'en'];
+$_SERVER['REQUEST_URI'] = '/apps/savetempo/support/';
+$_GET = [];
 ob_start();
 include $root . '/apps/savetempo/support/index.php';
 $supportEnglish = (string) ob_get_clean();
@@ -162,14 +191,52 @@ assertTrue(str_contains($supportEnglish, 'mailto:smorgarc@sergiotech.es'), 'Supp
 assertTrue(str_contains($supportEnglish, 'Can lost data be restored?'), 'Lost-data support guidance must exist.');
 assertTrue(str_contains($supportEnglish, 'data-tag="savetempo-support-lang-en"'), 'Support analytics tag must identify route and language.');
 
-$_SERVER['REQUEST_URI'] = '/apps/savetempo/terms/?lang=es';
-$_GET = ['lang' => 'es'];
+$_SERVER['REQUEST_URI'] = '/es/apps/savetempo/terms/';
+$_GET = [];
 ob_start();
-include $root . '/apps/savetempo/terms/index.php';
+include $root . '/es/apps/savetempo/terms/index.php';
 $termsSpanish = (string) ob_get_clean();
 assertTrue(str_contains($termsSpanish, 'No es un servicio financiero'), 'Terms must explain the financial-service boundary.');
 assertTrue(str_contains($termsSpanish, 'Sin asesoramiento financiero'), 'Terms must contain the advice disclaimer.');
 assertTrue(str_contains($termsSpanish, 'data-tag="savetempo-terms-lang-es"'), 'Terms analytics tag must identify route and language.');
+
+$_SERVER['REQUEST_URI'] = '/apps/savetempo/52-week-savings-challenge/';
+$_GET = [];
+ob_start();
+include $root . '/apps/savetempo/52-week-savings-challenge/index.php';
+$week52English = (string) ob_get_clean();
+assertTrue(str_contains($week52English, '52 Week Savings Challenge: save €1,378 in one year'), 'English 52-week guide must render a search-focused H1.');
+assertTrue(str_contains($week52English, '<link rel="canonical" href="https://sergiotech.es/apps/savetempo/52-week-savings-challenge/">'), 'English 52-week guide must be self-canonical.');
+assertTrue(substr_count($week52English, 'data-challenge-amount') === 52, '52-week guide must server-render every weekly contribution.');
+assertTrue(str_contains($week52English, '1,378.00 €'), '52-week guide must expose the correct default total.');
+assertTrue(str_contains($week52English, '"@type":"Article"'), 'Guide structured data must identify an Article.');
+assertTrue(str_contains($week52English, 'property="og:type" content="article"'), 'Guide social metadata must identify article content.');
+assertTrue(str_contains($week52English, '"datePublished":"2026-09-06"'), 'Guide Article data must expose a publication date.');
+
+$_SERVER['REQUEST_URI'] = '/es/apps/savetempo/reto-ahorro-52-semanas/';
+$_GET = [];
+ob_start();
+include $root . '/es/apps/savetempo/reto-ahorro-52-semanas/index.php';
+$week52Spanish = (string) ob_get_clean();
+assertTrue(str_contains($week52Spanish, 'Reto de ahorro de 52 semanas: ahorra 1.378 € en un año'), 'Spanish 52-week guide must render localized useful content.');
+assertTrue(str_contains($week52Spanish, '<link rel="canonical" href="https://sergiotech.es/es/apps/savetempo/reto-ahorro-52-semanas/">'), 'Spanish 52-week guide must be self-canonical.');
+assertTrue(str_contains($week52Spanish, 'hreflang="en" href="https://sergiotech.es/apps/savetempo/52-week-savings-challenge/"'), 'Spanish guide must expose its reciprocal English alternate.');
+
+$_SERVER['REQUEST_URI'] = '/apps/savetempo/365-day-savings-challenge/';
+$_GET = [];
+ob_start();
+include $root . '/apps/savetempo/365-day-savings-challenge/index.php';
+$day365English = (string) ob_get_clean();
+assertTrue(str_contains($day365English, '365 Day Savings Challenge: save €667.95 one day at a time'), '365-day guide must render a search-focused H1.');
+assertTrue(str_contains($day365English, '667.95 €'), '365-day guide must expose the correct default total.');
+
+$_SERVER['REQUEST_URI'] = '/es/apps/savetempo/app-retos-ahorro/';
+$_GET = [];
+ob_start();
+include $root . '/es/apps/savetempo/app-retos-ahorro/index.php';
+$challengeAppSpanish = (string) ob_get_clean();
+assertTrue(str_contains($challengeAppSpanish, 'Planifica y registra un reto de ahorro sin conectar tu banco'), 'Spanish savings challenge app guide must render substantive content.');
+assertTrue(substr_count($challengeAppSpanish, '<section><span>0') === 6, 'Savings challenge app guide must render all six feature cards.');
 
 global $productConfig;
 $originalGoogle = $productConfig['googlePlayUrl'];
@@ -241,16 +308,28 @@ $sitemapLocations = [];
 foreach ($sitemapXpath->query('//sm:url/sm:loc') ?: [] as $location) {
     $sitemapLocations[] = $location->textContent;
 }
-foreach (['', '?lang=en', '?lang=es'] as $languageSuffix) {
-    foreach (['privacy/', 'support/', 'terms/'] as $route) {
-        $expectedLocation = 'https://sergiotech.es/apps/savetempo/' . $route . $languageSuffix;
-        assertTrue(in_array($expectedLocation, $sitemapLocations, true), "Sitemap must contain {$expectedLocation}.");
-    }
+foreach ([
+    'https://sergiotech.es/apps/savetempo/',
+    'https://sergiotech.es/es/apps/savetempo/',
+    'https://sergiotech.es/apps/savetempo/privacy/',
+    'https://sergiotech.es/es/apps/savetempo/privacy/',
+    'https://sergiotech.es/apps/savetempo/52-week-savings-challenge/',
+    'https://sergiotech.es/es/apps/savetempo/reto-ahorro-52-semanas/',
+    'https://sergiotech.es/apps/savetempo/365-day-savings-challenge/',
+    'https://sergiotech.es/es/apps/savetempo/reto-ahorro-365-dias/',
+    'https://sergiotech.es/apps/savetempo/savings-challenge-app/',
+    'https://sergiotech.es/es/apps/savetempo/app-retos-ahorro/',
+] as $expectedLocation) {
+    assertTrue(in_array($expectedLocation, $sitemapLocations, true), "Sitemap must contain {$expectedLocation}.");
 }
 assertTrue(!in_array('https://sergiotech.es/apps/savetempo/privacy', $sitemapLocations, true), 'Sitemap must not publish redirecting legal URLs.');
+$sitemapSource = (string) file_get_contents($root . '/sitemap.xml');
+assertTrue(!str_contains($sitemapSource, '/apps/savetempo/?lang='), 'SaveTempo sitemap must not publish query-string language URLs.');
+assertTrue(!str_contains($sitemapSource, '/apps/savetempo/privacy/?lang='), 'SaveTempo legal sitemap entries must use clean language paths.');
 
 $htaccess = (string) file_get_contents($root . '/.htaccess');
 assertTrue(str_contains($htaccess, 'RewriteRule ^apps/savetempo/(privacy|support|terms)$'), 'Legacy no-slash legal URLs must redirect directly to HTTPS canonical URLs.');
+assertTrue(str_contains($htaccess, 'lang=es'), 'Legacy Spanish query URLs must permanently redirect to clean paths.');
 
 $portfolioSource = (string) file_get_contents($root . '/index.php');
 assertTrue(str_contains($portfolioSource, 'renderSaveTempoProjectCard($language, $t)'), 'Portfolio must render the tested SaveTempo card component.');

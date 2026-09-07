@@ -1288,6 +1288,288 @@ html[data-theme="dark"] .phone {
     margin-top: 1rem;
 }
 
+.resources-section {
+    padding-block: 7rem;
+}
+
+.resource-cards,
+.guide-features {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+
+.resource-cards article,
+.guide-features section {
+    padding: 1.6rem;
+    border: 1px solid var(--line);
+    border-radius: 1.25rem;
+    background: var(--surface-glass);
+}
+
+.resource-cards article > span,
+.guide-features section > span {
+    color: var(--brand);
+    font-size: 0.72rem;
+    font-weight: 850;
+    letter-spacing: 0.12em;
+}
+
+.resource-cards h3,
+.guide-features h2 {
+    margin: 1.1rem 0 0.65rem;
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.resource-cards p,
+.guide-features p,
+.guide-sections p,
+.guide-lede,
+.challenge-table-heading p {
+    color: var(--muted);
+}
+
+.resource-cards a {
+    display: inline-flex;
+    margin-top: 1.1rem;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--brand);
+    font-weight: 800;
+}
+
+.resource-cards a:hover i {
+    transform: translate(0.18rem, -0.18rem);
+}
+
+.resource-cards a i {
+    transition: transform 160ms ease;
+}
+
+.guide-hero {
+    padding-block: clamp(5rem, 10vw, 9rem) 4.5rem;
+}
+
+.breadcrumbs {
+    display: flex;
+    margin-bottom: 3.5rem;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.breadcrumbs a {
+    color: var(--brand);
+    font-weight: 800;
+}
+
+.guide-hero h1 {
+    max-width: 16ch;
+    margin: 1rem 0 1.5rem;
+    font-size: clamp(3rem, 7vw, 6.7rem);
+    letter-spacing: -0.065em;
+    line-height: 0.95;
+}
+
+.guide-lede {
+    max-width: 48rem;
+    font-size: clamp(1.08rem, 1.8vw, 1.35rem);
+}
+
+.guide-hero .store-links {
+    margin-top: 2rem;
+}
+
+.challenge-calculator {
+    padding-block: 2rem 7rem;
+}
+
+.calculator-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: 1px solid var(--line);
+    border-radius: 1.4rem;
+    background: var(--surface-glass);
+    overflow: hidden;
+}
+
+.calculator-summary > div {
+    display: flex;
+    min-height: 8.5rem;
+    padding: 1.4rem;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.7rem;
+}
+
+.calculator-summary > div + div {
+    border-left: 1px solid var(--line);
+}
+
+.calculator-summary label,
+.calculator-summary span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 720;
+}
+
+.calculator-summary strong {
+    font-size: clamp(1.35rem, 2.5vw, 2rem);
+}
+
+.money-input {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.money-input input {
+    width: min(9rem, 100%);
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: clamp(1.35rem, 2.5vw, 2rem);
+    font-weight: 850;
+}
+
+.money-input input:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 0.3rem;
+}
+
+.money-input b {
+    color: var(--brand);
+    font-size: 1.4rem;
+}
+
+.challenge-table-heading {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 2rem;
+    margin: 4.5rem 0 1.5rem;
+    align-items: end;
+}
+
+.challenge-table-heading h2 {
+    max-width: 20ch;
+    font-size: clamp(2rem, 4vw, 3.7rem);
+    letter-spacing: -0.045em;
+    line-height: 1;
+}
+
+.challenge-table-wrap {
+    max-height: 38rem;
+    border: 1px solid var(--line);
+    border-radius: 1.25rem;
+    overflow: auto;
+}
+
+.challenge-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-glass);
+    font-variant-numeric: tabular-nums;
+}
+
+.challenge-table th,
+.challenge-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+
+.challenge-table thead th {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    background: var(--bg-elevated);
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.challenge-table tbody th {
+    color: var(--brand);
+}
+
+.guide-features {
+    padding-block: 2rem 7rem;
+}
+
+.guide-sections {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+    padding-block: 4rem 7rem;
+    border-top: 1px solid var(--line);
+}
+
+.guide-sections h2 {
+    margin-bottom: 1rem;
+    font-size: clamp(1.4rem, 2.3vw, 2rem);
+}
+
+.guide-related {
+    display: flex;
+    padding-block: 1.5rem;
+    border-block: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.guide-related a {
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 760;
+}
+
+.guide-related a:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+}
+
+.guide-cta {
+    display: grid;
+    grid-template-columns: 1fr minmax(14rem, 0.42fr);
+    margin-block: 7rem;
+    border: 1px solid var(--line);
+    border-radius: 1.6rem;
+    background: var(--surface-glass);
+    overflow: hidden;
+}
+
+.guide-cta > div {
+    padding: clamp(2rem, 5vw, 4.5rem);
+    align-self: center;
+}
+
+.guide-cta h2 {
+    margin: 0.8rem 0 1rem;
+    font-size: clamp(2.1rem, 4vw, 4rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+}
+
+.guide-cta > img {
+    width: 100%;
+    height: 32rem;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.guide-cta .store-links {
+    margin-top: 1.5rem;
+}
+
 @media (max-width: 1080px) {
     .product-header-inner {
         grid-template-columns: auto 1fr;
@@ -1409,6 +1691,28 @@ html[data-theme="dark"] .phone {
 
     .footer-store-links {
         grid-column: 1 / -1;
+    }
+
+    .resource-cards,
+    .guide-features,
+    .guide-sections,
+    .challenge-table-heading,
+    .guide-cta {
+        grid-template-columns: 1fr;
+    }
+
+    .calculator-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .calculator-summary > div + div {
+        border-top: 1px solid var(--line);
+        border-left: 0;
+    }
+
+    .guide-cta > img {
+        height: 24rem;
+        object-position: center 18%;
     }
 }
 
@@ -1594,6 +1898,35 @@ html[data-theme="dark"] .phone {
 
     .legal-page {
         padding-top: 3rem;
+    }
+
+    .resources-section,
+    .guide-sections,
+    .guide-features,
+    .challenge-calculator {
+        padding-block: 4.5rem;
+    }
+
+    .guide-hero {
+        padding-block: 3rem 3.5rem;
+    }
+
+    .guide-hero h1 {
+        font-size: clamp(2.8rem, 14vw, 4.4rem);
+    }
+
+    .breadcrumbs {
+        margin-bottom: 2.5rem;
+    }
+
+    .challenge-table th,
+    .challenge-table td {
+        min-width: 7rem;
+        padding: 0.85rem;
+    }
+
+    .guide-cta {
+        margin-block: 4.5rem;
     }
 
     .support-contact {

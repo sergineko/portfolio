@@ -4,8 +4,21 @@ ServerSignature Off
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    RewriteCond %{QUERY_STRING} (^|&)lang=es(&|$) [NC]
+    RewriteRule ^apps/savetempo/?$ https://sergiotech.es/es/apps/savetempo/ [R=301,L,NE,QSD]
+    RewriteCond %{QUERY_STRING} (^|&)lang=es(&|$) [NC]
+    RewriteRule ^apps/savetempo/(privacy|support|terms)/?$ https://sergiotech.es/es/apps/savetempo/$1/ [R=301,L,NE,QSD]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$) [NC]
+    RewriteRule ^apps/savetempo/?$ https://sergiotech.es/apps/savetempo/ [R=301,L,NE,QSD]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$) [NC]
+    RewriteRule ^apps/savetempo/(privacy|support|terms)/?$ https://sergiotech.es/apps/savetempo/$1/ [R=301,L,NE,QSD]
+
     RewriteRule ^apps/savetempo$ https://sergiotech.es/apps/savetempo/ [R=301,L,NE]
     RewriteRule ^apps/savetempo/(privacy|support|terms)$ https://sergiotech.es/apps/savetempo/$1/ [R=301,L,NE]
+    RewriteRule ^apps/savetempo/(52-week-savings-challenge|365-day-savings-challenge|savings-challenge-app)$ https://sergiotech.es/apps/savetempo/$1/ [R=301,L,NE]
+    RewriteRule ^es/apps/savetempo$ https://sergiotech.es/es/apps/savetempo/ [R=301,L,NE]
+    RewriteRule ^es/apps/savetempo/(privacy|support|terms|reto-ahorro-52-semanas|reto-ahorro-365-dias|app-retos-ahorro)$ https://sergiotech.es/es/apps/savetempo/$1/ [R=301,L,NE]
 </IfModule>
 
 <IfModule mod_headers.c>
