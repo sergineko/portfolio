@@ -2,7 +2,7 @@
 
 Portfolio profesional de [Sergio Moreno García](https://sergiotech.es), desarrollado exclusivamente con HTML5, CSS3, JavaScript nativo y PHP.
 
-El sitio presenta el perfil profesional, la experiencia laboral y los proyectos personales de Sergio mediante un diseño responsive, bilingüe y optimizado para buscadores y rendimiento. Incluye un formulario de contacto con entrega real de correo y estadísticas opcionales mediante Umami.
+El sitio presenta el perfil profesional, la experiencia laboral y los proyectos personales de Sergio mediante un diseño responsive, bilingüe y optimizado para buscadores y rendimiento. Incluye un formulario de contacto con entrega real de correo.
 
 - Sitio web: [https://sergiotech.es](https://sergiotech.es)
 - Repositorio: [sergineko/portfolio](https://github.com/sergineko/portfolio)
@@ -17,12 +17,10 @@ El sitio presenta el perfil profesional, la experiencia laboral y los proyectos 
 - Favicon de alta resolución declarado mediante la URL estable y específica `/sergiotech-favicon-192.png`, con `/favicon.ico` como compatibilidad.
 - Imágenes responsive en AVIF y WebP para mejorar el LCP.
 - Sitio completamente disponible en español e inglés estadounidense.
-- Selección automática de idioma mediante navegador y país, con selector manual persistente.
+- Portada estable en español y variante inglesa en `/?lang=en`, con selector manual ES / EN.
 - SEO, Open Graph, datos estructurados y mensajes accesibles traducidos.
 - Formulario de contacto localizado con validación, medidas antispam y envío real.
 - Entrega de correo sin credenciales SMTP obligatorias mediante `mail()` o conexión directa al MX.
-- Estadísticas opcionales con Umami Cloud o una instancia propia.
-- Eventos de conversión para proyectos, contacto, idioma y envíos correctos.
 - Pruebas automatizadas para idiomas y transporte SMTP.
 - Documentación de despliegue mediante Coolify y Nixpacks.
 
@@ -69,9 +67,9 @@ Para completar una relación recíproca y natural, es recomendable añadir en My
 - Contenido completo en español e inglés estadounidense.
 - Traducción de textos visibles, metadatos SEO, accesibilidad, datos estructurados y respuestas del formulario.
 - Selector manual `ES / EN`.
-- Preferencia guardada durante un año.
-- Detección alternativa por país cuando el navegador no informa de un idioma.
-- Inglés como idioma seguro cuando no se puede identificar idioma ni país.
+- Cada URL pública mantiene su idioma aunque cambien el navegador, el país o las cookies.
+- Las antiguas variantes `/?lang=es` redirigen permanentemente a `/`.
+- SaveTempo dispone de rutas independientes para español e inglés.
 
 ### Formulario de contacto
 
@@ -81,16 +79,6 @@ Para completar una relación recíproca y natural, es recomendable añadir en My
 - Renovación del token CSRF después de cada envío correcto.
 - `Reply-To` configurado con el correo del visitante.
 - Transporte local mediante `mail()` y entrega SMTP directa al servidor MX como alternativa.
-
-### Estadísticas
-
-- Integración opcional con Umami Cloud o una instancia propia.
-- Carga condicional: no se realiza ninguna petición si las variables no están configuradas correctamente.
-- Restricción por dominio y origen HTTPS.
-- Compatibilidad con **Do Not Track**.
-- Exclusión de parámetros de búsqueda.
-- Etiquetado de visitas por idioma.
-- Eventos sin datos personales ni contenido del formulario.
 
 ## Tecnologías y requisitos
 
@@ -148,7 +136,7 @@ No se necesita Node.js, un gestor de paquetes, una base de datos ni un proceso d
 
 | Archivo | Responsabilidad |
 |---|---|
-| `index.php` | Renderizado principal, idioma, SEO, CSP, Umami, sesión y token CSRF. |
+| `index.php` | Renderizado principal, idioma, SEO, CSP, sesión y token CSRF. |
 | `localization.php` | Catálogos ES/EN, detección del navegador, país y preferencia guardada. |
 | `contact.php` | Validación del formulario, antispam, respuestas JSON y composición del correo. |
 | `mailer.php` | Transporte mediante `mail()`, resolución MX, SMTP directo y `STARTTLS`. |
@@ -163,7 +151,7 @@ php -S 127.0.0.1:8080
 
 Después abre:
 
-- Español: [http://127.0.0.1:8080/?lang=es](http://127.0.0.1:8080/?lang=es)
+- Español: [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
 - Inglés: [http://127.0.0.1:8080/?lang=en](http://127.0.0.1:8080/?lang=en)
 
 El servidor integrado de PHP es adecuado para desarrollo, pero no debe utilizarse como servidor de producción.
@@ -190,7 +178,6 @@ export PORTFOLIO_FROM_EMAIL="no-reply@sergiotech.es"
 php -S 127.0.0.1:8080
 ```
 
-No configures Umami durante el desarrollo si no quieres registrar visitas locales. `UMAMI_DOMAINS=sergiotech.es` también evita que el tracker se ejecute sobre `127.0.0.1`.
 
 ## Variables de entorno
 
@@ -201,9 +188,6 @@ PORTFOLIO_SITE_URL=https://sergiotech.es
 PORTFOLIO_TO_EMAIL=smorgarc@sergiotech.es
 PORTFOLIO_FROM_EMAIL=no-reply@sergiotech.es
 
-UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
-UMAMI_WEBSITE_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-UMAMI_DOMAINS=sergiotech.es
 ```
 
 | Variable | Obligatoria | Finalidad |
@@ -211,87 +195,17 @@ UMAMI_DOMAINS=sergiotech.es
 | `PORTFOLIO_SITE_URL` | Recomendada | URL canónica usada por SEO, Open Graph y datos estructurados. |
 | `PORTFOLIO_TO_EMAIL` | Recomendada | Buzón que recibe los mensajes del formulario. |
 | `PORTFOLIO_FROM_EMAIL` | Recomendada | Remitente del servidor; debe pertenecer a un dominio autorizado. |
-| `UMAMI_SCRIPT_URL` | No | URL HTTPS de `script.js` en Umami Cloud o en una instancia propia. |
-| `UMAMI_WEBSITE_ID` | No | UUID asignado al sitio dentro de Umami. |
-| `UMAMI_DOMAINS` | No | Lista de dominios autorizados, separados por comas. |
 
 La aplicación utiliza valores adecuados para `sergiotech.es` cuando no se definen las variables `PORTFOLIO_*`. En producción se recomienda declararlas explícitamente.
 
-Umami permanece desactivado salvo que la URL sea HTTPS, el `Website ID` tenga formato UUID y ambas variables estén presentes.
 
 ## Selección de idioma
 
-La prioridad aplicada en cada petición es:
+El portfolio publica dos URL canónicas: `/` siempre en español y `/?lang=en` siempre en inglés. Ambas incluyen enlaces `hreflang` recíprocos; `x-default` apunta a `/`. El selector enlaza directamente a esas URL. `/?lang=es`, las variantes no normalizadas y `/index.php` redirigen con HTTP 301, conservando el estado del formulario.
 
-1. Parámetro explícito `?lang=es` o `?lang=en`.
-2. Cookie `portfolio_lang` creada por el selector manual.
-3. Idioma preferido del navegador mediante `Accept-Language`.
-4. País enviado por el proxy mediante:
-   - `CF-IPCountry`
-   - `X-Country-Code`
-   - `GEOIP_COUNTRY_CODE`
-5. Inglés cuando no hay información válida.
+El idioma de la portada ya no depende de cookies, `Accept-Language` ni país. Las funciones de detección siguen disponibles para el endpoint de contacto cuando no recibe un idioma explícito. La respuesta incluye `Content-Language`.
 
-Un idioma principal distinto del español muestra la versión inglesa. El país solo se consulta cuando `Accept-Language` no aporta una preferencia válida.
-
-La selección manual se guarda durante un año en una cookie `HttpOnly`, `SameSite=Lax` y `Secure` bajo HTTPS.
-
-La respuesta incluye `Content-Language` y una cabecera `Vary` con idioma, cookie y cabeceras de país. Si se configura una regla **Cache Everything** en Cloudflare, su clave de caché debe respetar estas variantes; de lo contrario, distintos visitantes podrían recibir el mismo idioma cacheado.
-
-## Estadísticas con Umami
-
-### Activación
-
-1. Crea el sitio `sergiotech.es` en Umami.
-2. Copia el `Website ID` mostrado en su código de seguimiento.
-3. Configura las variables `UMAMI_*` en Coolify.
-4. Despliega nuevamente la aplicación.
-5. Visita el portfolio sin un bloqueador de rastreadores.
-6. Comprueba la visita en el panel de Umami.
-
-Para Umami Cloud:
-
-```dotenv
-UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
-UMAMI_WEBSITE_ID=TU-UUID
-UMAMI_DOMAINS=sergiotech.es
-```
-
-Para una instancia propia:
-
-```dotenv
-UMAMI_SCRIPT_URL=https://analytics.example.com/script.js
-UMAMI_WEBSITE_ID=TU-UUID
-UMAMI_DOMAINS=sergiotech.es
-```
-
-La política CSP se amplía dinámicamente solo con el origen exacto de `UMAMI_SCRIPT_URL`, tanto para cargar el script como para enviar los eventos.
-
-### Datos y eventos registrados
-
-Umami registra automáticamente las páginas vistas en el portfolio y en todas las rutas públicas de SaveTempo (`/apps/savetempo/`, `/privacy`, `/support` y `/terms`). El atributo `data-tag` identifica el idioma del portfolio y, en SaveTempo, también la página servida.
-
-También se registran:
-
-| Evento | Información asociada |
-|---|---|
-| `language-switch` | Idioma elegido. |
-| `projects-cta` | Acceso desde el CTA principal. |
-| `contact-cta` | Acceso desde el CTA de contacto. |
-| `project-open` | Proyecto abierto: `myworkingarea` o `vyrsea`. |
-| `contact-link` | Método seleccionado: correo o teléfono. |
-| `contact-form-success` | Idioma del formulario enviado correctamente. |
-
-No se envían nombres, direcciones de correo, teléfonos ni el contenido del mensaje a Umami.
-
-La configuración activa:
-
-- `data-domains` para limitar los hosts admitidos.
-- `data-do-not-track="true"` para respetar la preferencia del navegador.
-- `data-exclude-search="true"` para no registrar parámetros de consulta.
-- `data-tag` para diferenciar el idioma.
-
-Si las variables faltan o no son válidas, el script no se añade al HTML y la CSP permanece cerrada a orígenes externos.
+SaveTempo utiliza `/apps/savetempo/` para inglés y `/es/apps/savetempo/` para español, con sus respectivas páginas y guías. Las URL antiguas con `?lang=` se normalizan mediante Nginx y, como alternativa, PHP. El formulario sigue usando sesiones y respuestas sin caché; no debe activarse **Cache Everything** para el HTML del portfolio.
 
 ## Formulario y envío de correo
 
@@ -351,7 +265,6 @@ Una respuesta SMTP `250` confirma que el servidor MX ha aceptado el mensaje, per
 ### Página principal
 
 - Content Security Policy con nonce por petición.
-- Orígenes de Umami permitidos únicamente cuando la configuración es válida.
 - `frame-ancestors 'none'`.
 - `object-src 'none'`.
 - `base-uri` y `form-action` limitados al propio sitio.
@@ -398,7 +311,7 @@ Nginx no procesa `.htaccess`; consulta la sección de Coolify para trasladar las
 - Grafo JSON-LD con `ProfilePage`, `Person` y los sitios web de los proyectos.
 - URL canónica específica para cada idioma.
 - Enlaces `hreflang` para `es`, `en` y `x-default`.
-- `sitemap.xml` con las dos variantes.
+- `sitemap.xml` con 16 URL canónicas: las dos variantes del portfolio y las 14 de SaveTempo.
 - `robots.txt`.
 - Edad actual calculada dinámicamente.
 - Enlaces externos rastreables con `noopener`, texto descriptivo y referencia de origen.
@@ -408,7 +321,6 @@ Nginx no procesa `.htaccess`; consulta la sección de Coolify para trasladar las
 
 - CSS crítico integrado en la respuesta para evitar una solicitud bloqueante.
 - JavaScript diferido.
-- Tracker de Umami diferido y completamente opcional.
 - Sin fuentes externas ni frameworks.
 - Retrato de alta calidad con máster de 1120 × 1400 píxeles y variantes responsive AVIF/WebP de 480, 800 y 1120 píxeles.
 - `srcset` y `sizes` para descargar la imagen adecuada.
@@ -450,7 +362,7 @@ Nginx no procesa `.htaccess`; consulta la sección de Coolify para trasladar las
 Nixpacks detecta PHP mediante `index.php`, configura el servidor web y sirve la raíz del repositorio.
 
 > [!IMPORTANT]
-> El proveedor PHP de Nixpacks utiliza Nginx, por lo que `.htaccess` no se aplica. Las cabeceras generadas desde PHP, incluida la CSP, siguen funcionando; las reglas adicionales de Apache para HSTS, compresión y caché deben trasladarse a Nginx o Cloudflare si se necesitan.
+> El proveedor PHP de Nixpacks utiliza Nginx, por lo que `.htaccess` no se aplica. El archivo `nginx.template.conf` de la raíz se detecta automáticamente al reconstruir la aplicación. Incluye las redirecciones de SaveTempo, la normalización de `www`, errores 404 para rutas inexistentes y protección de archivos internos. Las redirecciones relativas conservan HTTPS cuando TLS termina en Coolify o Cloudflare. Las cabeceras generadas desde PHP, incluida la CSP, siguen funcionando.
 
 ### 3. Configurar dominio y HTTPS
 
@@ -464,19 +376,17 @@ Nixpacks detecta PHP mediante `index.php`, configura el servidor web y sirve la 
 
 1. Abre **Environment Variables → Developer View**.
 2. Copia las variables de la sección correspondiente.
-3. Sustituye el UUID de Umami por el valor real.
-4. Configúralas como variables de ejecución o **Runtime Variables**.
-5. No guardes contraseñas ni secretos en Git.
+3. Configúralas como variables de ejecución o **Runtime Variables**.
+4. No guardes contraseñas ni secretos en Git.
 
 ### 5. Desplegar
 
 1. Guarda la configuración.
 2. Pulsa **Deploy**.
 3. Verifica en los logs que la aplicación escucha en el puerto `80`.
-4. Comprueba `/`, `/?lang=es`, `/?lang=en`, `/sergiotech-favicon-192.png`, `/favicon.ico` y los recursos de `assets/`. Una petición `GET` directa a `/contact.php` debe responder `405`.
+4. Comprueba `/` en español y `/?lang=en` en inglés, incluso enviando otro idioma o cookie. `/?lang=es` debe devolver 301 hacia `/`. Comprueba `/sergiotech-favicon-192.png`, `/favicon.ico` y los recursos de `assets/`. Una petición `GET` directa a `/contact.php` debe responder `405`.
 5. Envía un mensaje real desde el formulario.
-6. Comprueba una visita y los eventos en Umami.
-7. Activa **Auto Deploy** si quieres publicar automáticamente cada push a `main`.
+6. Activa **Auto Deploy** si quieres publicar automáticamente cada push a `main`.
 
 ## Pruebas
 
@@ -492,6 +402,17 @@ php -l localization.php
 php -l mailer.php
 node --check assets/js/main.js
 ```
+
+Con PHP-FPM y Nginx sirviendo el proyecto en un entorno local o de pruebas:
+
+```powershell
+$env:SEO_TEST_BASE_URL = 'http://127.0.0.1:18080'
+node tests/seo_http_test.mjs
+```
+
+La prueba HTTP comprueba idiomas estables, URL canónicas, `hreflang`, el sitemap, redirecciones de las rutas antiguas, errores 404 y el retorno del formulario sin JavaScript. Las peticiones POST omiten el token CSRF y se rechazan antes de intentar enviar correo.
+
+El diagnóstico de Search Console y los pasos posteriores al despliegue se documentan en [`docs/seo/indexing-audit-2026-10-02.md`](docs/seo/indexing-audit-2026-10-02.md).
 
 `localization_test.php` comprueba:
 
@@ -568,25 +489,12 @@ Comprueba:
 - Logs del contenedor.
 - SPF y reputación de la IP.
 
-### Umami no registra visitas
-
-Comprueba:
-
-- Formato UUID de `UMAMI_WEBSITE_ID`.
-- URL HTTPS correcta en `UMAMI_SCRIPT_URL`.
-- Dominio incluido en `UMAMI_DOMAINS`.
-- Que el navegador no tenga **Do Not Track** activado.
-- Bloqueadores de publicidad o rastreo.
-- Consola y pestaña **Network** del navegador.
-- CSP devuelta por la página.
-
 ### Se muestra un idioma incorrecto
 
-1. Abre `/?lang=es` o `/?lang=en`.
-2. Comprueba la cookie `portfolio_lang`.
-3. Revisa `Accept-Language`.
-4. Comprueba las cabeceras de país del proxy.
-5. Verifica que Cloudflare no esté cacheando el HTML sin respetar `Vary`.
+1. Abre `/` para español o `/?lang=en` para inglés.
+2. Comprueba `Content-Language`, el atributo `lang` y la URL canónica.
+3. Verifica que la aplicación tenga desplegada la versión actual.
+4. Revisa que Cloudflare no esté cacheando el HTML o ignorando el parámetro de idioma.
 
 ### Google muestra un favicon antiguo
 
@@ -603,7 +511,6 @@ No cambies `/sergiotech-favicon-192.png` en futuras versiones: Google recomienda
 - [ ] Dominio y HTTPS funcionando.
 - [ ] Redirección HTTP → HTTPS activada.
 - [ ] Variables `PORTFOLIO_*` configuradas.
-- [ ] Variables `UMAMI_*` configuradas si se requieren estadísticas.
 - [ ] Resolución MX disponible.
 - [ ] Conexiones TCP salientes al puerto `25`.
 - [ ] SPF configurado.
@@ -611,7 +518,6 @@ No cambies `/sergiotech-favicon-192.png` en futuras versiones: Google recomienda
 - [ ] DMARC publicado.
 - [ ] Formulario probado con un buzón real.
 - [ ] `Reply-To` comprobado.
-- [ ] Visitas y eventos visibles en Umami.
 - [ ] Español e inglés revisados.
 - [ ] Cabeceras CSP y seguridad verificadas.
 - [ ] `/sergiotech-favicon-192.png` y `/favicon.ico` devuelven el icono propio.

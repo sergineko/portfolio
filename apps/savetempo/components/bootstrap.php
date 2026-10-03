@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../../components/umami.php';
-
 /** @var array<string, mixed> $productConfig */
 $productConfig = require __DIR__ . '/../config/product.php';
 /** @var array<string, array<string, mixed>> $productTranslations */
@@ -22,7 +20,8 @@ function stEscape(string $value): string
 function stLanguage(): string
 {
     $supported = stConfig('locales');
-    $requested = strtolower(trim((string) ($_GET['lang'] ?? '')));
+    $value = $_GET['lang'] ?? '';
+    $requested = is_string($value) ? strtolower(trim($value)) : '';
 
     if (is_array($supported) && in_array($requested, $supported, true)) {
         return $requested;
@@ -101,6 +100,32 @@ function stRouteCanonical(string $page, string $language): string
     return $base . ($suffix === '/' ? '/' : $suffix);
 }
 
+function stRedirectLegacyRequest(string $page, string $language): void
+{
+    if (PHP_SAPI === 'cli' || !in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'HEAD'], true)) {
+        return;
+    }
+
+    $uri = (string) ($_SERVER['REQUEST_URI'] ?? stRoutePath($page, $language));
+    $path = parse_url($uri, PHP_URL_PATH);
+    $query = [];
+    parse_str((string) (parse_url($uri, PHP_URL_QUERY) ?? ''), $query);
+    $canonical = stRouteCanonical($page, $language);
+    $host = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
+    $canonicalHost = (string) parse_url($canonical, PHP_URL_HOST);
+
+    // PHP also normalizes legacy links when Apache rewrite rules are unavailable.
+    if ($path !== stRoutePath($page, $language)
+        || array_key_exists('lang', $query)
+        || $host === "www.{$canonicalHost}"
+    ) {
+        unset($query['lang']);
+        $queryString = http_build_query($query);
+        header('Location: ' . $canonical . ($queryString === '' ? '' : '?' . $queryString), true, 301);
+        exit;
+    }
+}
+
 /** @return list<array{store: string, url: string, label: string}> */
 function stStoreLinks(?string $language = null): array
 {
@@ -130,21 +155,11 @@ function stAsset(string $key, ?string $language = null): string
     return stPath((string) $asset);
 }
 
-/**
- * @param array{enabled: bool, scriptUrl: string, websiteId: string, origin: string, domains: string} $umamiConfig
- */
-function stContentSecurityPolicy(string $nonce, array $umamiConfig, bool $isHttps): string
+function stContentSecurityPolicy(string $nonce, bool $isHttps): string
 {
-    $scriptSources = "'self' 'nonce-{$nonce}'";
-    $connectSources = "'self'";
-    if ($umamiConfig['enabled']) {
-        $scriptSources .= " {$umamiConfig['origin']}";
-        $connectSources .= " {$umamiConfig['origin']}";
-    }
-
-    $policy = "default-src 'self'; base-uri 'self'; connect-src {$connectSources}; font-src 'self'; "
+    $policy = "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; "
         . "form-action 'none'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; "
-        . "script-src {$scriptSources}; style-src 'self'";
+        . "script-src 'self' 'nonce-{$nonce}'; style-src 'self'";
     if ($isHttps) {
         $policy .= '; upgrade-insecure-requests';
     }
@@ -152,10 +167,7 @@ function stContentSecurityPolicy(string $nonce, array $umamiConfig, bool $isHttp
     return $policy;
 }
 
-/**
- * @param array{enabled: bool, scriptUrl: string, websiteId: string, origin: string, domains: string} $umamiConfig
- */
-function stSendHeaders(string $language, string $nonce, array $umamiConfig): void
+function stSendHeaders(string $language, string $nonce): void
 {
     if (headers_sent()) {
         return;
@@ -163,7 +175,7 @@ function stSendHeaders(string $language, string $nonce, array $umamiConfig): voi
 
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
-    $csp = stContentSecurityPolicy($nonce, $umamiConfig, $isHttps);
+    $csp = stContentSecurityPolicy($nonce, $isHttps);
 
     header("Content-Security-Policy: {$csp}");
     header('Referrer-Policy: strict-origin-when-cross-origin');
@@ -196,9 +208,9 @@ function stRenderStoreLinks(string $className = 'store-links'): void
 function stRenderPage(string $page, callable $renderBody): void
 {
     $language = stLanguage();
+    stRedirectLegacyRequest($page, $language);
     $nonce = base64_encode(random_bytes(18));
-    $umamiConfig = umamiConfiguration((string) stConfig('canonicalBaseUrl'));
-    stSendHeaders($language, $nonce, $umamiConfig);
+    stSendHeaders($language, $nonce);
 
     $title = (string) stCopy("meta.{$page}Title", $language);
     $description = (string) stCopy("meta.{$page}Description", $language);
@@ -215,7 +227,7 @@ function stRenderPage(string $page, callable $renderBody): void
         'url' => $canonical,
         'description' => $description,
         'inLanguage' => $language,
-        'dateModified' => '2026-09-06',
+        'dateModified' => $page === 'privacy' ? stConfig('privacyLastUpdated') : '2026-09-06',
     ];
     if ($page === 'landing') {
         $googlePlayUrl = stConfig('googlePlayUrl');
@@ -276,7 +288,6 @@ function stRenderPage(string $page, callable $renderBody): void
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="<?= stEscape(stPath('/assets/css/savetempo.css?v=1.0.3')) ?>">
     <script type="application/ld+json" nonce="<?= stEscape($nonce) ?>"><?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
-    <?php umamiRenderTrackingScript($umamiConfig, "savetempo-{$page}-lang-{$language}"); ?>
     <script src="<?= stEscape(stPath('/assets/js/savetempo.js?v=1.0.2')) ?>" defer></script>
 </head>
 <body data-theme-label="<?= stEscape((string) stCopy('chrome.theme', $language)) ?>">

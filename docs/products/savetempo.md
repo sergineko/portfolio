@@ -93,15 +93,13 @@ The web copies are derived from the approved SaveTempo release assets. The Flutt
 
 Screenshots were resized from 1080×1920 to 540×960 and encoded as WebP without changing the original files. The landing uses CSS device frames rather than third-party mockups.
 
-## Privacy and analytics audit
+## Website privacy
 
-The portfolio and every SaveTempo route load the same shared Umami integration only when valid `UMAMI_SCRIPT_URL` and `UMAMI_WEBSITE_ID` environment variables are present. In that configuration it records page views everywhere and the portfolio's named interaction events, respects Do Not Track, excludes search parameters and sends no contact-form fields. Tags identify the rendered language and, on SaveTempo, the specific route. The portfolio language selector stores `portfolio_lang` in a first-party `HttpOnly`, `SameSite=Lax` cookie.
+The portfolio and SaveTempo pages do not embed analytics scripts or interaction tracking. The portfolio contact form keeps its functional session and CSRF protection. Each portfolio URL now has a fixed language; the ES/EN selector links to those canonical URLs.
 
-The SaveTempo tracker is cookieless and adds no advertising pixels or session replay. Its PHP pages do not start a session and set no cookies. Because the microsite currently shares the `sergiotech.es` origin, a browser that previously visited the portfolio can still attach the portfolio's path-wide first-party session or language cookie to a microsite request; the SaveTempo code does not read or use it. Language and theme choices can be stored only in the browser's local storage (`savetempo-language` and `savetempo-theme`). This website behavior is disclosed separately from the mobile-app behavior in the public Privacy Policy.
+SaveTempo PHP pages do not start a session or set cookies. Because the microsite shares the `sergiotech.es` origin, a browser that previously visited the portfolio can still attach its path-wide first-party session or language cookie; SaveTempo does not read or use it. Language and theme choices can be stored in browser local storage (`savetempo-language` and `savetempo-theme`). The hosting provider may process technical request logs for website operation and security. Website behavior is disclosed separately from mobile-app behavior in the public Privacy Policy.
 
 The app statements come from SaveTempo's `PROJECT_STATUS.md`, `docs/PERSISTENCE.md`, `docs/NOTIFICATIONS.md`, `docs/SETTINGS.md`, `docs/release/store_compliance.md` and security audit: current production code has no backend, account, cloud sync, analytics, ads or banking integration; Android app backup/transfer is disabled; final iOS backup treatment remains subject to release validation.
-
-No analytics cookie or consent storage was added. Applicable consent and disclosure requirements should still be reassessed before deployment whenever the analytics configuration or hosting jurisdiction changes.
 
 ## SEO and accessibility
 

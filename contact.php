@@ -26,6 +26,7 @@ header("Content-Language: {$language}");
 
 function respond(bool $success, string $message, int $statusCode = 200, array $extra = []): never
 {
+    global $language;
     http_response_code($statusCode);
 
     $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
@@ -42,7 +43,8 @@ function respond(bool $success, string $message, int $statusCode = 200, array $e
     }
 
     $query = $success ? 'success' : 'error';
-    header("Location: index.php?status={$query}#contacto", true, 303);
+    $languageQuery = $language === 'en' ? 'lang=en&' : '';
+    header("Location: /?{$languageQuery}status={$query}#contacto", true, 303);
     exit;
 }
 

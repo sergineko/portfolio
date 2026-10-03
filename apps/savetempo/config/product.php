@@ -45,7 +45,7 @@ return [
     'supportedPlatforms' => ['Android'],
     'locales' => ['en', 'es'],
     'defaultLocale' => 'en',
-    'privacyLastUpdated' => '2026-08-12',
+    'privacyLastUpdated' => '2026-10-02',
     'termsLastUpdated' => '2026-08-12',
     'portfolioUrl' => 'https://sergiotech.es/',
     'assets' => [
@@ -64,8 +64,6 @@ return [
         'settings' => ['en' => '/assets/images/settings-en.webp', 'es' => '/assets/images/settings-es.webp'],
     ],
     'websitePrivacy' => [
-        'analyticsEnabled' => true,
-        'analyticsProvider' => 'Umami',
         'cookiesUsed' => false,
         'localPreferences' => ['language', 'theme'],
     ],

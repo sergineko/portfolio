@@ -81,29 +81,9 @@ assertTrue(stRouteCanonical('week52', 'es') === 'https://sergiotech.es/es/apps/s
 assertTrue(is_file($root . '/apps/savetempo/assets/images/google-play-badge-en.png'), 'English Google Play badge asset must exist.');
 assertTrue(is_file($root . '/apps/savetempo/assets/images/google-play-badge-es.png'), 'Spanish Google Play badge asset must exist.');
 
-$umamiEnvironment = [
-    'UMAMI_SCRIPT_URL' => getenv('UMAMI_SCRIPT_URL'),
-    'UMAMI_WEBSITE_ID' => getenv('UMAMI_WEBSITE_ID'),
-    'UMAMI_DOMAINS' => getenv('UMAMI_DOMAINS'),
-];
-putenv('UMAMI_SCRIPT_URL=http://cloud.umami.is/script.js');
-putenv('UMAMI_WEBSITE_ID=not-a-uuid');
-putenv('UMAMI_DOMAINS=sergiotech.es');
-$invalidUmamiConfig = umamiConfiguration('https://sergiotech.es');
-assertTrue($invalidUmamiConfig['enabled'] === false, 'Umami must stay disabled for an insecure URL and invalid website ID.');
-ob_start();
-umamiRenderTrackingScript($invalidUmamiConfig, 'invalid');
-assertTrue((string) ob_get_clean() === '', 'Disabled Umami configuration must not render a tracker.');
-
-putenv('UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js');
-putenv('UMAMI_WEBSITE_ID=11111111-2222-3333-4444-555555555555');
-putenv('UMAMI_DOMAINS=sergiotech.es');
-$validUmamiConfig = umamiConfiguration('https://sergiotech.es');
-assertTrue($validUmamiConfig['enabled'] === true, 'Valid Umami configuration must enable analytics.');
-assertTrue($validUmamiConfig['origin'] === 'https://cloud.umami.is', 'Umami origin must be normalized for CSP.');
-$saveTempoCsp = stContentSecurityPolicy('test-nonce', $validUmamiConfig, true);
-assertTrue(str_contains($saveTempoCsp, "connect-src 'self' https://cloud.umami.is"), 'SaveTempo CSP must allow Umami event delivery.');
-assertTrue(str_contains($saveTempoCsp, "script-src 'self' 'nonce-test-nonce' https://cloud.umami.is"), 'SaveTempo CSP must allow the Umami tracker script.');
+$saveTempoCsp = stContentSecurityPolicy('test-nonce', true);
+assertTrue(str_contains($saveTempoCsp, "connect-src 'self';"), 'SaveTempo connections must be restricted to its own origin.');
+assertTrue(str_contains($saveTempoCsp, "script-src 'self' 'nonce-test-nonce';"), 'SaveTempo scripts must be limited to local functionality and structured data.');
 
 $routeFiles = [
     $root . '/apps/savetempo/index.php',
@@ -152,9 +132,6 @@ assertTrue(str_contains($landingEnglish, 'class="showcase-track" tabindex="0"'),
 assertTrue(str_contains($landingEnglish, 'data-showcase-track'), 'The showcase must expose its keyboard navigation hook.');
 assertTrue(str_contains($landingEnglish, 'savetempo.css?v=1.0.3'), 'The stylesheet URL must invalidate the previous public cache.');
 assertTrue(str_contains($landingEnglish, 'savetempo.js?v=1.0.2'), 'The script URL must invalidate the previous public cache.');
-assertTrue(str_contains($landingEnglish, 'src="https://cloud.umami.is/script.js"'), 'Landing must load the shared Umami tracker.');
-assertTrue(str_contains($landingEnglish, 'data-website-id="11111111-2222-3333-4444-555555555555"'), 'Landing must use the configured Umami website ID.');
-assertTrue(str_contains($landingEnglish, 'data-tag="savetempo-landing-lang-en"'), 'Landing analytics tag must identify route and language.');
 
 $_SERVER['REQUEST_URI'] = '/es/apps/savetempo/';
 $_GET = [];
@@ -176,8 +153,7 @@ $privacySpanish = (string) ob_get_clean();
 assertTrue(str_contains($privacySpanish, 'Política de privacidad de SaveTempo'), 'Spanish Privacy must render.');
 assertTrue(str_contains($privacySpanish, 'smorgarc@sergiotech.es'), 'Privacy contact must be correct.');
 assertTrue(str_contains($privacySpanish, '<main id="main-content">'), 'Legal content must be server rendered.');
-assertTrue(str_contains($privacySpanish, 'data-tag="savetempo-privacy-lang-es"'), 'Privacy analytics tag must identify route and language.');
-assertTrue(str_contains($privacySpanish, 'Cuando Umami está configurado'), 'Privacy copy must disclose website analytics.');
+assertTrue(str_contains($privacySpanish, 'no integra scripts de analítica'), 'Privacy copy must describe the current website behavior.');
 assertTrue(str_contains($privacySpanish, '<link rel="canonical" href="https://sergiotech.es/es/apps/savetempo/privacy/">'), 'Spanish privacy page must be self-canonical.');
 assertTrue(str_contains($privacySpanish, 'hreflang="en" href="https://sergiotech.es/apps/savetempo/privacy/"'), 'Privacy page must expose its reciprocal English alternate.');
 assertTrue(!str_contains($privacySpanish, '?lang='), 'Spanish privacy page must not publish query-string language links.');
@@ -189,7 +165,6 @@ include $root . '/apps/savetempo/support/index.php';
 $supportEnglish = (string) ob_get_clean();
 assertTrue(str_contains($supportEnglish, 'mailto:smorgarc@sergiotech.es'), 'Support email must be clickable.');
 assertTrue(str_contains($supportEnglish, 'Can lost data be restored?'), 'Lost-data support guidance must exist.');
-assertTrue(str_contains($supportEnglish, 'data-tag="savetempo-support-lang-en"'), 'Support analytics tag must identify route and language.');
 
 $_SERVER['REQUEST_URI'] = '/es/apps/savetempo/terms/';
 $_GET = [];
@@ -198,7 +173,6 @@ include $root . '/es/apps/savetempo/terms/index.php';
 $termsSpanish = (string) ob_get_clean();
 assertTrue(str_contains($termsSpanish, 'No es un servicio financiero'), 'Terms must explain the financial-service boundary.');
 assertTrue(str_contains($termsSpanish, 'Sin asesoramiento financiero'), 'Terms must contain the advice disclaimer.');
-assertTrue(str_contains($termsSpanish, 'data-tag="savetempo-terms-lang-es"'), 'Terms analytics tag must identify route and language.');
 
 $_SERVER['REQUEST_URI'] = '/apps/savetempo/52-week-savings-challenge/';
 $_GET = [];
@@ -333,11 +307,6 @@ assertTrue(str_contains($htaccess, 'lang=es'), 'Legacy Spanish query URLs must p
 
 $portfolioSource = (string) file_get_contents($root . '/index.php');
 assertTrue(str_contains($portfolioSource, 'renderSaveTempoProjectCard($language, $t)'), 'Portfolio must render the tested SaveTempo card component.');
-assertTrue(str_contains($portfolioSource, 'umamiConfiguration($siteUrl)'), 'Portfolio must use the shared Umami configuration.');
 assertTrue(str_contains($portfolioSource, 'styles.css?v=2.3.1'), 'Portfolio stylesheet must invalidate the previous public cache.');
-
-foreach ($umamiEnvironment as $name => $value) {
-    putenv($value === false ? $name : "{$name}={$value}");
-}
 
 echo 'SaveTempo microsite tests: PASS' . PHP_EOL;

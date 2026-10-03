@@ -14,7 +14,7 @@ function renderSaveTempoProjectCard(string $language, callable $text): void
     $isAvailable = stConfig('releaseStatus') === 'available' && $storeLinks !== [];
     ?>
     <article class="project-showcase project-savetempo project-card--savetempo" data-reveal>
-        <a class="project-card-overlay" href="<?= $escape(stPath('/')) ?>" aria-label="<?= $escape($text('view_savetempo')) ?>" data-umami-event="project-open" data-umami-event-project="savetempo"></a>
+        <a class="project-card-overlay" href="<?= $escape(stRoutePath('landing', $language)) ?>" aria-label="<?= $escape($text('view_savetempo')) ?>"></a>
         <div class="project-copy">
             <div class="project-heading-row">
                 <span class="project-index">01</span>
