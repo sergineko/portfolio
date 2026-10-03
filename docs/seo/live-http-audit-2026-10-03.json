@@ -1,0 +1,138 @@
+[
+  {
+    "url": "https://sergiotech.es/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/?lang=en",
+    "status": "200",
+    "canonical": "https://sergiotech.es/?lang=en",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/apps/savetempo/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/apps/savetempo/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/es/apps/savetempo/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/es/apps/savetempo/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/apps/savetempo/privacy/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/apps/savetempo/privacy/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/es/apps/savetempo/privacy/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/es/apps/savetempo/privacy/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/apps/savetempo/support/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/apps/savetempo/support/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/es/apps/savetempo/support/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/es/apps/savetempo/support/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/apps/savetempo/terms/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/apps/savetempo/terms/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/es/apps/savetempo/terms/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/es/apps/savetempo/terms/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/apps/savetempo/52-week-savings-challenge/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/apps/savetempo/52-week-savings-challenge/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/es/apps/savetempo/reto-ahorro-52-semanas/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/es/apps/savetempo/reto-ahorro-52-semanas/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/apps/savetempo/365-day-savings-challenge/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/apps/savetempo/365-day-savings-challenge/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/es/apps/savetempo/reto-ahorro-365-dias/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/es/apps/savetempo/reto-ahorro-365-dias/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/apps/savetempo/savings-challenge-app/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/apps/savetempo/savings-challenge-app/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/es/apps/savetempo/app-retos-ahorro/",
+    "status": "200",
+    "canonical": "https://sergiotech.es/es/apps/savetempo/app-retos-ahorro/",
+    "canonicalCorrect": true,
+    "location": "",
+    "analyticsFound": false
+  },
+  {
+    "url": "https://sergiotech.es/?lang=es",
+    "status": "301",
+    "canonical": "",
+    "canonicalCorrect": false,
+    "location": "https://sergiotech.es/",
+    "analyticsFound": false
+  }
+]

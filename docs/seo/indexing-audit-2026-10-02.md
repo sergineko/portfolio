@@ -1,6 +1,6 @@
 # Diagnóstico de indexación de sergiotech.es
 
-Revisión realizada el 2 de octubre de 2026 sobre la propiedad de dominio de Google Search Console y las respuestas HTTP de producción. Los cambios de código descritos aquí están preparados localmente y pendientes de despliegue.
+Revisión realizada el 2 de octubre de 2026 sobre la propiedad de dominio de Google Search Console y las respuestas HTTP de producción. Las correcciones se publicaron y desplegaron el **3 de octubre**, en el commit `541da5a716e1b2941feb71a63252a3fb979d4bd4`. Las comprobaciones posteriores confirman el comportamiento corregido en producción.
 
 ## Qué significan las 18 URL sin indexar
 
@@ -20,7 +20,7 @@ El sitemap fue leído correctamente el **28 de septiembre**, con **17 URL descub
 
 Las estadísticas de rastreo, actualizadas al **30 de septiembre**, registran **349 solicitudes en 90 días**, una respuesta media de **528 ms** y menos del **1 % de respuestas 5xx**. El estado del host informa de **problemas históricos de conectividad**, con un porcentaje de error aceptable actualmente; DNS y robots.txt también tienen un porcentaje de error aceptable. Los incidentes anteriores podrían haber reducido el ritmo de rastreo, pero el informe no demuestra que sean la causa de las 14 URL pendientes. Conviene comprobar en los logs del origen que no vuelvan a producirse, especialmente durante despliegues.
 
-## Problemas comprobados en producción
+## Problemas comprobados antes del despliegue
 
 1. `/` cambia entre español e inglés según `Accept-Language`, cookie y país, conservando el mismo canonical. Se verificó con peticiones en ambos idiomas. Esto explica un conflicto real entre la portada y `/?lang=en`; no demuestra por sí solo el motivo de las 14 URL pendientes de rastreo.
 2. `.htaccess` contiene las redirecciones de las URL antiguas, pero el despliegue PHP de Nixpacks utiliza Nginx y no lee ese archivo. La URL `/apps/savetempo/?lang=es` sigue devolviendo HTTP 200 como duplicado de `/es/apps/savetempo/`.
@@ -30,7 +30,7 @@ Las estadísticas de rastreo, actualizadas al **30 de septiembre**, registran **
 
 No se encontraron bloqueos `noindex`, cabeceras `X-Robots-Tag` restrictivas ni errores HTTP en las 17 URL del sitemap existente. Las comprobaciones directas desde esta conexión no sustituyen la inspección de Googlebot; las solicitudes de indexación aceptadas aportan una comprobación adicional de disponibilidad para Google.
 
-## Correcciones preparadas
+## Correcciones publicadas
 
 - `/` muestra siempre español; `/?lang=en` muestra siempre inglés. El usuario eligió expresamente este comportamiento.
 - Canonical, `hreflang`, selector ES/EN y sitemap coinciden con esas dos URL.
@@ -52,7 +52,7 @@ Google aceptó solicitudes de indexación para:
 
 Ambas se añadieron a la cola de rastreo prioritaria. Las confirmaciones están en [la captura española](savetempo-indexing-request-2026-10-02.jpg) y [la inglesa](savetempo-en-indexing-request-2026-10-02.jpg). Esto confirma la aceptación de la solicitud, **no que las páginas ya estén indexadas**.
 
-No se reenviaron el sitemap ni las solicitudes de las portadas del portfolio antes del despliegue: Google todavía vería la configuración anterior. Tampoco se intentó validar como error la redirección HTTP correcta.
+El **3 de octubre** Google aceptó el reenvío de `https://sergiotech.es/sitemap.xml`, que ahora contiene 16 URL canónicas. El informe puede seguir mostrando las 17 URL del último procesamiento hasta que Google lea de nuevo el archivo. También se solicitó el rastreo de ambas portadas del portfolio después de que sus pruebas en tiempo real confirmaran «La URL está disponible para Google» y «La página se puede indexar». La portada española ya estaba indexada; su solicitud permite actualizar el contenido corregido. No se intentó validar como error la redirección HTTP correcta.
 
 ## Validación local
 
@@ -61,16 +61,18 @@ No se reenviaron el sitemap ni las solicitudes de las portadas del portfolio ant
 - Sintaxis de la configuración Nginx: correcta.
 - **82 comprobaciones HTTP** correctas con PHP-FPM 8.3 y Nginx en una red Docker aislada. Incluyen las 16 páginas canónicas, idioma estable ante cookies y cabeceras contrarias, enlaces `hreflang`, variantes antiguas, barras finales, `www`, errores 404 y retorno del formulario sin enviar correo.
 
-La prueba usa la plantilla con sus variables resueltas para el entorno Docker. La selección de la plantilla por la versión de Nixpacks instalada en Coolify debe confirmarse en los logs del siguiente despliegue.
+La prueba usa la plantilla con sus variables resueltas para el entorno Docker. El despliegue de Coolify terminó correctamente el 3 de octubre y las respuestas de producción confirman que se aplican las redirecciones de la plantilla.
 
-## Pasos para completar la publicación
+## Validación de producción y seguimiento
 
-1. Publicar estos cambios en la rama de producción y **reconstruir** la aplicación en Coolify para que Nixpacks utilice `nginx.template.conf`.
-2. Comprobar `/` con cookies e idioma inglés: debe devolver español. `/?lang=en` debe devolver inglés. Las 16 URL del sitemap deben responder 200 con canonical propio.
-3. Comprobar `/apps/savetempo/support?lang=es`: debe devolver un único 301 hacia `/es/apps/savetempo/support/`, sin salto a HTTP.
-4. Reenviar `https://sergiotech.es/sitemap.xml` en Search Console cuando producción publique las 16 URL canónicas.
-5. Inspeccionar `/` y `/?lang=en`, probar las URL publicadas y solicitar indexación después de verificar el contenido corregido. Priorizar después las guías de SaveTempo si siguen sin rastrearse. Evitar repetir solicitudes de la misma URL mientras siga en cola.
-6. Revisar la inspección individual y el informe de indexación tras el nuevo rastreo. Verificar que no se repitan los problemas históricos de conectividad. Si las URL siguen sin rastrearse, consultar estadísticas de rastreo y logs de servidor/Cloudflare para detectar errores 403, 429 o 5xx reales de Googlebot. Si se rastrean pero no se indexan, revisar calidad, diferencias de contenido, canonical elegido y enlaces entrantes pertinentes.
+1. **Completado:** publicación en `main` y reconstrucción de producción en Coolify.
+2. **Completado:** `/` devuelve español incluso con cookie `lang=en` y cabecera `Accept-Language: en`; `/?lang=en` devuelve inglés. Las 16 URL del sitemap responden 200 con canonical propio.
+3. **Completado:** `/apps/savetempo/support?lang=es` devuelve un único 301 relativo hacia `/es/apps/savetempo/support/`, sin salto a HTTP. `www` y `?lang=es` también se consolidan mediante 301.
+4. **Completado:** sitemap corregido reenviado a Search Console. Auditoría pública posterior disponible en [live-http-audit-2026-10-03.json](live-http-audit-2026-10-03.json).
+5. **Completado:** pruebas en tiempo real y solicitudes de indexación de las portadas española e inglesa aceptadas. Priorizar después las guías de SaveTempo si siguen sin rastrearse. Evitar repetir solicitudes de la misma URL mientras siga en cola.
+6. **Pendiente de Google:** revisar la inspección individual y el informe de indexación tras el nuevo rastreo. Verificar que no se repitan los problemas históricos de conectividad. Si las URL siguen sin rastrearse, consultar estadísticas de rastreo y logs de servidor/Cloudflare para detectar errores 403, 429 o 5xx reales de Googlebot. Si se rastrean pero no se indexan, revisar calidad, diferencias de contenido, canonical elegido y enlaces entrantes pertinentes.
+
+El código de Umami se retiró del sitio y se desactivó la inyección de Cloudflare Web Analytics. Las respuestas HTML de las 16 URL canónicas se comprobaron sin ambos scripts. Las estadísticas básicas se consultan en Cloudflare a partir del tráfico del proxy, sin añadir JavaScript de analítica al navegador. Esto no sustituye las métricas de eventos ni distingue con precisión las visitas humanas de todo el tráfico automatizado.
 
 El resultado esperado es que Google pueda indexar las **16 páginas canónicas**. Las URL HTTP, antiguas o duplicadas seguirán pudiendo figurar como excluidas correctamente. Google decide la indexación y no ofrece una garantía de plazo ni de cobertura total.
 
