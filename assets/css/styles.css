@@ -421,6 +421,29 @@ h1 span {
     margin-top: 1.4rem;
 }
 
+.social-link {
+    display: inline-flex;
+    min-height: 3.35rem;
+    padding: 0.65rem 0.5rem;
+    align-items: center;
+    gap: 0.55rem;
+    border-radius: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 750;
+    transition: color 160ms ease, background 160ms ease;
+}
+
+.social-link:hover {
+    background: var(--surface-hover);
+    color: var(--accent);
+}
+
+.social-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
+}
+
 .hero-focus span {
     padding: 0.35rem 0.65rem;
     border: 1px solid var(--line);
@@ -1381,6 +1404,15 @@ h1 span {
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
+    padding-block: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-meta {
+    display: grid;
+    gap: 0.25rem;
+    margin-left: auto;
+    text-align: right;
 }
 
 .footer-inner p {
@@ -1615,6 +1647,11 @@ h1 span {
 
     .footer-inner .brand-name {
         display: inline;
+    }
+
+    .footer-meta {
+        margin-left: 0;
+        text-align: left;
     }
 }
 

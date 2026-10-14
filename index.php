@@ -10,6 +10,7 @@ $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
     || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
 
 $siteUrl = rtrim(getenv('PORTFOLIO_SITE_URL') ?: 'https://sergiotech.es', '/');
+$linkedInUrl = 'https://www.linkedin.com/in/sergiomg93/';
 $requestedLanguage = portfolioSupportedLanguage($_GET['lang'] ?? null);
 $language = $requestedLanguage ?? 'es';
 $canonicalUrl = $language === 'en' ? "{$siteUrl}/?lang=en" : "{$siteUrl}/";
@@ -143,6 +144,7 @@ $structuredData = [
             'name' => 'Sergio Moreno García',
             'url' => "{$siteUrl}/",
             'image' => "{$siteUrl}/assets/images/sergio-moreno-portrait-v3-1120.webp",
+            'sameAs' => [$linkedInUrl],
             'email' => 'mailto:smorgarc@sergiotech.es',
             'telephone' => '+34614839879',
             'mainEntityOfPage' => ['@id' => $profilePageId],
@@ -209,7 +211,7 @@ $structuredData = [
     <?php if ($inlineStyles !== ''): ?>
         <style nonce="<?= $escape($nonce) ?>"><?= $inlineStyles ?></style>
     <?php else: ?>
-        <link rel="stylesheet" href="assets/css/styles.css?v=2.3.1">
+        <link rel="stylesheet" href="assets/css/styles.css?v=2.3.2">
     <?php endif; ?>
     <script type="application/ld+json" nonce="<?= $escape($nonce) ?>">
         <?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>
@@ -268,6 +270,13 @@ $structuredData = [
                     <div class="hero-actions">
                         <a class="button button-primary" href="#proyectos"><?= $escape($t('hero_projects')) ?> <span aria-hidden="true">↘</span></a>
                         <a class="button button-secondary" href="#contacto"><?= $escape($t('hero_contact')) ?></a>
+                        <a class="social-link" href="<?= $escape($linkedInUrl) ?>" target="_blank" rel="me noopener" aria-label="<?= $escape($t('linkedin_profile_label')) ?>">
+                            <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
+                                <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96C2 21.32 2.69 22 3.55 22h16.9c.86 0 1.55-.68 1.55-1.52V3.52C22 2.68 21.31 2 20.45 2ZM7.93 18.75H4.98V9.2h2.95v9.55ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8v-4.64c0-1.1-.02-2.52-1.54-2.52-1.54 0-1.78 1.2-1.78 2.44v4.72H9.53V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.98 0 3.56 1.96 3.56 4.5v5.27Z"/>
+                            </svg>
+                            <span>LinkedIn</span>
+                            <span aria-hidden="true">↗</span>
+                        </a>
                     </div>
                     <div class="hero-focus" aria-label="<?= $escape($t('focus_label')) ?>">
                         <span>Backend</span>
@@ -537,6 +546,10 @@ $structuredData = [
                             <span><?= $escape($t('contact_phone')) ?></span>
                             <strong>+34 614 839 879</strong>
                         </a>
+                        <a href="<?= $escape($linkedInUrl) ?>" target="_blank" rel="me noopener" aria-label="<?= $escape($t('linkedin_profile_label')) ?>">
+                            <span>LinkedIn</span>
+                            <strong><?= $escape($t('linkedin_connect')) ?> <span aria-hidden="true">↗</span></strong>
+                        </a>
                         <div>
                             <span><?= $escape($t('contact_location')) ?></span>
                             <strong><?= $escape($t('location')) ?></strong>
@@ -605,8 +618,19 @@ $structuredData = [
                 <img class="brand-mark" src="assets/icons/sergio-tech-mark-42.webp" srcset="assets/icons/sergio-tech-mark-42.webp 1x, assets/icons/sergio-tech-mark-84.webp 2x" alt="" width="42" height="42" aria-hidden="true" decoding="async">
                 <span class="brand-name">Sergio Moreno García</span>
             </a>
-            <p><?= $escape($t('footer_note')) ?></p>
-            <p>© <span data-current-year><?= date('Y') ?></span> Sergio Moreno García</p>
+            <nav aria-label="<?= $escape($t('social_links')) ?>">
+                <a class="social-link" href="<?= $escape($linkedInUrl) ?>" target="_blank" rel="me noopener" aria-label="<?= $escape($t('linkedin_profile_label')) ?>">
+                    <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
+                        <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96C2 21.32 2.69 22 3.55 22h16.9c.86 0 1.55-.68 1.55-1.52V3.52C22 2.68 21.31 2 20.45 2ZM7.93 18.75H4.98V9.2h2.95v9.55ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8v-4.64c0-1.1-.02-2.52-1.54-2.52-1.54 0-1.78 1.2-1.78 2.44v4.72H9.53V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.98 0 3.56 1.96 3.56 4.5v5.27Z"/>
+                    </svg>
+                    <span>LinkedIn</span>
+                    <span aria-hidden="true">↗</span>
+                </a>
+            </nav>
+            <div class="footer-meta">
+                <p><?= $escape($t('footer_note')) ?></p>
+                <p>© <span data-current-year><?= date('Y') ?></span> Sergio Moreno García</p>
+            </div>
         </div>
     </footer>
 </body>
