@@ -73,6 +73,25 @@
         link.addEventListener('click', () => setMenuState(false));
     });
 
+    // Keep native anchor destinations for bookmarks and keyboard navigation,
+    // while ordinary in-page clicks leave the current address unchanged.
+    document.addEventListener('click', (event) => {
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const link = event.target.closest?.('a[href^="#"]');
+        if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+        let target;
+        try { target = document.getElementById(decodeURIComponent(link.hash.slice(1))); } catch { return; }
+        if (!target) return;
+        event.preventDefault();
+        if (window.location.hash) history.replaceState(history.state, '', window.location.pathname + window.location.search);
+        if (!target.hasAttribute('tabindex')) {
+            target.setAttribute('tabindex', '-1');
+            target.addEventListener('blur', () => target.removeAttribute('tabindex'), {once:true});
+        }
+        target.focus({preventScroll:true});
+        target.scrollIntoView({behavior:reducedMotion?'instant':'smooth',block:'start'});
+    });
+
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') setMenuState(false);
     });
