@@ -1,0 +1,12 @@
+---
+import product from '../../data/product.json';
+import SaveTempo from '../../layouts/SaveTempo.astro';
+import Landing from '../../components/SaveTempoLanding.astro';
+import Legal from '../../components/SaveTempoLegal.astro';
+import Guide from '../../components/SaveTempoGuide.astro';
+export function getStaticPaths(){return ['en','es'].flatMap(language=>Object.entries(product.pagePaths).map(([page,paths])=>({params:{path:language+paths[language].replace(/\/$/,'')},props:{page,language}})));}
+const {language,page}=Astro.props;
+---
+<SaveTempo language={language} page={page}>
+ {page==='landing'?<Landing language={language}/>:['privacy','support','terms'].includes(page)?<Legal page={page} language={language}/>:<Guide page={page} language={language}/>}
+</SaveTempo>

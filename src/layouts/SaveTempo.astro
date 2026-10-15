@@ -1,0 +1,104 @@
+---
+import { productHelpers, productSchema, safeJson } from '../lib/site.js';
+import StoreLinks from '../components/StoreLinks.astro';
+const {language,page}=Astro.props;
+const {stCopy,stConfig,stAsset,stPath,stRoutePath,stCanonical,stRouteCanonical,stStoreLinks}=productHelpers(language);
+const title=stCopy('meta.'+page+'Title');
+const description=stCopy('meta.'+page+'Description');
+const canonical=stRouteCanonical(page,language);
+const englishCanonical=stRouteCanonical(page,'en');
+const spanishCanonical=stRouteCanonical(page,'es');
+const englishRoute=stRoutePath(page,'en');
+const spanishRoute=stRoutePath(page,'es');
+const isGuide=['week52','day365','challengeApp'].includes(page);
+const structuredData=productSchema(page,language);
+const storeLinks=stStoreLinks();
+---
+<!doctype html>
+<html lang={language} data-page={page}>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title}</title>
+    <meta name="description" content={description}>
+    <meta name="author" content="Sergio Moreno">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#09110e">
+    <link rel="canonical" href={canonical}>
+    <link rel="alternate" hreflang="en" href={englishCanonical}>
+    <link rel="alternate" hreflang="es" href={spanishCanonical}>
+    <link rel="alternate" hreflang="x-default" href={englishCanonical}>
+    <link rel="icon" type="image/png" sizes="64x64" href={stAsset('favicon')}>
+    <meta property="og:type" content={isGuide ? 'article' : 'website'}>
+    <meta property="og:locale" content={language === 'es' ? 'es_ES' : 'en_US'}>
+    <meta property="og:locale:alternate" content={language === 'es' ? 'en_US' : 'es_ES'}>
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:url" content={canonical}>
+    <meta property="og:image" content={stCanonical('assets/images/savetempo-og.png')}>
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SaveTempo — save at your own tempo">
+    <meta property="og:site_name" content="SaveTempo">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href={stPath('/assets/css/savetempo.css?v=1.0.3')}>
+    <script is:inline type="application/ld+json" set:html={safeJson(structuredData)}></script>
+    <script is:inline src={stPath('/assets/js/savetempo.js?v=1.0.2')} defer></script>
+</head>
+<body data-theme-label={stCopy('chrome.theme', language)}>
+    <a class="skip-link" href="#main-content">{stCopy('chrome.skip', language)}</a>
+    <header class="product-header" data-header>
+        <div class="product-shell product-header-inner">
+            <a class="product-brand" href={stRoutePath('landing', language)} aria-label="SaveTempo">
+                <img src={stAsset('icon')} alt="" width="44" height="44" decoding="async">
+                <span>SaveTempo</span>
+            </a>
+            <nav class="product-nav" aria-label="SaveTempo">
+                {page === 'landing' ? (<>
+                    <a href="#how-it-works">{stCopy('chrome.how', language)}</a>
+                    <a href="#features">{stCopy('chrome.features', language)}</a>
+                </>) : (<>
+                    <a href={stRoutePath('landing', language)}>{stCopy('chrome.backHome', language)}</a>
+                </>)}
+                <a href={stRoutePath('privacy', language)}>{stCopy('chrome.privacy', language)}</a>
+            </nav>
+            <div class="product-controls">
+                <div class="language-switch" aria-label={stCopy('chrome.language', language)}>
+                    <a href={englishRoute} lang="en" hreflang="en" data-language="en" aria-current={language === 'en' ? 'page' : undefined}>EN</a>
+                    <a href={spanishRoute} lang="es" hreflang="es" data-language="es" aria-current={language === 'es' ? 'page' : undefined}>ES</a>
+                </div>
+                <button class="theme-toggle" type="button" aria-label={stCopy('chrome.theme', language)} data-theme-toggle><span aria-hidden="true">◐</span></button>
+                {storeLinks.length === 0 ? (<>
+                    <span class="header-status">{stCopy('chrome.comingSoon', language)}</span>
+                </>) : (<>
+                    <a class="header-status header-download" href={storeLinks[0]['url']} target="_blank" rel="noopener noreferrer">{stCopy('chrome.download', language)}</a>
+                </>)}
+            </div>
+        </div>
+    </header>
+    <main id="main-content">
+        <slot />
+    </main>
+    <footer class="product-footer">
+        <div class="product-shell footer-primary">
+            <div>
+                <a class="product-brand footer-brand" href={stRoutePath('landing', language)}>
+                    <img src={stAsset('icon')} alt="" width="48" height="48" loading="lazy" decoding="async">
+                    <span>SaveTempo</span>
+                </a>
+                <p>{stCopy('chrome.publishedBy', language)}</p>
+            </div>
+            <nav class="footer-nav" aria-label={stCopy('chrome.footerNav', language)}>
+                <a href={stRoutePath('privacy', language)}>{stCopy('chrome.privacy', language)}</a>
+                <a href={stRoutePath('support', language)}>{stCopy('chrome.support', language)}</a>
+                <a href={stRoutePath('terms', language)}>{stCopy('chrome.terms', language)}</a>
+            </nav>
+            <StoreLinks language={language} className="store-links footer-store-links" />
+        </div>
+        <div class="product-shell footer-secondary">
+            <p>© 2026 Sergiotech</p>
+            <a href={stConfig('portfolioUrl')} target="_blank" rel="noopener noreferrer">{stCopy('chrome.createdBy', language)} <span aria-hidden="true">↗</span></a>
+        </div>
+    </footer>
+</body>
+</html>

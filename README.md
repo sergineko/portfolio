@@ -1,5 +1,17 @@
 # Portfolio de Sergio Moreno García
 
+## Migración a Cloudflare Pages con Astro
+
+La nueva web usa Astro 7.4 en modo estático. Ejecutar `npm ci`, `npm run build` y `npm test` con Node 24. El directorio de publicación es `dist`; nunca publicar la raíz del repositorio. La implementación PHP anterior se conserva temporalmente para la reversión y no se ejecuta ni se publica en Pages.
+
+El portfolio mantiene `/` y `/?lang=en`. SaveTempo se sirve en `savetempo.sergiotech.es`, con español bajo `/es/`. El Worker de Pages conserva redirecciones permanentes desde las rutas antiguas que usa la app Android publicada. No se necesita actualizar esa app para que sus enlaces legales sigan funcionando.
+
+El contacto usa Turnstile, token firmado y cookie HttpOnly, validación de origen y campos, límite de tamaño y KV con claves de IP anonimizadas y caducidad de un minuto. KV ofrece un límite orientativo por su consistencia eventual; Turnstile se verifica en cada envío. Resend recibe únicamente el correo validado y el destinatario está fijado en el servidor. No se guardan mensajes en KV. Las pruebas simuladas no equivalen a una entrega real; comprobar también el panel de Resend.
+
+Configurar como secretos de Pages: `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`, `TURNSTILE_SITE_KEY` y `CONTACT_SECRET` (al menos 32 caracteres aleatorios). Mantener `CONTACT_RATE` enlazado al KV. Sin esos bindings el formulario no envía correo y ofrece el enlace de email. No copiar secretos de producción a previews de contribuciones externas.
+
+El texto inferior describe el alojamiento PHP anterior y se mantiene como referencia durante la transición.
+
 Portfolio profesional de [Sergio Moreno García](https://sergiotech.es), desarrollado exclusivamente con HTML5, CSS3, JavaScript nativo y PHP.
 
 El sitio presenta el perfil profesional, la experiencia laboral y los proyectos personales de Sergio mediante un diseño responsive, bilingüe y optimizado para buscadores y rendimiento. Incluye un formulario de contacto con entrega real de correo.

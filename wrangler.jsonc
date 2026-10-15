@@ -1,0 +1,10 @@
+{
+  "name": "sergiotech-portfolio",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-10-15",
+  "kv_namespaces": [{"binding":"CONTACT_RATE","id":"b97864cff13c47c3ab4fd33c22ff061e"}],
+  "vars": {
+    "CONTACT_FROM":"Sergiotech <portfolio@contact.sergiotech.es>",
+    "CONTACT_TO":"smorgarc@sergiotech.es"
+  }
+}

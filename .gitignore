@@ -4,3 +4,8 @@
 *.log
 .DS_Store
 Thumbs.db
+node_modules/
+dist/
+.astro/
+.wrangler/
+edge/security.generated.js

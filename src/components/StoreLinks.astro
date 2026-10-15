@@ -1,0 +1,8 @@
+---
+import {productHelpers} from '../lib/site.js';
+const {language,className='store-links'}=Astro.props;
+const {stStoreLinks,stAsset}=productHelpers(language);
+---
+<div class={className}>
+ {stStoreLinks().map(link=><a class={`store-link store-link-${link.store}`} href={link.url} target="_blank" rel="noopener noreferrer"><img class="google-play-badge" src={stAsset('googlePlayBadge')} alt={link.label} width="646" height="250" /></a>)}
+</div>

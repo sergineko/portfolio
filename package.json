@@ -1,0 +1,20 @@
+{
+  "name": "sergiotech-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro build && node scripts/finalize-pages.mjs",
+    "preview": "astro preview --host 127.0.0.1",
+    "test": "node --test tests/pages/*.test.mjs"
+  },
+  "dependencies": {
+    "astro": "7.4.0"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}
