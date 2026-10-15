@@ -161,7 +161,7 @@
             script.onload = resolve; script.onerror = reject; document.head.append(script);
         });
         widget = window.turnstile.render(form.querySelector('[data-turnstile]'), {
-            sitekey:config.siteKey,action:'contact',theme:'auto',
+            sitekey:config.siteKey,action:'contact',theme:'auto',appearance:'interaction-only',
             callback:()=>{submitButton.disabled=false},
             'expired-callback':()=>{submitButton.disabled=true},
             'error-callback':()=>{submitButton.disabled=true;showFormStatus(formText.genericError,false)},
