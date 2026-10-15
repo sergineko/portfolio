@@ -5,13 +5,15 @@ const {stCopy,stConfig}=productHelpers(language);
 const legal=stCopy('legal');
 const sections=legal[page==='support'?'supportFaq':page+'Sections']??[];
 const email=stConfig('supportEmail');
+const privacyDate=new Intl.DateTimeFormat(language,{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(stConfig('privacyLastUpdated')+'T00:00:00Z'));
+const lastUpdated=page==='privacy'?(language==='es'?'Última actualización: ':'Last updated: ')+privacyDate:legal.lastUpdated;
 ---
 <article class="legal-page product-shell">
  <header class="legal-hero">
   <p class="section-kicker">{legal[page+'Eyebrow']??''}</p>
   <h1>{legal[page+'Title']??''}</h1>
   <p class="legal-intro">{legal[page+'Intro']??''}</p>
-  {page!=='support'&&<p class="last-updated">{legal.lastUpdated??''}</p>}
+  {page!=='support'&&<p class="last-updated">{lastUpdated??''}</p>}
  </header>
  {page==='support'?<>
   <section class="support-contact" aria-labelledby="support-email-title"><p class="section-kicker">SaveTempo</p><h2 id="support-email-title">{legal.emailTitle}</h2><p>{legal.emailBody}</p><a class="product-button product-button-primary" href={'mailto:'+email}>{legal.emailCta} <span aria-hidden="true">↗</span></a></section>

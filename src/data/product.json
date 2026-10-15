@@ -5,15 +5,15 @@
   "creatorName": "Sergio Moreno",
   "supportEmail": "smorgarc@sergiotech.es",
   "privacyEmail": "smorgarc@sergiotech.es",
-  "basePath": "/apps/savetempo",
-  "canonicalBaseUrl": "https://sergiotech.es/apps/savetempo",
+  "basePath": "",
+  "canonicalBaseUrl": "https://savetempo.sergiotech.es",
   "localizedBasePaths": {
-    "en": "/apps/savetempo",
-    "es": "/es/apps/savetempo"
+    "en": "",
+    "es": "/es"
   },
   "localizedCanonicalBaseUrls": {
-    "en": "https://sergiotech.es/apps/savetempo",
-    "es": "https://sergiotech.es/es/apps/savetempo"
+    "en": "https://savetempo.sergiotech.es",
+    "es": "https://savetempo.sergiotech.es/es"
   },
   "pagePaths": {
     "landing": {
@@ -59,7 +59,7 @@
     "es"
   ],
   "defaultLocale": "en",
-  "privacyLastUpdated": "2026-10-02",
+  "privacyLastUpdated": "2026-10-15",
   "termsLastUpdated": "2026-08-12",
   "portfolioUrl": "https://sergiotech.es/",
   "assets": {
