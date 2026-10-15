@@ -25,3 +25,9 @@ Esta revisión del código local no equivale a una prueba del APK instalado. Ant
 6. Desactivar Auto Deploy de Coolify antes de integrar cambios de Node en main. Retirar su contenedor únicamente tras verificar el nuevo alojamiento público.
 
 Conservar el commit PHP `155b0a4549fe045b213b1fe1eff6f1ac435f7495` y los antiguos registros A a `87.106.25.136` para una reversión. Los secretos no pertenecen al repositorio.
+
+## Rendimiento e indexación
+
+El tema se fija antes de procesar los estilos para evitar repintados y transiciones de color durante la carga. El retrato AVIF usa precarga responsive. Turnstile y la sesión del formulario se inicializan al acercarse al formulario o enfocarlo; la validación del servidor permanece obligatoria. Los enlaces canónicos y hreflang distinguen español e inglés. `?lang=es` redirige a `/` y las rutas antiguas de SaveTempo redirigen al documento equivalente del nuevo subdominio. Las vistas pages.dev llevan noindex.
+
+Search Console ya dispone de la propiedad de dominio sergiotech.es, que incluye el subdominio. Enviar ambos sitemaps tras el cambio; no utilizar Cambio de dirección para todo sergiotech.es, porque solo se traslada una sección. Las puntuaciones de PageSpeed son mediciones de laboratorio y no garantizan resultados de usuarios reales ni posicionamiento.

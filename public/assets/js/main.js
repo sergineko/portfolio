@@ -38,7 +38,8 @@
         element.textContent = String(new Date().getFullYear());
     });
 
-    const storedTheme = localStorage.getItem('portfolio-theme');
+    let storedTheme = null;
+    try { storedTheme = localStorage.getItem('portfolio-theme'); } catch {}
     const preferredTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     const currentTheme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : preferredTheme;
     root.dataset.theme = currentTheme;
@@ -54,7 +55,7 @@
     themeToggle?.addEventListener('click', () => {
         const nextTheme = root.dataset.theme === 'light' ? 'dark' : 'light';
         root.dataset.theme = nextTheme;
-        localStorage.setItem('portfolio-theme', nextTheme);
+        try { localStorage.setItem('portfolio-theme', nextTheme); } catch {}
         updateThemeLabel();
     });
 
@@ -166,7 +167,25 @@
             'error-callback':()=>{submitButton.disabled=true;showFormStatus(formText.genericError,false)},
         });
     };
-    prepare().catch(()=>showFormStatus(formText.genericError+' smorgarc@sergiotech.es',false));
+    let preparing = false;
+    const prepareWhenNeeded = () => {
+        if (preparing || widget !== null) return;
+        preparing = true;
+        prepare().catch(() => {
+            preparing = false;
+            showFormStatus(formText.genericError+' smorgarc@sergiotech.es',false);
+        });
+    };
+    form.addEventListener('focusin', prepareWhenNeeded);
+    if ('IntersectionObserver' in window) {
+        const contactObserver = new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) {
+                prepareWhenNeeded();
+                contactObserver.disconnect();
+            }
+        }, {rootMargin:'400px'});
+        contactObserver.observe(form);
+    } else prepareWhenNeeded();
     form.addEventListener('submit', async event => {
         event.preventDefault();
         if (!form.reportValidity() || widget === null || !window.turnstile.getResponse(widget)) return;
