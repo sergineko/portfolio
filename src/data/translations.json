@@ -228,7 +228,7 @@
         [
           "This website",
           [
-            "The SaveTempo website code does not include analytics scripts, advertising pixels or session replay. The hosting provider may process technical request logs to operate and secure the website. No saving plans, progress, support messages or form fields are sent to an analytics service by these pages. Because the microsite currently shares sergiotech.es, your browser may also send a first-party session or language cookie previously created on the portfolio; the SaveTempo pages do not start a session or read those cookies. If you choose a language or color theme, that preference is stored locally in your browser. The website does not include a support form or persist user submissions."
+            "The SaveTempo website code does not include analytics scripts, advertising pixels or session replay. The website is hosted on Cloudflare Pages at savetempo.sergiotech.es. The hosting provider may process technical request logs to operate and secure the website. No saving plans, progress, support messages or form fields are sent to an analytics service by these pages. SaveTempo pages do not start portfolio sessions or read its cookies. Your browser may still send older cookies scoped to the parent domain until they expire; these pages do not read them. If you choose a language or color theme, that preference is stored locally in your browser. The website does not include a support form or persist user submissions."
           ]
         ],
         [
@@ -605,7 +605,7 @@
         [
           "Esta web",
           [
-            "El código de la web de SaveTempo no integra scripts de analítica, píxeles publicitarios ni reproducción de sesiones. El proveedor de alojamiento puede procesar registros técnicos de las peticiones para operar y proteger la web. Estas páginas no envían planes de ahorro, progreso, mensajes de soporte ni campos de formularios a un servicio de analítica. Como el micrositio comparte actualmente sergiotech.es, el navegador también puede enviar una cookie propia de sesión o idioma creada anteriormente en el portfolio; las páginas de SaveTempo no inician sesión ni leen esas cookies. Si eliges un idioma o tema de color, esa preferencia se guarda localmente en tu navegador. La web no incluye formulario de soporte ni persiste envíos de usuarios."
+            "El código de la web de SaveTempo no integra scripts de analítica, píxeles publicitarios ni reproducción de sesiones. La web se aloja en Cloudflare Pages bajo savetempo.sergiotech.es. El proveedor de alojamiento puede procesar registros técnicos de las peticiones para operar y proteger la web. Estas páginas no envían planes de ahorro, progreso, mensajes de soporte ni campos de formularios a un servicio de analítica. Las páginas de SaveTempo no inician sesiones del portfolio ni leen sus cookies. El navegador podría seguir enviando cookies antiguas con alcance del dominio principal hasta que caduquen; estas páginas no las leen. Si eliges un idioma o tema de color, esa preferencia se guarda localmente en tu navegador. La web no incluye formulario de soporte ni persiste envíos de usuarios."
           ]
         ],
         [
