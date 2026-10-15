@@ -1,0 +1,46 @@
+---
+import { productHelpers } from '../lib/site.js';
+const {language,text}=Astro.props;
+const {stConfig,stRoutePath,stAsset,stStoreLinks}=productHelpers(language);
+const storeLinks=stStoreLinks();
+const isAvailable=stConfig('releaseStatus')==='available'&&storeLinks.length>0;
+---
+    <article class="project-showcase project-savetempo project-card--savetempo" data-reveal>
+        <a class="project-card-overlay" href={stRoutePath('landing', language)} aria-label={text('view_savetempo')}></a>
+        <div class="project-copy">
+            <div class="project-heading-row">
+                <span class="project-index">01</span>
+                <span class={`project-status${isAvailable ? '' : ' project-status-building'}`}><i aria-hidden="true"></i> {text(isAvailable ? 'status_available' : 'status_coming_soon')}</span>
+            </div>
+            <p class="project-type">{text('savetempo_type')}</p>
+            <h3>SaveTempo</h3>
+            <p class="project-description">{text('savetempo_description')}</p>
+            <ul class="project-tags" aria-label={text('features_label')}>
+                {stConfig('supportedPlatforms').map(platform => (<>
+                    <li>{platform}</li>
+                </>))}
+                <li>{text('tag_local_first')}</li>
+            </ul>
+            <span class="project-link" aria-hidden="true">{text('view_savetempo')} <i>↗</i></span>
+            {storeLinks.length > 0 && (<>
+                <div class="project-store-links">
+                    {storeLinks.map(storeLink => (<>
+                        <a class={`project-store-link project-store-link--${storeLink['store']}`} href={storeLink['url']} target="_blank" rel="noopener noreferrer">
+                            {storeLink.store === 'google' ? (<>
+                                <img class="google-play-badge" src={stAsset('googlePlayBadge', language)} alt={storeLink['label']} width="646" height="250">
+                            </>) : (<>
+                                {storeLink['label']}
+                            </>)}
+                        </a>
+                    </>))}
+                </div>
+            </>)}
+        </div>
+        <div class="project-app-preview project-card--savetempo__media">
+            <img class="project-app-icon project-card--savetempo__icon" src={stAsset('icon')} alt="" width="88" height="88" loading="lazy" decoding="async">
+            <div class="project-phone project-phone-frame">
+                <span aria-hidden="true"></span>
+                <img class="project-phone-screenshot" src={stAsset('today', language)} alt={text('savetempo_alt')} width="540" height="960" loading="lazy" decoding="async">
+            </div>
+        </div>
+    </article>

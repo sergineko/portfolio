@@ -1,0 +1,20 @@
+---
+import {productHelpers} from '../lib/site.js';
+const {page,language}=Astro.props;
+const {stCopy,stConfig}=productHelpers(language);
+const legal=stCopy('legal');
+const sections=legal[page==='support'?'supportFaq':page+'Sections']??[];
+const email=stConfig('supportEmail');
+---
+<article class="legal-page product-shell">
+ <header class="legal-hero">
+  <p class="section-kicker">{legal[page+'Eyebrow']??''}</p>
+  <h1>{legal[page+'Title']??''}</h1>
+  <p class="legal-intro">{legal[page+'Intro']??''}</p>
+  {page!=='support'&&<p class="last-updated">{legal.lastUpdated??''}</p>}
+ </header>
+ {page==='support'?<>
+  <section class="support-contact" aria-labelledby="support-email-title"><p class="section-kicker">SaveTempo</p><h2 id="support-email-title">{legal.emailTitle}</h2><p>{legal.emailBody}</p><a class="product-button product-button-primary" href={'mailto:'+email}>{legal.emailCta} <span aria-hidden="true">↗</span></a></section>
+  <div class="legal-sections support-faq">{sections.map((section,index)=><details open={index===0}><summary>{section[0]}</summary><p>{section[1]}</p></details>)}</div>
+ </>:<div class="legal-sections">{sections.map(section=><section><h2>{section[0]}</h2>{section[1].map(paragraph=><p>{paragraph.split(email).map((part,index)=><>{index>0&&<a href={'mailto:'+email}>{email}</a>}{part}</>)}</p>)}</section>)}</div>}
+</article>

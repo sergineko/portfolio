@@ -1,0 +1,476 @@
+---
+import translations from '../data/portfolio.json';
+import SaveTempoCard from './SaveTempoCard.astro';
+import { portfolioSchema, safeJson } from '../lib/site.js';
+import inlineStyles from '../../assets/css/styles.css?raw';
+const { language = 'es' } = Astro.props;
+const t = key => translations[language][key] ?? key;
+const siteUrl = 'https://sergiotech.es';
+const canonicalUrl = language === 'en' ? siteUrl+'/?lang=en' : siteUrl+'/';
+const linkedInUrl = 'https://www.linkedin.com/in/sergiomg93/';
+const today = new Date();
+const age = today.getFullYear()-1993-(today < new Date(today.getFullYear(),8,15) ? 1 : 0);
+const structuredData = portfolioSchema(language,t);
+---
+<!doctype html>
+<html lang={language}>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{t('seo_title')}</title>
+    <meta name="description" content={t('seo_description')}>
+    <meta name="author" content="Sergio Moreno García">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#0a0d10">
+    <meta name="apple-mobile-web-app-title" content="Sergio Moreno">
+    <link rel="canonical" href={canonicalUrl}>
+    <link rel="alternate" hreflang="es" href={`${siteUrl}/`}>
+    <link rel="alternate" hreflang="en" href={`${siteUrl}/?lang=en`}>
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/`}>
+    <link rel="icon" type="image/png" sizes="192x192" href="/sergiotech-favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon-v2.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="preload" as="image" type="image/avif"
+        imagesrcset="/assets/images/sergio-moreno-portrait-v3-480.avif 480w, /assets/images/sergio-moreno-portrait-v3-800.avif 800w, /assets/images/sergio-moreno-portrait-v3-1120.avif 1120w"
+        imagesizes="(max-width: 440px) calc(100vw - 4rem), (max-width: 540px) calc(100vw - 6rem), (max-width: 900px) 432px, 464px" fetchpriority="high">
+
+    <meta property="og:type" content="profile">
+    <meta property="og:locale" content={language === 'es' ? 'es_ES' : 'en_US'}>
+    <meta property="og:locale:alternate" content={language === 'es' ? 'en_US' : 'es_ES'}>
+    <meta property="og:title" content={t('seo_title')}>
+    <meta property="og:description" content={t('og_description')}>
+    <meta property="og:url" content={canonicalUrl}>
+    <meta property="profile:first_name" content="Sergio">
+    <meta property="profile:last_name" content="Moreno García">
+    <meta name="twitter:card" content="summary">
+
+    <script is:inline>
+        try {
+            const saved = localStorage.getItem('portfolio-theme');
+            document.documentElement.dataset.theme = saved === 'light' || saved === 'dark'
+                ? saved : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        } catch {
+            document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+    </script>
+    <style is:inline set:html={inlineStyles}></style>
+    <script is:inline type="application/ld+json" set:html={safeJson(structuredData)}></script>
+    <script is:inline src="/assets/js/main.js?v=2.2.3" defer></script>
+</head>
+<body
+    data-theme-dark={t('theme_enable_dark')}
+    data-theme-light={t('theme_enable_light')}
+    data-menu-open={t('menu_open')}
+    data-menu-close={t('menu_close')}>
+    <a class="skip-link" href="#contenido">{t('skip_content')}</a>
+
+    <header class="site-header" data-header>
+        <div class="container header-inner">
+            <a class="brand" href="#inicio" aria-label={t('go_home')}>
+                <img class="brand-mark" src="/assets/icons/sergio-tech-mark-42.webp" srcset="assets/icons/sergio-tech-mark-42.webp 1x, assets/icons/sergio-tech-mark-84.webp 2x" alt="" width="42" height="42" aria-hidden="true" decoding="async">
+                <span class="brand-name">Sergio Moreno</span>
+            </a>
+
+            <nav class="main-nav" id="main-navigation" aria-label={t('main_navigation')} data-nav>
+                <a href="#sobre-mi">{t('nav_about')}</a>
+                <a href="#experiencia">{t('nav_experience')}</a>
+                <a href="#proyectos">{t('nav_projects')}</a>
+                <a href="#contacto">{t('nav_contact')}</a>
+            </nav>
+
+            <div class="header-actions">
+                <nav class="language-switcher" aria-label={t('language_selector')}>
+                    <a href="/" lang="es" hreflang="es" aria-label={t('language_spanish')} aria-current={language === 'es' ? 'page' : undefined}>ES</a>
+                    <a href="/?lang=en" lang="en" hreflang="en" aria-label={t('language_english')} aria-current={language === 'en' ? 'page' : undefined}>EN</a>
+                </nav>
+                <button class="theme-toggle" type="button" aria-label={t('theme_change')} title={t('theme_title')} data-theme-toggle>
+                    <span class="theme-icon" aria-hidden="true"></span>
+                </button>
+                <button class="menu-toggle" type="button" aria-controls="main-navigation" aria-expanded="false" aria-label={t('menu_open')} data-menu-toggle>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="contenido">
+        <section class="hero section" id="inicio" aria-labelledby="hero-title">
+            <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+            <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <p class="eyebrow">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        {t('hero_eyebrow')}
+                    </p>
+                    <h1 id="hero-title">{t('hero_title')} <span>{t('hero_title_highlight')}</span></h1>
+                    <p class="hero-lead">{t('hero_lead')}</p>
+                    <div class="hero-actions">
+                        <a class="button button-primary" href="#proyectos">{t('hero_projects')} <span aria-hidden="true">↘</span></a>
+                        <a class="button button-secondary" href="#contacto">{t('hero_contact')}</a>
+                        <a class="social-link" href={linkedInUrl} target="_blank" rel="me noopener" aria-label={t('linkedin_profile_label')}>
+                            <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
+                                <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96C2 21.32 2.69 22 3.55 22h16.9c.86 0 1.55-.68 1.55-1.52V3.52C22 2.68 21.31 2 20.45 2ZM7.93 18.75H4.98V9.2h2.95v9.55ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8v-4.64c0-1.1-.02-2.52-1.54-2.52-1.54 0-1.78 1.2-1.78 2.44v4.72H9.53V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.98 0 3.56 1.96 3.56 4.5v5.27Z"/>
+                            </svg>
+                            <span>LinkedIn</span>
+                            <span aria-hidden="true">↗</span>
+                        </a>
+                    </div>
+                    <div class="hero-focus" aria-label={t('focus_label')}>
+                        <span>Backend</span>
+                        <span>{t('focus_integrations')}</span>
+                        <span>{t('focus_performance')}</span>
+                    </div>
+                </div>
+
+                <aside class="hero-portrait" aria-label={t('portrait_label')}>
+                    <div class="portrait-halo" aria-hidden="true"></div>
+                    <div class="portrait-frame">
+                        <picture>
+                            <source
+                                type="image/avif"
+                                srcset="assets/images/sergio-moreno-portrait-v3-480.avif 480w, assets/images/sergio-moreno-portrait-v3-800.avif 800w, assets/images/sergio-moreno-portrait-v3-1120.avif 1120w"
+                                sizes="(max-width: 440px) calc(100vw - 4rem), (max-width: 540px) calc(100vw - 6rem), (max-width: 900px) 432px, 464px">
+                            <source
+                                type="image/webp"
+                                srcset="assets/images/sergio-moreno-portrait-v3-480.webp 480w, assets/images/sergio-moreno-portrait-v3-800.webp 800w, assets/images/sergio-moreno-portrait-v3-1120.webp 1120w"
+                                sizes="(max-width: 440px) calc(100vw - 4rem), (max-width: 540px) calc(100vw - 6rem), (max-width: 900px) 432px, 464px">
+                            <img
+                                src="/assets/images/sergio-moreno-portrait-v3-800.webp"
+                                srcset="assets/images/sergio-moreno-portrait-v3-480.webp 480w, assets/images/sergio-moreno-portrait-v3-800.webp 800w, assets/images/sergio-moreno-portrait-v3-1120.webp 1120w"
+                                sizes="(max-width: 440px) calc(100vw - 4rem), (max-width: 540px) calc(100vw - 6rem), (max-width: 900px) 432px, 464px"
+                                alt={t('portrait_alt')}
+                                width="1120"
+                                height="1400"
+                                loading="eager"
+                                decoding="async"
+                                fetchpriority="high">
+                        </picture>
+                        <div class="portrait-caption">
+                            <div>
+                                <strong>Sergio Moreno García</strong>
+                                <span>{t('backend_developer')}</span>
+                            </div>
+                            <span class="portrait-location">Murcia · ES</span>
+                        </div>
+                    </div>
+                    <div class="portrait-chip portrait-chip-top" aria-hidden="true">
+                        <span>●</span> Backend · Full-stack
+                    </div>
+                    <div class="portrait-chip portrait-chip-bottom" aria-hidden="true">
+                        <small>{t('portrait_experience')}</small>
+                        <strong>{t('years_9')}</strong>
+                    </div>
+                </aside>
+            </div>
+            <div class="container hero-metrics" aria-label={t('highlights_label')}>
+                <div>
+                    <strong>2014</strong>
+                    <span>{t('professional_start')}</span>
+                </div>
+                <div>
+                    <strong>{t('years_9')}</strong>
+                    <span>{t('in_development')}</span>
+                </div>
+                <div>
+                    <strong>{t('sectors_2')}</strong>
+                    <span>{t('banking_telecom')}</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="expertise-strip" aria-label={t('expertise_label')}>
+            <div class="expertise-track">
+                <span>Backend</span><i aria-hidden="true">✦</i>
+                <span>{t('expertise_architecture')}</span><i aria-hidden="true">✦</i>
+                <span>{t('expertise_integrations')}</span><i aria-hidden="true">✦</i>
+                <span>{t('expertise_digital_product')}</span><i aria-hidden="true">✦</i>
+                <span>{t('expertise_performance')}</span><i aria-hidden="true">✦</i>
+                <span>{t('expertise_reliability')}</span><i aria-hidden="true">✦</i>
+            </div>
+        </div>
+
+        <section class="section about" id="sobre-mi" aria-labelledby="about-title">
+            <div class="container section-grid">
+                <div class="section-heading" data-reveal>
+                    <p class="section-number">{t('about_number')}</p>
+                    <h2 id="about-title">{t('about_title')}</h2>
+                </div>
+                <div class="about-content" data-reveal>
+                    <p class="large-copy">{t('about_age_before')} <strong data-age data-birthdate="1993-09-15">{age}</strong> {t('about_age_after')}</p>
+                    <p>{t('about_body')}</p>
+
+                    <div class="capabilities" aria-label={t('capabilities_label')}>
+                        <article>
+                            <span>01</span>
+                            <h3>Backend</h3>
+                            <p>{t('capability_backend')}</p>
+                        </article>
+                        <article>
+                            <span>02</span>
+                            <h3>Full-stack</h3>
+                            <p>{t('capability_fullstack')}</p>
+                        </article>
+                        <article>
+                            <span>03</span>
+                            <h3>{t('capability_critical_title')}</h3>
+                            <p>{t('capability_critical')}</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section experience" id="experiencia" aria-labelledby="experience-title">
+            <div class="container">
+                <div class="section-heading split-heading" data-reveal>
+                    <div>
+                        <p class="section-number">{t('experience_number')}</p>
+                        <h2 id="experience-title">{t('experience_title')}</h2>
+                    </div>
+                    <p>{t('experience_intro')}</p>
+                </div>
+
+                <ol class="timeline">
+                    <li class="timeline-item" data-reveal>
+                        <div class="timeline-period">
+                            <time datetime="2023-09-04">04.09.2023</time>
+                            <span>—</span>
+                            <time datetime="2026-01-12">12.01.2026</time>
+                        </div>
+                        <div class="timeline-role">
+                            <h3>{t('role_backend')}</h3>
+                            <p>CaixaBank</p>
+                        </div>
+                        <span class="timeline-index">05</span>
+                    </li>
+                    <li class="timeline-item" data-reveal>
+                        <div class="timeline-period">
+                            <time datetime="2023-01-18">18.01.2023</time>
+                            <span>—</span>
+                            <time datetime="2023-08-30">30.08.2023</time>
+                        </div>
+                        <div class="timeline-role">
+                            <h3>{t('role_backend')}</h3>
+                            <p>Banca March</p>
+                        </div>
+                        <span class="timeline-index">04</span>
+                    </li>
+                    <li class="timeline-item" data-reveal>
+                        <div class="timeline-period">
+                            <time datetime="2017-02-27">27.02.2017</time>
+                            <span>—</span>
+                            <time datetime="2023-01-18">18.01.2023</time>
+                        </div>
+                        <div class="timeline-role">
+                            <h3>{t('role_backend')}</h3>
+                            <p>{t('telefonica_unit')}</p>
+                        </div>
+                        <span class="timeline-index">03</span>
+                    </li>
+                    <li class="timeline-item" data-reveal>
+                        <div class="timeline-period">
+                            <time datetime="2016-10-06">06.10.2016</time>
+                            <span>—</span>
+                            <time datetime="2017-02-14">14.02.2017</time>
+                        </div>
+                        <div class="timeline-role">
+                            <h3>{t('role_fullstack')}</h3>
+                            <p>Alfatec Sistemas, S.L.</p>
+                        </div>
+                        <span class="timeline-index">02</span>
+                    </li>
+                    <li class="timeline-item" data-reveal>
+                        <div class="timeline-period">
+                            <time datetime="2014-06-26">26.06.2014</time>
+                            <span>—</span>
+                            <time datetime="2016-10-05">05.10.2016</time>
+                        </div>
+                        <div class="timeline-role">
+                            <h3>{t('role_fiber')}</h3>
+                            <p>Telecanal 2, S.L.</p>
+                        </div>
+                        <span class="timeline-index">01</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="section projects" id="proyectos" aria-labelledby="projects-title">
+            <div class="container">
+                <div class="section-heading split-heading" data-reveal>
+                    <div>
+                        <p class="section-number">{t('projects_number')}</p>
+                        <h2 id="projects-title">{t('projects_title')}</h2>
+                    </div>
+                    <p>{t('projects_intro')}</p>
+                </div>
+
+                <div class="project-list">
+                    <SaveTempoCard language={language} text={t} />
+
+                    <a class="project-showcase project-mwa" href="https://myworkingarea.com/" target="_blank" rel="noopener" aria-label={t('mwa_link_label')} data-reveal>
+                        <div class="project-copy">
+                            <div class="project-heading-row">
+                                <span class="project-index">02</span>
+                                <span class="project-status"><i aria-hidden="true"></i> {t('status_available')}</span>
+                            </div>
+                            <p class="project-type">{t('mwa_type')}</p>
+                            <h3>MyWorkingArea</h3>
+                            <p class="project-description">{t('mwa_description')}</p>
+                            <ul class="project-tags" aria-label={t('features_label')}>
+                                <li>{t('tag_digital_product')}</li>
+                                <li>{t('tag_web_tools')}</li>
+                                <li>{t('tag_production')}</li>
+                            </ul>
+                            <span class="project-link">{t('explore_project')} <i aria-hidden="true">↗</i></span>
+                        </div>
+                        <div class="project-browser" aria-hidden="true">
+                            <div class="browser-bar">
+                                <span></span><span></span><span></span>
+                                <p>myworkingarea.com</p>
+                            </div>
+                            <div class="project-screenshot">
+                                <img src="/assets/images/myworkingarea-website.webp" alt={t('mwa_alt')} width="1280" height="800" loading="lazy" decoding="async">
+                            </div>
+                        </div>
+                    </a>
+
+                    <a class="project-showcase project-vyrsea" href="https://vyrsea.com/" target="_blank" rel="noopener" aria-label={t('vyrsea_link_label')} data-reveal>
+                        <div class="project-copy">
+                            <div class="project-heading-row">
+                                <span class="project-index">03</span>
+                                <span class="project-status project-status-building"><i aria-hidden="true"></i> {t('status_building')}</span>
+                            </div>
+                            <p class="project-type">{t('vyrsea_type')}</p>
+                            <h3>Vyrsea</h3>
+                            <p class="project-description">{t('vyrsea_description')}</p>
+                            <ul class="project-tags" aria-label={t('features_label')}>
+                                <li>CMS</li>
+                                <li>{t('tag_bookings')}</li>
+                                <li>{t('tag_soon')}</li>
+                            </ul>
+                            <span class="project-link">{t('discover_vyrsea')} <i aria-hidden="true">↗</i></span>
+                        </div>
+                        <div class="project-browser" aria-hidden="true">
+                            <div class="browser-bar">
+                                <span></span><span></span><span></span>
+                                <p>vyrsea.com</p>
+                            </div>
+                            <div class="project-screenshot">
+                                <img src="/assets/images/vyrsea-website.webp" alt={t('vyrsea_alt')} width="1280" height="800" loading="lazy" decoding="async">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section contact" id="contacto" aria-labelledby="contact-title">
+            <div class="container contact-grid">
+                <div class="contact-intro" data-reveal>
+                    <p class="section-number">{t('contact_number')}</p>
+                    <h2 id="contact-title">{t('contact_title')}</h2>
+                    <p>{t('contact_intro')}</p>
+
+                    <div class="direct-contact">
+                        <!--email_off-->
+                        <a href="mailto:smorgarc@sergiotech.es">
+                            <span>{t('contact_email')}</span>
+                            <strong>smorgarc@sergiotech.es</strong>
+                        </a>
+                        <!--/email_off-->
+                        <a href="tel:+34614839879">
+                            <span>{t('contact_phone')}</span>
+                            <strong>+34 614 839 879</strong>
+                        </a>
+                        <a href={linkedInUrl} target="_blank" rel="me noopener" aria-label={t('linkedin_profile_label')}>
+                            <span>LinkedIn</span>
+                            <strong>{t('linkedin_connect')} <span aria-hidden="true">↗</span></strong>
+                        </a>
+                        <div>
+                            <span>{t('contact_location')}</span>
+                            <strong>{t('location')}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <form
+                    class="contact-form"
+                    action="/api/contact"
+                    method="post"
+                    data-contact-form
+                    data-reveal
+                    data-sending={t('form_sending')}
+                    data-submit-label={t('form_submit')}
+                    data-generic-error={t('form_generic_error')}
+                    data-network-error={t('form_network_error')}>
+                    <input type="hidden" name="language" value={language}>
+                    <div class="honeypot" aria-hidden="true">
+                        <label for="website">{t('honeypot')}</label>
+                        <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="field">
+                            <label for="name">{t('form_name')} <span aria-hidden="true">*</span></label>
+                            <input id="name" name="name" type="text" autocomplete="name" maxlength="80" required placeholder={t('form_name_placeholder')}>
+                        </div>
+                        <div class="field">
+                            <label for="email">{t('form_email')} <span aria-hidden="true">*</span></label>
+                            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required placeholder="tu@email.com">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="subject">{t('form_subject')} <span aria-hidden="true">*</span></label>
+                        <input id="subject" name="subject" type="text" maxlength="120" required placeholder={t('form_subject_placeholder')}>
+                    </div>
+
+                    <div class="field">
+                        <label for="message">{t('form_message')} <span aria-hidden="true">*</span></label>
+                        <textarea id="message" name="message" rows="6" minlength="20" maxlength="5000" required placeholder={t('form_message_placeholder')}></textarea>
+                        <small><span data-character-count>0</span> / 5000</small>
+                    </div>
+
+                    <label class="consent">
+                        <input name="privacy" type="checkbox" value="accepted" required>
+                        <span>{t('form_consent')}</span>
+                    </label>
+
+                    <button class="button button-primary submit-button" type="submit" disabled>
+                        <span data-submit-label>{t('form_submit')}</span>
+                        <span aria-hidden="true">↗</span>
+                    </button>
+                    <div data-turnstile></div><noscript><p><a href="mailto:smorgarc@sergiotech.es">smorgarc@sergiotech.es</a></p></noscript>
+
+                    <p class="form-status" role="status" aria-live="polite" data-form-status></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <a class="brand" href="#inicio" aria-label={t('footer_home')}>
+                <img class="brand-mark" src="/assets/icons/sergio-tech-mark-42.webp" srcset="assets/icons/sergio-tech-mark-42.webp 1x, assets/icons/sergio-tech-mark-84.webp 2x" alt="" width="42" height="42" aria-hidden="true" decoding="async">
+                <span class="brand-name">Sergio Moreno García</span>
+            </a>
+            <nav aria-label={t('social_links')}>
+                <a class="social-link" href={linkedInUrl} target="_blank" rel="me noopener" aria-label={t('linkedin_profile_label')}>
+                    <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
+                        <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96C2 21.32 2.69 22 3.55 22h16.9c.86 0 1.55-.68 1.55-1.52V3.52C22 2.68 21.31 2 20.45 2ZM7.93 18.75H4.98V9.2h2.95v9.55ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8v-4.64c0-1.1-.02-2.52-1.54-2.52-1.54 0-1.78 1.2-1.78 2.44v4.72H9.53V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.98 0 3.56 1.96 3.56 4.5v5.27Z"/>
+                    </svg>
+                    <span>LinkedIn</span>
+                    <span aria-hidden="true">↗</span>
+                </a>
+            </nav>
+            <div class="footer-meta">
+                <p>{t('footer_note')}</p>
+                <p>© <span data-current-year>{new Date().getFullYear()}</span> Sergio Moreno García</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

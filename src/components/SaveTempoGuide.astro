@@ -1,0 +1,24 @@
+---
+import guides from '../data/guides.json';
+import {productHelpers} from '../lib/site.js';
+import StoreLinks from './StoreLinks.astro';
+const {page,language}=Astro.props;
+const {stCopy,stAsset,stRoutePath}=productHelpers(language);
+const guide=guides[language][page];
+const copy=key=>guide[key]??key;
+const isWeekly=page==='week52', step=isWeekly?1:0.01, factor=isWeekly?1378:66795;
+const money=amount=>new Intl.NumberFormat(language==='es'?'de-DE':'en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(amount)+' €';
+const monthDays=[31,28,31,30,31,30,31,31,30,31,30,31];
+const rows=isWeekly?Array.from({length:52},(_,i)=>{const n=i+1;return [n,n,n*(n+1)/2]}):page==='day365'?monthDays.map((_,i)=>{const day=monthDays.slice(0,i+1).reduce((a,b)=>a+b,0);return [guide.months[i],day,day*(day+1)/2]}):[];
+---
+<article class="guide-page">
+ <header class="guide-hero product-shell"><nav class="breadcrumbs" aria-label={language==='es'?'Migas de pan':'Breadcrumb'}><a href={stRoutePath('landing')}>SaveTempo</a><span aria-hidden="true">/</span><span>{copy('kicker')}</span></nav><p class="section-kicker">{copy('kicker')}</p><h1>{copy('title')}</h1><p class="guide-lede">{copy('intro')}</p><StoreLinks language={language}/></header>
+ {['week52','day365'].includes(page)?<section class="challenge-calculator product-shell" aria-labelledby="calculator-title" data-challenge-calculator data-locale={language} data-currency="EUR">
+  <div class="calculator-summary"><div><label for="challenge-step">{copy('inputLabel')}</label><span class="money-input"><input id="challenge-step" type="number" min="0.01" step="0.01" value={step.toFixed(2)} inputmode="decimal" data-challenge-step/><b>€</b></span></div><div><span>{copy('totalLabel')}</span><strong data-challenge-total data-factor={factor}>{money(step*factor)}</strong></div><div><span>{copy('frequencyLabel')}</span><strong>{copy('frequencyValue')}</strong></div></div>
+  <div class="challenge-table-heading"><h2 id="calculator-title">{copy('tableTitle')}</h2><p>{copy('tableIntro')}</p></div>
+  <div class="challenge-table-wrap" tabindex="0"><table class="challenge-table"><thead><tr>{guide.headers.map(header=><th scope="col">{header}</th>)}</tr></thead><tbody>{rows.map(([label,index,total])=><tr><th scope="row">{label}</th><td data-challenge-amount={isWeekly?'':undefined} data-index={isWeekly?index:undefined}>{isWeekly?money(step*index):index}</td><td data-challenge-running data-index={total}>{money(step*total)}</td></tr>)}</tbody></table></div>
+ </section>:<section class="guide-features product-shell" aria-label={copy('kicker')}>{(guide.features??[]).map((feature,index)=><section><span>{String(index+1).padStart(2,'0')}</span><h2>{feature[0]}</h2><p>{feature[1]}</p></section>)}</section>}
+ <div class="guide-sections product-shell">{guide.sections.map(section=><section><h2>{section[0]}</h2><p>{section[1]}</p></section>)}</div>
+ <nav class="guide-related product-shell" aria-label={language==='es'?'Guías relacionadas':'Related guides'}><a href={stRoutePath('week52')}>{language==='es'?'Reto de 52 semanas':'52 week challenge'}</a><a href={stRoutePath('day365')}>{language==='es'?'Reto de 365 días':'365 day challenge'}</a><a href={stRoutePath('challengeApp')}>{language==='es'?'App de retos de ahorro':'Savings challenge app'}</a></nav>
+ <section class="guide-cta product-shell"><div><p class="section-kicker">SaveTempo</p><h2>{copy('ctaTitle')}</h2><p>{copy('ctaBody')}</p><StoreLinks language={language}/></div><img src={stAsset('plans')} alt={stCopy('landing.plansAlt')} width="540" height="960" loading="lazy" decoding="async"/></section>
+</article>
