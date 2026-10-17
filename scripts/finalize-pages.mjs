@@ -14,7 +14,16 @@ const CSP="default-src 'self'; base-uri 'self'; connect-src 'self' https://chall
 if(CSP.length+27>2000)throw new Error('CSP exceeds the Cloudflare Pages header limit');
 await fs.writeFile(new URL('../edge/security.generated.js',import.meta.url),'export const CSP='+JSON.stringify(CSP)+';\n');
 await build({entryPoints:[new URL('../edge/worker.js',import.meta.url).pathname.replace(/^\/(\w:)/,'$1')],outfile:new URL('_worker.js',dist).pathname.replace(/^\/(\w:)/,'$1'),bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true});
-await fs.writeFile(new URL('_routes.json',dist),JSON.stringify({version:1,include:['/*'],exclude:['/_astro/*','/assets/*','/savetempo-assets/*','/apps/savetempo/assets/*','/favicon.ico','/favicon-192x192.png','/sergiotech-favicon-192.png','/site.webmanifest']},null,2));
+// Only documents, redirects and contact need the host/language router. Unknown
+// paths must reach Pages' static 404 without spending the shared Workers quota.
+const functionRoutes=new Set(['/', '/index.php', '/index.html', '/en/', '/en/index.html', '/robots.txt', '/sitemap.xml', '/api/contact', '/api/contact/*', '/contact.php', '/apps/savetempo', '/apps/savetempo/*', '/es/apps/savetempo', '/es/apps/savetempo/*', '/product-content/*', '/savetempo-sitemap.xml', '/savetempo-robots.txt', '/preview-savetempo/*']);
+const productSlugs=new Set(Object.values(product.pagePaths).flatMap(page=>Object.values(page)).filter(page=>page!=='/').map(page=>page.replace(/\/$/,'')));
+// Both translated slugs remain routed so existing ?lang= links can redirect.
+for(const prefix of ['', '/es'])for(const slug of productSlugs){const base=prefix+slug;functionRoutes.add(base);functionRoutes.add(base+'/*')}
+for(const alias of ['/es','/es/','/es/index.php','/es/index.html'])functionRoutes.add(alias);
+const invocationRoutes={version:1,include:[...functionRoutes],exclude:['/_astro/*','/assets/*','/savetempo-assets/*','/apps/savetempo/assets/*','/favicon.ico','/favicon-192x192.png','/sergiotech-favicon-192.png','/site.webmanifest']};
+if(invocationRoutes.include.length+invocationRoutes.exclude.length>100)throw new Error('Pages invocation routes exceed the 100-rule limit');
+await fs.writeFile(new URL('_routes.json',dist),JSON.stringify(invocationRoutes,null,2));
 await fs.writeFile(new URL('_headers',dist),`/*\n  Content-Security-Policy: ${CSP}\n  X-Content-Type-Options: nosniff\n  X-Frame-Options: DENY\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/_astro/*\n  Cache-Control: public, max-age=31536000, immutable\n/assets/*\n  Cache-Control: public, max-age=86400\n/savetempo-assets/*\n  Cache-Control: public, max-age=86400\n`);
 const urlset=urls=>'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'+urls.join('')+'</urlset>';
 const entry=(url,en,es)=>`<url><loc>${url}</loc><xhtml:link rel="alternate" hreflang="en" href="${en}"/><xhtml:link rel="alternate" hreflang="es" href="${es}"/></url>`;

@@ -31,3 +31,13 @@ Conservar el commit PHP `155b0a4549fe045b213b1fe1eff6f1ac435f7495` y los antiguo
 El tema se fija antes de procesar los estilos para evitar repintados y transiciones de color durante la carga. El retrato AVIF usa precarga responsive. Turnstile y la sesión del formulario se inicializan al acercarse al formulario o enfocarlo; la validación del servidor permanece obligatoria. Los enlaces canónicos y hreflang distinguen español e inglés. `?lang=es` redirige a `/` y las rutas antiguas de SaveTempo redirigen al documento equivalente del nuevo subdominio. Las vistas pages.dev llevan noindex.
 
 Search Console ya dispone de la propiedad de dominio sergiotech.es, que incluye el subdominio. Enviar ambos sitemaps tras el cambio; no utilizar Cambio de dirección para todo sergiotech.es, porque solo se traslada una sección. Las puntuaciones de PageSpeed son mediciones de laboratorio y no garantizan resultados de usuarios reales ni posicionamiento.
+
+## Consumo de Functions y sondeos automatizados
+
+El alojamiento estático de Pages tiene peticiones gratuitas e ilimitadas. Las Pages Functions comparten el límite gratuito de 100.000 invocaciones diarias, reiniciado a medianoche UTC, con los demás Workers de la cuenta. El total de peticiones de la zona en Analytics incluye estáticos, redirecciones y bloqueos; no equivale a invocaciones consumidas.
+
+`scripts/finalize-pages.mjs` genera una lista de inclusión para `_routes.json`: portadas, idiomas, documentos de SaveTempo, redirecciones antiguas, sitemaps, robots y contacto. Las plantillas internas permanecen protegidas por el router. Las peticiones a rutas inexistentes, como `/.env.aws`, `/.git/config` o `/wp-login.php`, reciben el 404 estático de Pages sin ejecutar la Function. Los recursos CSS, JavaScript e imágenes también quedan fuera. Al añadir nuevas páginas que dependan del hostname o del idioma, hay que ampliar la lista; las rutas de producto proceden automáticamente de `src/data/product.json`.
+
+Las reglas WAF y de frecuencia de la zona requieren registros web con proxy activo. Un bloqueo WAF puede seguir apareciendo como petición y código 403 en Analytics: su finalidad es impedir que llegue a la aplicación, no ocultarlo de las estadísticas. El límite de frecuencia gratuito no constituye un tope diario global y puede actuar con cierto retraso. No debe aplicarse indiscriminadamente a bots verificados ni a todos los recursos de una página.
+
+Referencias: [precios de Pages Functions](https://developers.cloudflare.com/pages/functions/pricing/), [rutas de invocación](https://developers.cloudflare.com/pages/functions/routing/), [límites de frecuencia](https://developers.cloudflare.com/waf/rate-limiting-rules/).
